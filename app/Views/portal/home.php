@@ -1,58 +1,104 @@
-<!-- Main Featured Breaking News Hero -->
-<?php if (!empty($featured)): ?>
-<section class="breaking-hero-card">
-    <div class="breaking-hero-meta">
-        <span class="cat-badge"><?= htmlspecialchars($featured['category_name']) ?></span>
-        <span class="official-verified-badge">
-            ✓ Official: <?= htmlspecialchars($featured['official_source_name'] ?? 'Government Authority') ?>
-        </span>
-        <span class="card-time"><?= date('M j, Y — g:i A', strtotime($featured['published_at'])) ?></span>
-    </div>
+<!-- Top 5 Latest & Trending News Hero Showcase -->
+<?php if (!empty($hero_main)): ?>
+<section class="hero-showcase-section">
+    <div class="hero-showcase-grid">
+        <!-- 1. Main Featured Large Card (Item #1) -->
+        <div class="hero-main-card">
+            <div class="hero-badge-row">
+                <span class="hero-tag-pill">🔥 Top Story #1</span>
+                <span class="cat-badge"><?= htmlspecialchars($hero_main['category_name']) ?></span>
+                <?php if (!empty($hero_main['official_source_name'])): ?>
+                <span class="official-verified-badge">
+                    ✓ <?= htmlspecialchars($hero_main['official_source_name']) ?>
+                </span>
+                <?php endif; ?>
+                <span class="card-time"><?= date('M j, Y — g:i A', strtotime($hero_main['published_at'])) ?></span>
+            </div>
 
-    <h1 class="breaking-hero-title">
-        <?= htmlspecialchars($featured['title']) ?>
-    </h1>
+            <h1 class="hero-main-title">
+                <a href="/news/<?= htmlspecialchars($hero_main['slug']) ?>">
+                    <?= htmlspecialchars($hero_main['title']) ?>
+                </a>
+            </h1>
 
-    <p class="breaking-hero-summary">
-        <?= htmlspecialchars($featured['summary'] ?? $featured['excerpt']) ?>
-    </p>
+            <p class="hero-main-summary">
+                <?= htmlspecialchars($hero_main['summary'] ?? $hero_main['excerpt'] ?? mb_substr(strip_tags($hero_main['content_html']), 0, 220) . '...') ?>
+            </p>
 
-    <div class="breaking-hero-actions">
-        <a href="/news/<?= htmlspecialchars($featured['slug']) ?>" class="btn-hero-primary">
-            Read Full Notice & Direct Links »
-        </a>
+            <div class="hero-main-footer">
+                <a href="/news/<?= htmlspecialchars($hero_main['slug']) ?>" class="btn-hero-primary">
+                    Read Full Notice & Direct Links »
+                </a>
+                <span class="badge-verified-small">✓ Official Verified Source</span>
+            </div>
+        </div>
+
+        <!-- 2. Trending Top 4 List (Items #2 to #5) -->
+        <div class="hero-trending-panel">
+            <div class="trending-panel-header">
+                <div class="trending-header-title">
+                    <span>⚡</span> Top Trending Today
+                </div>
+                <span class="trending-badge-count">5 Top Updates</span>
+            </div>
+
+            <div class="trending-items-list">
+                <?php 
+                $rank = 2;
+                foreach ($hero_trending as $trItem): 
+                ?>
+                <a href="/news/<?= htmlspecialchars($trItem['slug']) ?>" class="trending-news-row">
+                    <div class="trending-rank-num">#<?= $rank++ ?></div>
+                    <div class="trending-content-wrap">
+                        <div class="trending-meta-small">
+                            <span class="cat-badge-micro"><?= htmlspecialchars($trItem['category_name']) ?></span>
+                            <?php if (!empty($trItem['official_source_name'])): ?>
+                            <span class="source-micro">🏛️ <?= htmlspecialchars(mb_substr($trItem['official_source_name'], 0, 24)) ?></span>
+                            <?php endif; ?>
+                        </div>
+                        <h2 class="trending-row-headline">
+                            <?= htmlspecialchars($trItem['title']) ?>
+                        </h2>
+                        <div class="trending-date-small">
+                            📅 <?= date('M j, Y', strtotime($trItem['published_at'])) ?>
+                        </div>
+                    </div>
+                </a>
+                <?php endforeach; ?>
+            </div>
+        </div>
     </div>
 </section>
 <?php endif; ?>
 
 <!-- Instant WhatsApp & Telegram Alert Banner -->
-<div class="social-alert-banner" style="background: linear-gradient(135deg, #1e3a8a 0%, #0f172a 100%); color: #fff; padding: 1rem 1.25rem; border-radius: 8px; margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
-    <div>
-        <div style="font-weight: 700; font-size: 1rem; display: flex; align-items: center; gap: 0.5rem;">
+<div class="social-alert-banner">
+    <div class="social-alert-text">
+        <div class="social-alert-heading">
             <span>🔔 Never Miss an Exam or Job Update!</span>
         </div>
-        <p style="font-size: 0.8125rem; color: #cbd5e1; margin-top: 0.25rem; margin-bottom: 0;">
+        <p class="social-alert-sub">
             Join 100,000+ students receiving instant verified official notifications directly on phone.
         </p>
     </div>
-    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
-        <a href="https://telegram.me" target="_blank" rel="noopener noreferrer" class="link-btn" style="background-color: #0088cc; font-weight: 600;">
+    <div class="social-alert-buttons">
+        <a href="https://telegram.me" target="_blank" rel="noopener noreferrer" class="link-btn social-tg-btn">
             ✈️ Join Telegram
         </a>
-        <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" class="link-btn" style="background-color: #25d366; font-weight: 600;">
+        <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" class="link-btn social-wa-btn">
             💬 Join WhatsApp
         </a>
     </div>
 </div>
 
 <!-- State-Wise Quick Filter Matrix -->
-<section id="state-matrix" class="state-filter-section" style="margin-bottom: 2rem;">
-    <div class="section-header" style="border-left: 4px solid #0284c7; padding-left: 0.75rem; margin-bottom: 0.75rem;">
-        <h2 style="font-size: 1.125rem; font-weight: 700; color: var(--color-text-main, #0a192f);">
+<section id="state-matrix" class="state-filter-section">
+    <div class="section-header-bar">
+        <h2 class="section-bar-title">
             🗺️ State & Central Government Jobs Filter
         </h2>
     </div>
-    <div class="state-matrix-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); gap: 0.5rem;">
+    <div class="state-matrix-grid">
         <a href="/state/central-govt" class="state-card-btn">🏛️ Central Govt</a>
         <a href="/state/west-bengal" class="state-card-btn">🌊 West Bengal</a>
         <a href="/state/uttar-pradesh" class="state-card-btn">🌾 Uttar Pradesh</a>
@@ -64,34 +110,34 @@
     </div>
 </section>
 
-<!-- Homepage Main Layout -->
+<!-- Homepage Main Category-Wise Feed -->
 <div class="feed-layout-grid">
-    <!-- Category-Wise Main Content Feed -->
+    <!-- Main Categorized Columns -->
     <main class="feed-main-col">
 
         <!-- 1. 📋 Results Section -->
         <?php if (!empty($results_articles)): ?>
-        <section class="category-block-card mb-8" style="margin-bottom: 2rem;">
-            <div class="block-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #2563eb; padding-bottom: 0.5rem; margin-bottom: 1rem;">
-                <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-main, #0a192f); display: flex; align-items: center; gap: 0.5rem;">
+        <section class="category-block-card">
+            <div class="block-header block-header-blue">
+                <h2 class="block-title">
                     <span>📋</span> Latest Results & Merit Lists
                 </h2>
-                <a href="/results" class="view-all-link" style="font-size: 0.8125rem; font-weight: 600; color: #2563eb;">View All »</a>
+                <a href="/results" class="view-all-link">View All »</a>
             </div>
-            <div class="category-items-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+            <div class="category-items-grid">
                 <?php foreach ($results_articles as $art): ?>
-                <article class="compact-card" style="background: var(--color-card-bg, #fff); border: 1px solid var(--color-border, #e2e8f0); border-radius: 6px; padding: 0.875rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <article class="compact-card">
                     <div>
-                        <span class="official-verified-badge" style="font-size: 0.6875rem;">✓ <?= htmlspecialchars($art['official_source_name'] ?? 'Official') ?></span>
-                        <h3 style="font-size: 0.9375rem; font-weight: 600; margin-top: 0.5rem; margin-bottom: 0.5rem; line-height: 1.35;">
-                            <a href="/news/<?= htmlspecialchars($art['slug']) ?>" style="color: var(--color-text-main, #0a192f); text-decoration: none;">
+                        <span class="official-verified-badge">✓ <?= htmlspecialchars($art['official_source_name'] ?? 'Official') ?></span>
+                        <h3 class="compact-card-title">
+                            <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
                                 <?= htmlspecialchars($art['title']) ?>
                             </a>
                         </h3>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: #64748b; margin-top: 0.5rem; border-top: 1px dashed var(--color-border, #f1f5f9); padding-top: 0.5rem;">
+                    <div class="compact-card-footer">
                         <span>📅 <?= date('M j, Y', strtotime($art['published_at'])) ?></span>
-                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" style="color: #2563eb; font-weight: 600;">Check Result »</a>
+                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="card-action-link">Check Result »</a>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -101,27 +147,27 @@
 
         <!-- 2. 🎫 Admit Cards Section -->
         <?php if (!empty($admit_articles)): ?>
-        <section class="category-block-card mb-8" style="margin-bottom: 2rem;">
-            <div class="block-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #0284c7; padding-bottom: 0.5rem; margin-bottom: 1rem;">
-                <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-main, #0a192f); display: flex; align-items: center; gap: 0.5rem;">
+        <section class="category-block-card">
+            <div class="block-header block-header-cyan">
+                <h2 class="block-title">
                     <span>🎫</span> Admit Cards & Hall Tickets
                 </h2>
-                <a href="/admit-card" class="view-all-link" style="font-size: 0.8125rem; font-weight: 600; color: #0284c7;">View All »</a>
+                <a href="/admit-card" class="view-all-link">View All »</a>
             </div>
-            <div class="category-items-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+            <div class="category-items-grid">
                 <?php foreach ($admit_articles as $art): ?>
-                <article class="compact-card" style="background: var(--color-card-bg, #fff); border: 1px solid var(--color-border, #e2e8f0); border-radius: 6px; padding: 0.875rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <article class="compact-card">
                     <div>
-                        <span class="official-verified-badge" style="font-size: 0.6875rem;">✓ <?= htmlspecialchars($art['official_source_name'] ?? 'Official') ?></span>
-                        <h3 style="font-size: 0.9375rem; font-weight: 600; margin-top: 0.5rem; margin-bottom: 0.5rem; line-height: 1.35;">
-                            <a href="/news/<?= htmlspecialchars($art['slug']) ?>" style="color: var(--color-text-main, #0a192f); text-decoration: none;">
+                        <span class="official-verified-badge">✓ <?= htmlspecialchars($art['official_source_name'] ?? 'Official') ?></span>
+                        <h3 class="compact-card-title">
+                            <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
                                 <?= htmlspecialchars($art['title']) ?>
                             </a>
                         </h3>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: #64748b; margin-top: 0.5rem; border-top: 1px dashed var(--color-border, #f1f5f9); padding-top: 0.5rem;">
+                    <div class="compact-card-footer">
                         <span>📅 <?= date('M j, Y', strtotime($art['published_at'])) ?></span>
-                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" style="color: #0284c7; font-weight: 600;">Download Slip »</a>
+                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="card-action-link">Download Slip »</a>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -129,29 +175,29 @@
         </section>
         <?php endif; ?>
 
-        <!-- 3. 💼 Recruitment & Government Jobs Section -->
+        <!-- 3. 💼 Recruitment Section -->
         <?php if (!empty($recruitment_articles)): ?>
-        <section class="category-block-card mb-8" style="margin-bottom: 2rem;">
-            <div class="block-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #16a34a; padding-bottom: 0.5rem; margin-bottom: 1rem;">
-                <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-main, #0a192f); display: flex; align-items: center; gap: 0.5rem;">
+        <section class="category-block-card">
+            <div class="block-header block-header-green">
+                <h2 class="block-title">
                     <span>💼</span> Government & Banking Recruitment
                 </h2>
-                <a href="/recruitment" class="view-all-link" style="font-size: 0.8125rem; font-weight: 600; color: #16a34a;">View All »</a>
+                <a href="/recruitment" class="view-all-link">View All »</a>
             </div>
-            <div class="category-items-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+            <div class="category-items-grid">
                 <?php foreach ($recruitment_articles as $art): ?>
-                <article class="compact-card" style="background: var(--color-card-bg, #fff); border: 1px solid var(--color-border, #e2e8f0); border-radius: 6px; padding: 0.875rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <article class="compact-card">
                     <div>
-                        <span class="official-verified-badge" style="font-size: 0.6875rem;">✓ <?= htmlspecialchars($art['official_source_name'] ?? 'Official') ?></span>
-                        <h3 style="font-size: 0.9375rem; font-weight: 600; margin-top: 0.5rem; margin-bottom: 0.5rem; line-height: 1.35;">
-                            <a href="/news/<?= htmlspecialchars($art['slug']) ?>" style="color: var(--color-text-main, #0a192f); text-decoration: none;">
+                        <span class="official-verified-badge">✓ <?= htmlspecialchars($art['official_source_name'] ?? 'Official') ?></span>
+                        <h3 class="compact-card-title">
+                            <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
                                 <?= htmlspecialchars($art['title']) ?>
                             </a>
                         </h3>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: #64748b; margin-top: 0.5rem; border-top: 1px dashed var(--color-border, #f1f5f9); padding-top: 0.5rem;">
+                    <div class="compact-card-footer">
                         <span>📅 <?= date('M j, Y', strtotime($art['published_at'])) ?></span>
-                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" style="color: #16a34a; font-weight: 600;">Apply Online »</a>
+                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="card-action-link">Apply Online »</a>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -159,29 +205,29 @@
         </section>
         <?php endif; ?>
 
-        <!-- 4. 📝 Upcoming Exams & Answer Keys -->
+        <!-- 4. 📝 Exam Dates Section -->
         <?php if (!empty($exam_articles)): ?>
-        <section class="category-block-card mb-8" style="margin-bottom: 2rem;">
-            <div class="block-header" style="display: flex; justify-content: space-between; align-items: center; border-bottom: 2px solid #d97706; padding-bottom: 0.5rem; margin-bottom: 1rem;">
-                <h2 style="font-size: 1.25rem; font-weight: 700; color: var(--color-text-main, #0a192f); display: flex; align-items: center; gap: 0.5rem;">
+        <section class="category-block-card">
+            <div class="block-header block-header-amber">
+                <h2 class="block-title">
                     <span>📝</span> Exam Schedules & Answer Keys
                 </h2>
-                <a href="/exam" class="view-all-link" style="font-size: 0.8125rem; font-weight: 600; color: #d97706;">View All »</a>
+                <a href="/exam" class="view-all-link">View All »</a>
             </div>
-            <div class="category-items-grid" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem;">
+            <div class="category-items-grid">
                 <?php foreach ($exam_articles as $art): ?>
-                <article class="compact-card" style="background: var(--color-card-bg, #fff); border: 1px solid var(--color-border, #e2e8f0); border-radius: 6px; padding: 0.875rem; display: flex; flex-direction: column; justify-content: space-between;">
+                <article class="compact-card">
                     <div>
-                        <span class="official-verified-badge" style="font-size: 0.6875rem;">✓ <?= htmlspecialchars($art['official_source_name'] ?? 'Official') ?></span>
-                        <h3 style="font-size: 0.9375rem; font-weight: 600; margin-top: 0.5rem; margin-bottom: 0.5rem; line-height: 1.35;">
-                            <a href="/news/<?= htmlspecialchars($art['slug']) ?>" style="color: var(--color-text-main, #0a192f); text-decoration: none;">
+                        <span class="official-verified-badge">✓ <?= htmlspecialchars($art['official_source_name'] ?? 'Official') ?></span>
+                        <h3 class="compact-card-title">
+                            <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
                                 <?= htmlspecialchars($art['title']) ?>
                             </a>
                         </h3>
                     </div>
-                    <div style="display: flex; justify-content: space-between; align-items: center; font-size: 0.75rem; color: #64748b; margin-top: 0.5rem; border-top: 1px dashed var(--color-border, #f1f5f9); padding-top: 0.5rem;">
+                    <div class="compact-card-footer">
                         <span>📅 <?= date('M j, Y', strtotime($art['published_at'])) ?></span>
-                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" style="color: #d97706; font-weight: 600;">View Dates »</a>
+                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="card-action-link">View Dates »</a>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -208,7 +254,7 @@
 
         <div class="sidebar-card" style="margin-top: 1.5rem;">
             <h3 class="sidebar-title">🛡️ Official Authenticity Notice</h3>
-            <p style="font-size: 0.8125rem; color: var(--color-text-muted, #64748b); line-height: 1.5; margin-bottom: 0;">
+            <p style="font-size: 0.8125rem; color: var(--color-text-muted, #64748b); line-height: 1.55; margin-bottom: 0;">
                 All articles on EduGov News are strictly generated from verified government notifications. Candidates are always provided direct official links to official .gov.in and .ac.in portals.
             </p>
         </div>

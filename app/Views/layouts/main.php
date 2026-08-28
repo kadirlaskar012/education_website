@@ -30,8 +30,12 @@
                 <span class="trust-meta">Automated Official Synchronization Active</span>
             </div>
             <div class="trust-right">
-                <button class="theme-toggle-btn js-theme-toggle" aria-label="Toggle Eye Comfort Dark Mode">
-                    🌓 <span class="theme-label">Eye Comfort</span>
+                <button class="theme-toggle-btn js-theme-toggle" aria-label="Toggle Dark/Light Mode">
+                    <span class="theme-icon-slot">
+                        <svg class="sun-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="moon-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </span>
+                    <span class="theme-label">Theme</span>
                 </button>
                 <a href="/sitemap.xml" class="trust-link">Sitemap</a>
                 <a href="/rss.xml" class="trust-link">RSS Feed</a>
@@ -82,15 +86,29 @@
             <div class="header-search-box">
                 <form action="/search" method="get" class="search-form">
                     <input type="text" name="q" placeholder="Search exams, results, admit cards..." aria-label="Search notifications" required>
-                    <button type="submit" aria-label="Search">🔍</button>
+                    <button type="submit" aria-label="Search">
+                        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="11" cy="11" r="8"></circle>
+                            <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                        </svg>
+                    </button>
                 </form>
             </div>
 
             <!-- Header Right Actions -->
             <div class="header-right-actions">
-                <button class="mobile-icon-btn js-theme-toggle" aria-label="Toggle Dark Mode">🌓</button>
-                <button id="mobileSearchTrigger" class="mobile-icon-btn" aria-label="Search">🔍</button>
-                <button id="mobileExploreTrigger" class="mobile-icon-btn" aria-label="Explore Categories">⚡</button>
+                <button class="mobile-icon-btn js-theme-toggle" aria-label="Toggle Theme">
+                    <span class="theme-icon-slot">
+                        <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="moon-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </span>
+                </button>
+                <button id="mobileSearchTrigger" class="mobile-icon-btn" aria-label="Search">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
                 <a href="/recruitment" class="btn-gov-jobs">🏛️ Latest Jobs</a>
             </div>
         </div>
@@ -221,7 +239,13 @@
                 <span class="logo-accent">EduGov</span><span class="logo-sub">News<span class="logo-dot">.</span></span>
             </div>
             <div style="display: flex; gap: 0.5rem; align-items: center;">
-                <button class="theme-toggle-btn js-theme-toggle" style="padding: 0.3rem 0.6rem;">🌓 Theme</button>
+                <button class="theme-toggle-btn js-theme-toggle" style="padding: 0.3rem 0.6rem;">
+                    <span class="theme-icon-slot">
+                        <svg class="sun-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
+                        <svg class="moon-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
+                    </span>
+                    <span class="theme-label">Theme</span>
+                </button>
                 <button class="drawer-close-btn" id="closeDrawerBtn" aria-label="Close menu">✕</button>
             </div>
         </div>
@@ -230,7 +254,12 @@
         <div class="drawer-search-wrap">
             <form action="/search" method="get" class="drawer-search-form">
                 <input type="text" name="q" id="drawerSearchInput" placeholder="Search exams, results, notifications..." required>
-                <button type="submit">🔍</button>
+                <button type="submit">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                        <circle cx="11" cy="11" r="8"></circle>
+                        <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                    </svg>
+                </button>
             </form>
         </div>
 
