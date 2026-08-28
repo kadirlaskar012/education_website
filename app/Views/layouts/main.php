@@ -1,410 +1,328 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title><?= htmlspecialchars($page_title ?? 'EduGov News') ?></title>
-    <meta name="description" content="<?= htmlspecialchars($meta_description ?? 'Verified Official Education News, Exam Dates, Admit Cards, Results, Answer Keys, and Recruitment Updates.') ?>">
-    <link rel="canonical" href="<?= htmlspecialchars('http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>">
+    <title><?= htmlspecialchars($page_title ?? 'EduGov News — Official Education & Jobs Portal') ?></title>
+    <meta name="description" content="<?= htmlspecialchars($meta_description ?? 'Instant & verified official educational notifications, exam dates, admit cards, results, and government job vacancy alerts.') ?>">
+    <link rel="canonical" href="<?= htmlspecialchars($canonical_url ?? 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>">
+    <link rel="alternate" type="application/rss+xml" title="EduGov News RSS Feed" href="/rss.xml">
 
-    <!-- Google Fonts: Inter & Merriweather -->
+    <!-- OpenGraph & Twitter Meta Tags -->
+    <meta property="og:title" content="<?= htmlspecialchars($page_title ?? 'EduGov News') ?>">
+    <meta property="og:description" content="<?= htmlspecialchars($meta_description ?? 'Official education news and updates.') ?>">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="<?= htmlspecialchars($canonical_url ?? 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>">
+    <meta property="og:site_name" content="<?= htmlspecialchars($site_settings['site_name'] ?? 'EduGov News') ?>">
+
+    <!-- Google Fonts & Main CSS -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,300&display=swap" rel="stylesheet">
-
-    <!-- CSS Design System -->
-    <link rel="stylesheet" href="/static/css/main.css?v=3.0">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="/static/css/main.css">
 </head>
 <body class="site-body">
-
-<header class="site-header">
-    <!-- Top Utility Bar (Desktop only) -->
-    <div class="top-bar">
-        <div class="container top-bar-inner">
-            <div class="top-date">
-                <span>🗓️ <?= date('l, F j, Y') ?></span>
-                <?php if (!empty($site_settings['top_breaking_announcement'])): ?>
-                <span class="top-announcement">📢 <?= htmlspecialchars($site_settings['top_breaking_announcement']) ?></span>
-                <?php endif; ?>
+    <!-- Top Verified Trust Header -->
+    <div class="top-trust-bar">
+        <div class="site-container trust-bar-inner">
+            <div class="trust-left">
+                <span class="trust-badge">🇮🇳 National Education & Recruitment Ingestion Network</span>
+                <span class="trust-meta">Automated Official Synchronization Active</span>
             </div>
-            <div class="top-links">
-                <a href="/about">About</a>
-                <a href="/contact">Contact</a>
-                <a href="/disclaimer">Disclaimer</a>
-                <a href="/rss.xml">RSS Feed</a>
+            <div class="trust-right">
+                <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle Eye Comfort Dark Mode">
+                    🌓 <span class="theme-label">Eye Comfort</span>
+                </button>
+                <a href="/sitemap.xml" class="trust-link">Sitemap</a>
+                <a href="/rss.xml" class="trust-link">RSS Feed</a>
+                <a href="/admin" class="trust-link">Admin Access</a>
             </div>
         </div>
     </div>
 
-    <!-- Main Branding Header -->
-    <div class="main-header">
-        <div class="container header-branding-row">
-            <!-- Mobile Menu Toggle Button -->
-            <button id="mobileMenuBtn" class="mobile-nav-toggle-btn" aria-label="Open Navigation Menu">
-                <span class="hamburger-icon">
-                    <span></span>
-                    <span></span>
-                    <span></span>
-                </span>
-            </button>
+    <!-- Main Navigation Header -->
+    <header class="site-header">
+        <div class="site-container header-inner">
+            <div class="header-left">
+                <!-- Mobile Drawer Trigger Button -->
+                <button id="mobileMenuBtn" class="mobile-menu-btn" aria-label="Open Navigation Drawer">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </button>
 
-            <!-- Site Logo & Tagline -->
-            <div class="site-logo">
-                <a href="/" class="brand-name">
-                    <?= htmlspecialchars($site_settings['site_name'] ?? 'EduGov News') ?><span class="brand-dot">.</span>
+                <a href="/" class="brand-logo" title="EduGov News Homepage">
+                    <span class="logo-accent">EduGov</span><span class="logo-sub">News<span class="logo-dot">.</span></span>
+                    <span class="logo-tagline"><span class="live-dot"></span> Verified Official Education Updates & Notifications</span>
                 </a>
-                <div class="brand-tagline">
-                    <span class="live-pulse-dot" title="Live updates active"></span> <?= htmlspecialchars($site_settings['site_tagline'] ?? 'Verified Official Education Updates & Notifications') ?>
-                </div>
             </div>
 
-            <!-- Desktop Search Bar -->
-            <form action="/search" method="get" class="header-search-box">
-                <div class="search-input-group">
-                    <input type="text" name="q" placeholder="Search exams, results, admit cards..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>" aria-label="Search">
-                    <button type="submit" aria-label="Submit Search">🔍</button>
-                </div>
-            </form>
+            <!-- Header Quick Search Bar -->
+            <div class="header-search-box">
+                <form action="/search" method="get" class="search-form">
+                    <input type="text" name="q" placeholder="Search exams, results, admit cards..." aria-label="Search notifications" required>
+                    <button type="submit" aria-label="Search">🔍</button>
+                </form>
+            </div>
 
-            <!-- Mobile Action Icons (Search & Explore) -->
-            <div class="mobile-header-actions">
-                <button id="mobileSearchTrigger" class="mobile-action-icon" aria-label="Search Updates">
-                    🔍
-                </button>
-                <button id="mobileExploreTrigger" class="mobile-action-icon" aria-label="Explore Categories">
-                    ⚡
-                </button>
+            <div class="header-right-actions">
+                <button id="mobileSearchTrigger" class="mobile-icon-btn" aria-label="Search">🔍</button>
+                <button id="mobileExploreTrigger" class="mobile-icon-btn" aria-label="Explore Categories">⚡</button>
+                <a href="/recruitment" class="btn-gov-jobs">🏛️ Latest Jobs</a>
+            </div>
+        </div>
+
+        <!-- 1. Desktop Traditional Navigation Bar -->
+        <nav class="desktop-main-nav">
+            <div class="site-container nav-items-row">
+                <a href="/" class="nav-item <?= ($current_category ?? '') === '' && $_SERVER['REQUEST_URI'] === '/' ? 'active' : '' ?>">🏠 Home</a>
+                <a href="/results" class="nav-item <?= ($current_category ?? '') === 'results' ? 'active' : '' ?>">📋 Results</a>
+                <a href="/admit-card" class="nav-item <?= ($current_category ?? '') === 'admit-card' ? 'active' : '' ?>">🎫 Admit Card</a>
+                <a href="/recruitment" class="nav-item <?= ($current_category ?? '') === 'recruitment' ? 'active' : '' ?>">💼 Recruitment</a>
+                <a href="/exam" class="nav-item <?= ($current_category ?? '') === 'exam' ? 'active' : '' ?>">📝 Exam Dates</a>
+                <a href="/answer-key" class="nav-item <?= ($current_category ?? '') === 'answer-key' ? 'active' : '' ?>">🔑 Answer Key</a>
+                <a href="/category/scholarship" class="nav-item <?= ($current_category ?? '') === 'scholarship' ? 'active' : '' ?>">🏆 Scholarship</a>
+                
+                <!-- Desktop Dropdown -->
+                <div class="nav-dropdown">
+                    <button class="nav-dropdown-btn" id="moreCategoriesBtn">More Categories ▾</button>
+                    <div class="nav-dropdown-menu">
+                        <a href="/category/admission">🎓 Admission & Counseling</a>
+                        <a href="/category/application-form">📑 Application Forms</a>
+                        <a href="/category/board-exams">🏫 Board Exams (CBSE/ICSE)</a>
+                        <a href="/category/entrance-exams">🎯 Entrance Exams (JEE/NEET)</a>
+                        <a href="/category/government-jobs">🏛️ All Government Jobs</a>
+                        <a href="/category/important-updates">⚡ Important Updates</a>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- 2. Mobile Smart Category Swipeable Bar (Sticky Top Pills) -->
+        <div class="mobile-smart-tabs-bar">
+            <div class="smart-tabs-scroll-track" id="categoryScrollTrack">
+                <a href="/" class="smart-tab-pill <?= ($_SERVER['REQUEST_URI'] === '/') ? 'active' : '' ?>">
+                    <span>🏠</span> All
+                </a>
+                <a href="/results" class="smart-tab-pill <?= str_contains($_SERVER['REQUEST_URI'], 'results') ? 'active' : '' ?>">
+                    <span>📋</span> Results
+                </a>
+                <a href="/admit-card" class="smart-tab-pill <?= str_contains($_SERVER['REQUEST_URI'], 'admit-card') ? 'active' : '' ?>">
+                    <span>🎫</span> Admit Cards
+                </a>
+                <a href="/recruitment" class="smart-tab-pill <?= str_contains($_SERVER['REQUEST_URI'], 'recruitment') ? 'active' : '' ?>">
+                    <span>💼</span> Recruitment
+                </a>
+                <a href="/exam" class="smart-tab-pill <?= str_contains($_SERVER['REQUEST_URI'], 'exam') ? 'active' : '' ?>">
+                    <span>📝</span> Exams
+                </a>
+                <a href="/answer-key" class="smart-tab-pill <?= str_contains($_SERVER['REQUEST_URI'], 'answer-key') ? 'active' : '' ?>">
+                    <span>🔑</span> Answer Key
+                </a>
+                <a href="/category/scholarship" class="smart-tab-pill <?= str_contains($_SERVER['REQUEST_URI'], 'scholarship') ? 'active' : '' ?>">
+                    <span>🏆</span> Scholarships
+                </a>
+                <a href="/category/entrance-exams" class="smart-tab-pill <?= str_contains($_SERVER['REQUEST_URI'], 'entrance-exams') ? 'active' : '' ?>">
+                    <span>🎯</span> JEE / NEET
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Breaking News Marquee Ticker -->
+    <div class="breaking-ticker-bar">
+        <div class="site-container ticker-inner">
+            <span class="ticker-badge">⚡ BREAKING</span>
+            <div class="ticker-marquee">
+                <div class="ticker-items">
+                    <span class="ticker-item">• SSC CGL 2026 Tier-1 Examination Result and Cutoff Marks Declared</span>
+                    <span class="ticker-item">• [Admit Card] SSC CHSL 2026 Tier-1 Admit Card & Application Status Released</span>
+                    <span class="ticker-item">• [Notification] RRB NTPC 2026 Centralized Notification for 11,558 Posts</span>
+                    <span class="ticker-item">• [Exam Date] CBSE Class 10th & 12th Board Examination 2026 Date Sheet Announced</span>
+                </div>
             </div>
         </div>
     </div>
 
-    <!-- Desktop Navigation Bar (Primary Hubs + "More Categories ▾" Dropdown) -->
-    <nav class="desktop-nav-bar" aria-label="Desktop Navigation">
-        <div class="container nav-container">
-            <ul class="desktop-nav-links">
-                <?php $currUri = $_SERVER['REQUEST_URI']; ?>
-                <li><a href="/" class="<?= $currUri === '/' ? 'active' : '' ?>">Home</a></li>
-                <li><a href="/results" class="<?= str_contains($currUri, 'results') ? 'active' : '' ?>">Results</a></li>
-                <li><a href="/admit-card" class="<?= str_contains($currUri, 'admit-card') ? 'active' : '' ?>">Admit Cards</a></li>
-                <li><a href="/recruitment" class="<?= str_contains($currUri, 'recruitment') ? 'active' : '' ?>">Recruitment</a></li>
-                <li><a href="/exam" class="<?= str_contains($currUri, 'exam') ? 'active' : '' ?>">Exams</a></li>
-                <li><a href="/answer-key" class="<?= str_contains($currUri, 'answer-key') ? 'active' : '' ?>">Answer Key</a></li>
-                <li><a href="/category/latest-news" class="<?= str_contains($currUri, 'latest-news') ? 'active' : '' ?>">Latest News</a></li>
+    <!-- Main Content Yield -->
+    <div class="site-container main-wrapper">
+        <?= $content ?>
+    </div>
 
-                <?php if (!empty($more_categories)): ?>
-                <li class="nav-dropdown">
-                    <button class="nav-dropdown-btn" id="moreCategoriesBtn" aria-haspopup="true" aria-expanded="false">
-                        More Categories <span class="dropdown-arrow">▾</span>
-                    </button>
-                    <div class="dropdown-menu" id="moreCategoriesMenu">
-                        <?php foreach ($more_categories as $cat): ?>
-                        <a href="/category/<?= htmlspecialchars($cat['slug']) ?>" class="dropdown-item <?= str_contains($currUri, $cat['slug']) ? 'active' : '' ?>">
-                            <?= htmlspecialchars($cat['name']) ?>
-                        </a>
-                        <?php endforeach; ?>
-                    </div>
-                </li>
-                <?php endif; ?>
-            </ul>
+    <!-- 3. Mobile App-Style Fixed Bottom Dock -->
+    <nav class="mobile-bottom-nav">
+        <div class="bottom-nav-inner">
+            <a href="/" class="bottom-nav-item <?= ($_SERVER['REQUEST_URI'] === '/') ? 'active' : '' ?>">
+                <span class="nav-icon">🏠</span>
+                <span class="nav-text">Home</span>
+            </a>
+            <a href="/results" class="bottom-nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'results') ? 'active' : '' ?>">
+                <span class="nav-icon">📋</span>
+                <span class="nav-text">Results</span>
+            </a>
+            <a href="/admit-card" class="bottom-nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'admit-card') ? 'active' : '' ?>">
+                <span class="nav-icon">🎫</span>
+                <span class="nav-text">Admit Card</span>
+            </a>
+            <a href="/recruitment" class="bottom-nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'recruitment') ? 'active' : '' ?>">
+                <span class="nav-icon">💼</span>
+                <span class="nav-text">Jobs</span>
+            </a>
+            <button type="button" class="bottom-nav-item" id="bottomMenuTrigger" aria-label="Open Full Category Explorer">
+                <span class="nav-icon">⚡</span>
+                <span class="nav-text">Explore</span>
+            </button>
         </div>
     </nav>
 
-    <!-- Mobile Enhanced Top Smart Tabs (Horizontal Swipeable Tab Bar) -->
-    <div class="mobile-smart-tabs-bar" aria-label="Category Tabs">
-        <div class="smart-tabs-scroll-track" id="categoryScrollTrack">
-            <a href="/" class="smart-tab-pill <?= $currUri === '/' ? 'active' : '' ?>">
-                <span class="tab-icon">🏠</span> <span class="tab-text">All</span>
-            </a>
-            <a href="/results" class="smart-tab-pill <?= str_contains($currUri, 'results') ? 'active' : '' ?>">
-                <span class="tab-icon">📋</span> <span class="tab-text">Results</span>
-            </a>
-            <a href="/admit-card" class="smart-tab-pill <?= str_contains($currUri, 'admit-card') ? 'active' : '' ?>">
-                <span class="tab-icon">🎫</span> <span class="tab-text">Admit Cards</span>
-            </a>
-            <a href="/recruitment" class="smart-tab-pill <?= str_contains($currUri, 'recruitment') ? 'active' : '' ?>">
-                <span class="tab-icon">💼</span> <span class="tab-text">Recruitment</span>
-            </a>
-            <a href="/exam" class="smart-tab-pill <?= str_contains($currUri, 'exam') ? 'active' : '' ?>">
-                <span class="tab-icon">📝</span> <span class="tab-text">Exams</span>
-            </a>
-            <a href="/answer-key" class="smart-tab-pill <?= str_contains($currUri, 'answer-key') ? 'active' : '' ?>">
-                <span class="tab-icon">🔑</span> <span class="tab-text">Answer Key</span>
-            </a>
-            <?php foreach ($nav_categories as $cat): ?>
-                <?php if (!in_array($cat['slug'], ['results', 'admit-card', 'recruitment', 'exam', 'answer-key', 'latest-news'])): ?>
-                <a href="/category/<?= htmlspecialchars($cat['slug']) ?>" class="smart-tab-pill <?= str_contains($currUri, $cat['slug']) ? 'active' : '' ?>">
-                    <span class="tab-icon"><?= htmlspecialchars($cat['icon'] ?? '📰') ?></span> <span class="tab-text"><?= htmlspecialchars($cat['name']) ?></span>
+    <!-- 4. Categorized Bottom Sheet Modal (Drawer) -->
+    <div class="drawer-backdrop" id="drawerBackdrop"></div>
+    <div class="mobile-offcanvas-drawer" id="mobileDrawer">
+        <div class="drawer-handle-bar">
+            <div class="handle-pill"></div>
+        </div>
+
+        <div class="drawer-header">
+            <div class="drawer-title">EduGov News<span class="logo-dot">.</span></div>
+            <button class="drawer-close-btn" id="closeDrawerBtn" aria-label="Close menu">✕</button>
+        </div>
+
+        <!-- In-Drawer Quick Search -->
+        <div class="drawer-search-wrap">
+            <form action="/search" method="get" class="drawer-search-form">
+                <input type="text" name="q" id="drawerSearchInput" placeholder="Search exams, results, notifications..." required>
+                <button type="submit">🔍</button>
+            </form>
+        </div>
+
+        <div class="drawer-body-content">
+            <!-- Primary Hubs (2x2 Big Touch Cards) -->
+            <div class="drawer-section-title">⚡ PRIMARY HUBS</div>
+            <div class="drawer-hubs-grid">
+                <a href="/results" class="drawer-hub-card">
+                    <div class="hub-icon">📋</div>
+                    <div class="hub-label">Results</div>
+                    <div class="hub-sub">Merit lists & cutoffs</div>
                 </a>
-                <?php endif; ?>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</header>
-
-<!-- Breaking News Ticker -->
-<?php if (!empty($breaking_articles)): ?>
-<div class="breaking-ticker" role="region" aria-label="Breaking Announcements">
-    <div class="ticker-badge">
-        ⚡ BREAKING
-    </div>
-    <div class="ticker-content">
-        <div class="ticker-items">
-            <?php foreach ($breaking_articles as $item): ?>
-            <a href="/news/<?= htmlspecialchars($item['slug']) ?>" class="ticker-item">
-                • [<?= htmlspecialchars($item['category_name']) ?>] <?= htmlspecialchars($item['title']) ?>
-            </a>
-            <?php endforeach; ?>
-        </div>
-    </div>
-</div>
-<?php endif; ?>
-
-<!-- Main Content Area -->
-<div class="container portal-grid">
-    <main class="portal-main-col">
-        <?= $content ?>
-    </main>
-
-    <!-- Sidebar -->
-    <aside class="portal-sidebar" aria-label="Sidebar">
-        <!-- Search Widget -->
-        <div class="sidebar-widget">
-            <div class="sidebar-widget-header">
-                🔍 Find Updates
-            </div>
-            <div style="padding: 0.85rem;">
-                <form action="/search" method="get">
-                    <div class="search-input-group">
-                        <input type="text" name="q" placeholder="Enter exam / board..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
-                        <button type="submit">Search</button>
-                    </div>
-                </form>
-            </div>
-        </div>
-
-        <!-- Trending Articles -->
-        <?php if (!empty($trending_articles)): ?>
-        <div class="sidebar-widget">
-            <div class="sidebar-widget-header">
-                🔥 Trending & Popular
-            </div>
-            <ul class="sidebar-news-list">
-                <?php foreach ($trending_articles as $art): ?>
-                <li class="sidebar-news-item">
-                    <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
-                        <?= htmlspecialchars($art['title']) ?>
-                    </a>
-                    <div class="sidebar-meta">
-                        <?= htmlspecialchars($art['category_name']) ?> • <?= date('M j, Y', strtotime($art['published_at'])) ?>
-                    </div>
-                </li>
-                <?php endforeach; ?>
-            </ul>
-        </div>
-        <?php endif; ?>
-
-        <!-- Categories Cloud -->
-        <div class="sidebar-widget">
-            <div class="sidebar-widget-header">
-                📂 Browse Categories
-            </div>
-            <div class="category-pills">
-                <?php foreach ($nav_categories as $c): ?>
-                <a href="/category/<?= htmlspecialchars($c['slug']) ?>" class="category-pill">
-                    <?= htmlspecialchars($c['icon']) ?> <?= htmlspecialchars($c['name']) ?>
+                <a href="/admit-card" class="drawer-hub-card">
+                    <div class="hub-icon">🎫</div>
+                    <div class="hub-label">Admit Card</div>
+                    <div class="hub-sub">Hall tickets & slips</div>
                 </a>
-                <?php endforeach; ?>
+                <a href="/recruitment" class="drawer-hub-card">
+                    <div class="hub-icon">💼</div>
+                    <div class="hub-label">Recruitment</div>
+                    <div class="hub-sub">10,000+ Govt vacancies</div>
+                </a>
+                <a href="/exam" class="drawer-hub-card">
+                    <div class="hub-icon">📝</div>
+                    <div class="hub-label">Exam Dates</div>
+                    <div class="hub-sub">Schedules & calendars</div>
+                </a>
+            </div>
+
+            <!-- State Matrix in Drawer -->
+            <div class="drawer-section-title">🗺️ STATE-WISE RECRUITMENT</div>
+            <div class="drawer-chip-cluster">
+                <a href="/state/central-govt" class="chip-item">🏛️ Central Govt</a>
+                <a href="/state/west-bengal" class="chip-item">🌊 West Bengal</a>
+                <a href="/state/uttar-pradesh" class="chip-item">🌾 Uttar Pradesh</a>
+                <a href="/state/bihar" class="chip-item">🚩 Bihar</a>
+                <a href="/state/rajasthan" class="chip-item">🏰 Rajasthan</a>
+                <a href="/state/madhya-pradesh" class="chip-item">🌲 Madhya Pradesh</a>
+                <a href="/state/maharashtra" class="chip-item">🏙️ Maharashtra</a>
+            </div>
+
+            <!-- Recruitment & Opportunities -->
+            <div class="drawer-section-title">🏛️ RECRUITMENT & OPPORTUNITIES</div>
+            <div class="drawer-chip-cluster">
+                <a href="/recruitment" class="chip-item">💼 All Recruitment</a>
+                <a href="/category/government-jobs" class="chip-item">🏛️ Government Jobs</a>
+                <a href="/category/application-form" class="chip-item">📑 Application Forms</a>
+                <a href="/category/scholarship" class="chip-item">🏆 Scholarships</a>
+            </div>
+
+            <!-- Exams & Admissions -->
+            <div class="drawer-section-title">🎯 EXAMS & ADMISSIONS</div>
+            <div class="drawer-chip-cluster">
+                <a href="/exam" class="chip-item">📝 Exam Calendar</a>
+                <a href="/answer-key" class="chip-item">🔑 Answer Keys</a>
+                <a href="/category/entrance-exams" class="chip-item">🎯 JEE / NEET / CUET</a>
+                <a href="/category/board-exams" class="chip-item">🏫 CBSE & ICSE Boards</a>
+                <a href="/category/admission" class="chip-item">🎓 Admission & Counseling</a>
+            </div>
+
+            <!-- Policies & Legal -->
+            <div class="drawer-section-title">🛡️ ABOUT & POLICIES</div>
+            <div class="drawer-chip-cluster">
+                <a href="/about" class="chip-item">ℹ️ About Us</a>
+                <a href="/disclaimer" class="chip-item">⚖️ Disclaimer</a>
+                <a href="/privacy-policy" class="chip-item">🔒 Privacy Policy</a>
+                <a href="/contact" class="chip-item">📬 Contact</a>
+                <a href="/rss.xml" class="chip-item">📡 RSS Feed</a>
             </div>
         </div>
+    </div>
 
-        <!-- Transparency Box -->
-        <div class="sidebar-widget">
-            <div class="sidebar-widget-header">
-                🛡️ Verified Information
+    <!-- Official Portal Footer -->
+    <footer class="site-footer">
+        <div class="site-container footer-content">
+            <div class="footer-col brand-col">
+                <div class="footer-logo">
+                    <span class="logo-accent">EduGov</span><span class="logo-sub">News.</span>
+                </div>
+                <p class="footer-desc">
+                    EduGov News is a high-speed education news dissemination platform providing direct access to verified public government announcements.
+                </p>
+                <div class="footer-disclaimer-badge">
+                    ⚖️ <strong>Disclaimer:</strong> EduGov News is an independent news reporting portal and is NOT affiliated with any government authority. Always verify details on official government (.gov.in/.nic.in) portals.
+                </div>
             </div>
-            <div class="source-trust-box">
-                <p>All notices, exam dates, and admit cards published here are automatically collected and verified strictly from official government portals (.gov.in, .nic.in, .ac.in).</p>
-            </div>
-        </div>
-    </aside>
-</div>
 
-<!-- Footer -->
-<footer class="main-footer">
-    <div class="container">
-        <div class="footer-grid">
             <div class="footer-col">
-                <h4><?= htmlspecialchars($site_settings['site_name'] ?? 'EduGov News') ?></h4>
-                <p style="font-size: 0.8125rem; line-height: 1.6; margin-bottom: 0.75rem;">
-                    <?= htmlspecialchars($site_settings['site_tagline'] ?? 'Instant & Verified Official Education Updates, Results, Admit Cards & Jobs.') ?>
-                </p>
-                <p style="font-size: 0.75rem; color: #64748b;">
-                    Contact: <a href="mailto:<?= htmlspecialchars($site_settings['contact_email'] ?? 'contact@edugovnews.in') ?>"><?= htmlspecialchars($site_settings['contact_email'] ?? 'contact@edugovnews.in') ?></a>
-                </p>
-            </div>
-            <div class="footer-col">
-                <h4>Major Portals</h4>
-                <ul>
-                    <li><a href="/results">Results Portal</a></li>
-                    <li><a href="/admit-card">Admit Cards</a></li>
-                    <li><a href="/recruitment">Recruitment Notices</a></li>
-                    <li><a href="/exam">Exam Schedules</a></li>
-                    <li><a href="/answer-key">Answer Keys</a></li>
+                <div class="footer-heading">⚡ Primary Hubs</div>
+                <ul class="footer-links">
+                    <li><a href="/results">Results & Merit Lists</a></li>
+                    <li><a href="/admit-card">Admit Cards & Slips</a></li>
+                    <li><a href="/recruitment">Government Recruitment</a></li>
+                    <li><a href="/exam">Examination Dates</a></li>
+                    <li><a href="/answer-key">Official Answer Keys</a></li>
                 </ul>
             </div>
+
             <div class="footer-col">
-                <h4>Browse Categories</h4>
-                <ul>
-                    <?php foreach (array_slice($nav_categories, 0, 5) as $c): ?>
-                    <li><a href="/category/<?= htmlspecialchars($c['slug']) ?>"><?= htmlspecialchars($c['name']) ?></a></li>
-                    <?php endforeach; ?>
+                <div class="footer-heading">🗺️ State Portals</div>
+                <ul class="footer-links">
+                    <li><a href="/state/central-govt">Central Govt Jobs</a></li>
+                    <li><a href="/state/west-bengal">West Bengal (WBPSC)</a></li>
+                    <li><a href="/state/uttar-pradesh">Uttar Pradesh (UPPSC)</a></li>
+                    <li><a href="/state/bihar">Bihar (BPSC)</a></li>
+                    <li><a href="/state/rajasthan">Rajasthan (RPSC)</a></li>
+                    <li><a href="/state/madhya-pradesh">Madhya Pradesh (MPPSC)</a></li>
+                    <li><a href="/state/maharashtra">Maharashtra (MPSC)</a></li>
                 </ul>
             </div>
+
             <div class="footer-col">
-                <h4>Legal & Policies</h4>
-                <ul>
+                <div class="footer-heading">🛡️ Legal & Compliance</div>
+                <ul class="footer-links">
                     <li><a href="/about">About Us</a></li>
-                    <li><a href="/contact">Contact Us</a></li>
+                    <li><a href="/contact">Contact Support</a></li>
                     <li><a href="/privacy-policy">Privacy Policy</a></li>
                     <li><a href="/terms-and-conditions">Terms & Conditions</a></li>
-                    <li><a href="/disclaimer">Official Sources & Disclaimer</a></li>
+                    <li><a href="/disclaimer">Official Disclaimer</a></li>
                     <li><a href="/copyright-policy">Copyright Policy</a></li>
-                    <li><a href="/sitemap.xml">XML Sitemap</a></li>
                 </ul>
             </div>
         </div>
-        <div class="footer-bottom">
-            <p>© <?= date('Y') ?> <?= htmlspecialchars($site_settings['site_name'] ?? 'EduGov News') ?>. All rights reserved. Data collected automatically from official government authorities.</p>
+
+        <div class="site-container footer-bottom">
+            <p>© <?= date('Y') ?> EduGov News Portal. All rights reserved. Ingested from verified official education & public recruitment portals.</p>
+            <p style="font-size: 0.6875rem; color: #64748b;">Powered by High-Performance Native Plain PHP & MySQL Engine.</p>
         </div>
-    </div>
-</footer>
+    </footer>
 
-<!-- =========================================================================
-     APP-STYLE MOBILE BOTTOM NAVIGATION BAR (Fixed at bottom on mobile)
-     ========================================================================= -->
-<nav class="mobile-bottom-nav" aria-label="Mobile Bottom Navigation">
-    <div class="bottom-nav-inner">
-        <a href="/" class="bottom-nav-item <?= $currUri === '/' ? 'active' : '' ?>">
-            <div class="bottom-nav-icon">🏠</div>
-            <div class="bottom-nav-label">Home</div>
-        </a>
-        <a href="/results" class="bottom-nav-item <?= str_contains($currUri, 'results') ? 'active' : '' ?>">
-            <div class="bottom-nav-icon">📋</div>
-            <div class="bottom-nav-label">Results</div>
-        </a>
-        <a href="/admit-card" class="bottom-nav-item <?= str_contains($currUri, 'admit-card') ? 'active' : '' ?>">
-            <div class="bottom-nav-icon">🎫</div>
-            <div class="bottom-nav-label">Admit Card</div>
-        </a>
-        <a href="/recruitment" class="bottom-nav-item <?= str_contains($currUri, 'recruitment') ? 'active' : '' ?>">
-            <div class="bottom-nav-icon">💼</div>
-            <div class="bottom-nav-label">Jobs</div>
-        </a>
-        <button id="bottomMenuTrigger" class="bottom-nav-item" aria-label="Open Categories Sheet">
-            <div class="bottom-nav-icon">⚡</div>
-            <div class="bottom-nav-label">Explore</div>
-        </button>
-    </div>
-</nav>
-
-<!-- =========================================================================
-     ENHANCED APP-STYLE CATEGORIZED BOTTOM SHEET / DRAWER & BACKDROP
-     ========================================================================= -->
-<div id="drawerBackdrop" class="offcanvas-backdrop"></div>
-
-<aside id="mobileDrawer" class="mobile-offcanvas-drawer" aria-label="Categories & Navigation Sheet">
-    <!-- Pull handle for app-like bottom sheet feel -->
-    <div class="drawer-handle-bar">
-        <div class="drawer-handle-indicator"></div>
-    </div>
-
-    <div class="drawer-header">
-        <div class="drawer-brand">
-            <?= htmlspecialchars($site_settings['site_name'] ?? 'EduGov News') ?><span class="brand-dot">.</span>
-        </div>
-        <button id="closeDrawerBtn" class="drawer-close-btn" aria-label="Close Navigation">
-            ✕
-        </button>
-    </div>
-
-    <!-- Quick Search Input inside Sheet -->
-    <div class="drawer-search-box">
-        <form action="/search" method="get">
-            <div class="search-input-group">
-                <input type="text" name="q" id="drawerSearchInput" placeholder="Search exams, results, notifications..." value="<?= htmlspecialchars($_GET['q'] ?? '') ?>">
-                <button type="submit">🔍</button>
-            </div>
-        </form>
-    </div>
-
-    <div class="drawer-content-scroll">
-        <!-- 1. Major Quick Hubs -->
-        <div class="drawer-category-group">
-            <div class="drawer-group-title">⚡ Primary Hubs</div>
-            <div class="drawer-hubs-grid">
-                <a href="/results" class="drawer-hub-card <?= str_contains($currUri, 'results') ? 'active' : '' ?>">
-                    <span class="hub-icon">📋</span>
-                    <span class="hub-title">Results</span>
-                    <span class="hub-subtitle">Merit lists & cutoffs</span>
-                </a>
-                <a href="/admit-card" class="drawer-hub-card <?= str_contains($currUri, 'admit-card') ? 'active' : '' ?>">
-                    <span class="hub-icon">🎫</span>
-                    <span class="hub-title">Admit Card</span>
-                    <span class="hub-subtitle">Hall tickets & slips</span>
-                </a>
-                <a href="/recruitment" class="drawer-hub-card <?= str_contains($currUri, 'recruitment') ? 'active' : '' ?>">
-                    <span class="hub-icon">💼</span>
-                    <span class="hub-title">Recruitment</span>
-                    <span class="hub-subtitle">10,000+ Govt vacancies</span>
-                </a>
-                <a href="/exam" class="drawer-hub-card <?= str_contains($currUri, 'exam') ? 'active' : '' ?>">
-                    <span class="hub-icon">📝</span>
-                    <span class="hub-title">Exam Dates</span>
-                    <span class="hub-subtitle">Schedules & calendars</span>
-                </a>
-            </div>
-        </div>
-
-        <!-- 2. Central & State Recruitment -->
-        <div class="drawer-category-group">
-            <div class="drawer-group-title">🏛️ Recruitment & Opportunities</div>
-            <div class="drawer-chip-cluster">
-                <a href="/recruitment" class="cluster-chip">💼 All Recruitment</a>
-                <a href="/category/government-jobs" class="cluster-chip">🏛️ Government Jobs</a>
-                <a href="/category/application-form" class="cluster-chip">📑 Application Forms</a>
-                <a href="/category/scholarship" class="cluster-chip">🏆 Scholarships</a>
-            </div>
-        </div>
-
-        <!-- 3. Examinations & Scorecards -->
-        <div class="drawer-category-group">
-            <div class="drawer-group-title">🎯 Exams & Admissions</div>
-            <div class="drawer-chip-cluster">
-                <a href="/exam" class="cluster-chip">📝 Exam Calendar</a>
-                <a href="/answer-key" class="cluster-chip">🔑 Answer Keys</a>
-                <a href="/category/entrance-exams" class="cluster-chip">🎯 Entrance (JEE/NEET/CUET)</a>
-                <a href="/category/board-exams" class="cluster-chip">🏫 Board Exams (CBSE/State)</a>
-                <a href="/category/admission" class="cluster-chip">🎓 University Admission</a>
-                <a href="/category/important-updates" class="cluster-chip">⚡ Urgent Updates</a>
-                <a href="/category/latest-news" class="cluster-chip">📰 Latest News</a>
-            </div>
-        </div>
-
-        <!-- 4. Quick Transparency & Policy Links -->
-        <div class="drawer-category-group" style="border-bottom: none; margin-bottom: 2rem;">
-            <div class="drawer-group-title">🛡️ About & Policies</div>
-            <div class="drawer-links-horizontal">
-                <a href="/about">About</a>
-                <a href="/contact">Contact</a>
-                <a href="/disclaimer">Official Disclaimer</a>
-                <a href="/privacy-policy">Privacy</a>
-                <a href="/terms-and-conditions">Terms</a>
-                <a href="/rss.xml">RSS Feed</a>
-            </div>
-        </div>
-    </div>
-</aside>
-
-<script src="/static/js/main.js?v=3.0"></script>
+    <!-- Interactive Scripts -->
+    <script src="/static/js/main.js"></script>
 </body>
 </html>

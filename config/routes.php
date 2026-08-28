@@ -7,6 +7,7 @@ use App\Core\Router;
 use App\Controllers\HomeController;
 use App\Controllers\ArticleController;
 use App\Controllers\CategoryController;
+use App\Controllers\StateController;
 use App\Controllers\SearchController;
 use App\Controllers\FeedController;
 use App\Controllers\LegalController;
@@ -18,6 +19,7 @@ $router = new Router();
 $router->get('/', [HomeController::class, 'index']);
 $router->get('/news/{slug}', [ArticleController::class, 'show']);
 $router->get('/category/{slug}', [CategoryController::class, 'show']);
+$router->get('/state/{slug}', [StateController::class, 'show']);
 $router->get('/search', [SearchController::class, 'index']);
 
 // Dedicated Category Hubs (Direct Aliases)

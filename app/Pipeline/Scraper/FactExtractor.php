@@ -1,7 +1,7 @@
 <?php
 /**
  * Structured Fact Extraction Engine
- * Extracts verified facts from scraped government notices before passing to AI
+ * Extracts verified facts and state tags from scraped government notices
  */
 
 namespace App\Pipeline\Scraper;
@@ -11,26 +11,24 @@ class FactExtractor {
         $title = trim($rawItem['source_title'] ?? '');
         $authority = $source['authority_name'] ?? 'Government Authority';
         $domain = parse_url($source['base_url'], PHP_URL_HOST) ?: $source['base_url'];
+        $stateCode = $source['state_code'] ?? 'ALL';
+        $stateName = $source['state_name'] ?? 'All India / Central';
 
         $templateType = self::detectTemplateType($title);
         $categorySlug = self::detectCategorySlug($title, $templateType);
 
-        // Extract numbers / vacancies if present in title (e.g. "11,558 Posts", "450 Vacancies")
+        // Extract numbers / vacancies
         $vacancies = 'Not specified in the official notification.';
         if (preg_match('/(\b\d{1,3}(?:,\d{3})*|\b\d+)\s*(?:posts|vacancies|openings|seats)/i', $title, $m)) {
             $vacancies = $m[1] . ' Vacancies (As per official notification)';
         }
 
-        // Detect year (e.g. 2026, 2025)
+        // Year detection
         $year = date('Y');
         if (preg_match('/\b(202[4-9])\b/', $title, $ym)) {
             $year = $ym[1];
         }
 
-        // Clean Exam Name
-        $examName = $title;
-
-        // Structured Dates Array
         $dates = [
             ['label' => 'Notification Released', 'value' => date('F j, Y')],
         ];
@@ -59,7 +57,7 @@ class FactExtractor {
         }
         $links[] = ['title' => 'Official Website (' . $domain . ')', 'url' => $source['base_url'], 'is_primary' => false];
 
-        // Standard Steps
+        // Steps
         $steps = [
             "Go to the official website of {$authority} at {$domain}.",
             "On the homepage, navigate to the 'Latest Notices' or 'Examination/Recruitment' section.",
@@ -81,8 +79,10 @@ class FactExtractor {
 
         return [
             'organization'       => $authority,
-            'exam_name'          => $examName,
+            'exam_name'          => $title,
             'year'               => $year,
+            'state_code'         => $stateCode,
+            'state_name'         => $stateName,
             'template_type'      => $templateType,
             'category_slug'      => $categorySlug,
             'official_domain'    => $domain,
@@ -108,13 +108,13 @@ class FactExtractor {
         if (str_contains($t, 'admit card') || str_contains($t, 'hall ticket') || str_contains($t, 'call letter') || str_contains($t, 'city intimation') || str_contains($t, 'city slip')) {
             return 'admit_card';
         }
-        if (str_contains($t, 'recruitment') || str_contains($t, 'vacancy') || str_contains($t, 'apply online') || str_contains($t, 'employment') || str_contains($t, 'posts')) {
+        if (str_contains($t, 'recruitment') || str_contains($t, 'vacancy') || str_contains($t, 'apply online') || str_contains($t, 'employment') || str_contains($t, 'posts') || str_contains($t, 'officers') || str_contains($t, 'constable')) {
             return 'recruitment';
         }
         if (str_contains($t, 'answer key') || str_contains($t, 'response sheet') || str_contains($t, 'objection')) {
             return 'answer_key';
         }
-        if (str_contains($t, 'exam date') || str_contains($t, 'schedule') || str_contains($t, 'time table') || str_contains($t, 'cbt')) {
+        if (str_contains($t, 'exam date') || str_contains($t, 'schedule') || str_contains($t, 'time table') || str_contains($t, 'cbt') || str_contains($t, 'date sheet')) {
             return 'exam_date';
         }
         return 'general_news';
@@ -129,11 +129,11 @@ class FactExtractor {
             case 'exam_date': return 'exam';
             default:
                 $t = strtolower($title);
-                if (str_contains($t, 'scholarship')) return 'scholarship';
-                if (str_contains($t, 'admission') || str_contains($t, 'counseling')) return 'admission';
-                if (str_contains($t, 'board') || str_contains($t, 'cbse') || str_contains($t, 'icse')) return 'board-exams';
-                if (str_contains($t, 'entrance') || str_contains($t, 'jee') || str_contains($t, 'neet') || str_contains($t, 'cuet')) return 'entrance-exams';
-                if (str_contains($t, 'job') || str_contains($t, 'govt')) return 'government-jobs';
+                if (str_contains($t, 'scholarship') || str_contains($t, 'nsp')) return 'scholarship';
+                if (str_contains($t, 'admission') || str_contains($t, 'counseling') || str_contains($t, 'allotment')) return 'admission';
+                if (str_contains($t, 'board') || str_contains($t, 'cbse') || str_contains($t, 'cisce')) return 'board-exams';
+                if (str_contains($t, 'entrance') || str_contains($t, 'jee') || str_contains($t, 'neet') || str_contains($t, 'cuet') || str_contains($t, 'ini-cet')) return 'entrance-exams';
+                if (str_contains($t, 'job') || str_contains($t, 'govt') || str_contains($t, 'army') || str_contains($t, 'police') || str_contains($t, 'bank')) return 'government-jobs';
                 return 'latest-news';
         }
     }

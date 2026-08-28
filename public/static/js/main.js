@@ -1,11 +1,42 @@
 /**
  * Education News Portal - High-Performance Interactive Logic
- * Features: Mobile App Bottom Sheet, Smooth Category Tab Centering, Share & Copy
+ * Features: Mobile App Bottom Sheet, Smooth Category Tab Centering, Share, Dark/Light Mode
  */
 
 document.addEventListener('DOMContentLoaded', function () {
     // ---------------------------------------------------------
-    // 1. Mobile App-Style Bottom Sheet / Drawer
+    // 1. Eye-Comfort Dark / Light Theme Toggle & Persistence
+    // ---------------------------------------------------------
+    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const htmlEl = document.documentElement;
+
+    const savedTheme = localStorage.getItem('theme') || 'light';
+    htmlEl.setAttribute('data-theme', savedTheme);
+    updateThemeBtnText(savedTheme);
+
+    if (themeToggleBtn) {
+        themeToggleBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            const currentTheme = htmlEl.getAttribute('data-theme') || 'light';
+            const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
+            htmlEl.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateThemeBtnText(newTheme);
+        });
+    }
+
+    function updateThemeBtnText(theme) {
+        if (!themeToggleBtn) return;
+        const label = themeToggleBtn.querySelector('.theme-label');
+        if (theme === 'dark') {
+            themeToggleBtn.innerHTML = '☀️ <span class="theme-label">Light Mode</span>';
+        } else {
+            themeToggleBtn.innerHTML = '🌓 <span class="theme-label">Eye Comfort</span>';
+        }
+    }
+
+    // ---------------------------------------------------------
+    // 2. Mobile App-Style Bottom Sheet / Drawer
     // ---------------------------------------------------------
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
     const mobileExploreTrigger = document.getElementById('mobileExploreTrigger');
@@ -83,7 +114,6 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
-    // Close drawer on ESC key
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
             closeDrawer();
@@ -91,7 +121,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ---------------------------------------------------------
-    // 2. Auto-Scroll Active Category Tab into Center View
+    // 3. Auto-Scroll Active Category Tab into Center View
     // ---------------------------------------------------------
     const activeTab = document.querySelector('.smart-tab-pill.active');
     const scrollTrack = document.getElementById('categoryScrollTrack');
@@ -108,7 +138,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ---------------------------------------------------------
-    // 3. Desktop "More Categories ▾" Dropdown
+    // 4. Desktop "More Categories ▾" Dropdown
     // ---------------------------------------------------------
     const dropdownBtn = document.getElementById('moreCategoriesBtn');
     const dropdownParent = dropdownBtn ? dropdownBtn.closest('.nav-dropdown') : null;
@@ -130,7 +160,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ---------------------------------------------------------
-    // 4. One-Click Copy & Share Article Link
+    // 5. One-Click Copy & Share Article Link
     // ---------------------------------------------------------
     const copyBtns = document.querySelectorAll('.js-copy-link');
     copyBtns.forEach(btn => {
@@ -148,7 +178,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ---------------------------------------------------------
-    // 5. Infinite Smooth Breaking News Ticker Loop
+    // 6. Infinite Smooth Breaking News Ticker Loop
     // ---------------------------------------------------------
     const tickerItems = document.querySelector('.ticker-items');
     if (tickerItems && tickerItems.children.length > 0) {

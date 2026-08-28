@@ -67,7 +67,6 @@ class PipelineRunner {
         $stats = ['found' => 0, 'created' => 0, 'updated' => 0, 'review' => 0, 'duplicates' => 0, 'errors' => 0];
 
         try {
-            // 1. Fetch raw items from source adapter
             $adapter = Registry::getAdapter($source);
             $items = $adapter->fetchItems();
             $stats['found'] = count($items);
@@ -86,13 +85,13 @@ class PipelineRunner {
                 $contentHash = DuplicateChecker::computeContentHash($title, $url);
                 $titleHash = DuplicateChecker::computeTitleHash($title);
 
-                // 2. Duplicate Detection
+                // Duplicate Detection
                 if ($this->dupChecker->isDuplicate($source['id'], $title, $url)) {
                     $stats['duplicates']++;
                     continue;
                 }
 
-                // 3. Extract Verified Facts (Zero Hallucination Grounding)
+                // Extract Verified Facts
                 $rawPayload = [
                     'source_title'   => $title,
                     'source_url'     => $url,
@@ -100,13 +99,15 @@ class PipelineRunner {
                 ];
                 $facts = FactExtractor::extract($source, $rawPayload);
 
-                // 4. Check for existing title update
+                // Check for existing update
                 $existing = $this->dupChecker->findExistingItemForUpdate($source['id'], $title);
 
-                // 5. Generate AI Human-Tone Article & SEO Metadata
+                // AI Human-Tone Rewriter & SEO Generator
                 $articleData = $this->generator->generate($source, $facts, $baseUrl);
+                $articleData['state_code'] = $facts['state_code'];
+                $articleData['state_name'] = $facts['state_name'];
 
-                // 6. Contextual Internal Linking
+                // Contextual Internal Linking
                 $linked = $this->internalLinker->injectLinks(
                     $articleData['content_html'],
                     $facts['organization'],
@@ -116,24 +117,21 @@ class PipelineRunner {
                 $articleData['content_html'] = $linked['content_html'];
                 $articleData['internal_links'] = $linked['internal_links'];
 
-                // 7. Pre-Publish Quality Validation
+                // Pre-Publish Quality Validation
                 $valResult = ArticleValidator::validate($articleData, $minQualityScore);
                 $articleData['quality_score'] = $valResult['score'];
                 $articleData['validation_notes'] = $valResult['validation_notes'];
 
-                // Determine final publication status
                 if (!$autoPublish || !$valResult['passed']) {
-                    $articleData['status'] = $valResult['status']; // 'review' or 'error'
+                    $articleData['status'] = $valResult['status'];
                 } else {
                     $articleData['status'] = 'published';
                 }
 
                 if ($existing && !empty($existing['article_id'])) {
-                    // Update existing article preserving URL slug
                     $this->updateDetector->updateArticle((int)$existing['article_id'], $articleData, $facts);
                     $stats['updated']++;
                 } else {
-                    // Create SourceItem record
                     $sourceItemId = $this->createSourceItem($source['id'], [
                         'source_title'   => $title,
                         'source_url'     => $url,
@@ -146,7 +144,6 @@ class PipelineRunner {
                         'status'         => 'processed',
                     ]);
 
-                    // Insert Article
                     $this->createArticle($sourceItemId, $articleData);
 
                     if ($articleData['status'] === 'published') {
@@ -157,7 +154,6 @@ class PipelineRunner {
                 }
             }
 
-            // Update source last fetched timestamp
             $sourceModel = new Source();
             $sourceModel->updateLastFetched($source['id']);
 
@@ -189,7 +185,6 @@ class PipelineRunner {
     }
 
     private function createArticle(int $sourceItemId, array $data): void {
-        // Handle slug collision
         $slug = $data['slug'];
         $check = $this->db->prepare("SELECT COUNT(*) FROM articles WHERE slug = :slug");
         $check->execute([':slug' => $slug]);
@@ -199,14 +194,14 @@ class PipelineRunner {
 
         $stmt = $this->db->prepare("
             INSERT INTO articles (
-                source_item_id, category_id, template_type, title, slug,
+                source_item_id, category_id, state_code, state_name, template_type, title, slug,
                 seo_title, meta_description, summary, excerpt, content_html,
                 structured_data, schema_json, internal_links_json,
                 official_source_name, official_source_url, official_pdf_url,
                 is_breaking, is_featured, quality_score, validation_notes,
                 status, version_number, published_at, updated_at
             ) VALUES (
-                :source_item_id, :category_id, :template_type, :title, :slug,
+                :source_item_id, :category_id, :state_code, :state_name, :template_type, :title, :slug,
                 :seo_title, :meta_description, :summary, :excerpt, :content_html,
                 :structured_data, :schema_json, :internal_links_json,
                 :official_source_name, :official_source_url, :official_pdf_url,
@@ -218,6 +213,8 @@ class PipelineRunner {
         $stmt->execute([
             ':source_item_id'      => $sourceItemId,
             ':category_id'         => $data['category_id'],
+            ':state_code'          => $data['state_code'] ?? 'ALL',
+            ':state_name'          => $data['state_name'] ?? 'All India / Central',
             ':template_type'       => $data['template_type'],
             ':title'               => $data['title'],
             ':slug'                => $slug,

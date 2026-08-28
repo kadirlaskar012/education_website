@@ -12,46 +12,26 @@ class Article {
         $this->db = \Database::getConnection();
     }
 
-    public function getLatestArticles(int $limit = 10, int $offset = 0): array {
-        $stmt = $this->db->prepare("
-            SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon, s.authority_name
+    public function getFeaturedBreaking(): ?array {
+        $stmt = $this->db->query("
+            SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
             FROM articles a
             JOIN categories c ON a.category_id = c.id
-            LEFT JOIN source_items si ON a.source_item_id = si.id
-            LEFT JOIN sources s ON si.source_id = s.id
-            WHERE a.status IN ('published', 'updated')
+            WHERE a.status = 'published' AND a.is_breaking = 1
             ORDER BY a.published_at DESC
-            LIMIT :limit OFFSET :offset
+            LIMIT 1
         ");
-        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll();
+        $art = $stmt->fetch();
+        return $art ?: ($this->getLatestPublished(1)[0] ?? null);
     }
 
-    public function getFeaturedArticles(int $limit = 5): array {
+    public function getBreakingArticles(int $limit = 5): array {
         $stmt = $this->db->prepare("
-            SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon, s.authority_name
+            SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
             FROM articles a
             JOIN categories c ON a.category_id = c.id
-            LEFT JOIN source_items si ON a.source_item_id = si.id
-            LEFT JOIN sources s ON si.source_id = s.id
-            WHERE a.status IN ('published', 'updated') AND a.is_featured = 1
-            ORDER BY a.published_at DESC
-            LIMIT :limit
-        ");
-        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
-        $stmt->execute();
-        return $stmt->fetchAll();
-    }
-
-    public function getBreakingArticles(int $limit = 6): array {
-        $stmt = $this->db->prepare("
-            SELECT a.*, c.name as category_name, c.slug as category_slug
-            FROM articles a
-            JOIN categories c ON a.category_id = c.id
-            WHERE a.status IN ('published', 'updated') AND a.is_breaking = 1
-            ORDER BY a.published_at DESC
+            WHERE a.status = 'published'
+            ORDER BY a.is_breaking DESC, a.published_at DESC
             LIMIT :limit
         ");
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
@@ -61,10 +41,10 @@ class Article {
 
     public function getTrendingArticles(int $limit = 5): array {
         $stmt = $this->db->prepare("
-            SELECT a.*, c.name as category_name, c.slug as category_slug
+            SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
             FROM articles a
             JOIN categories c ON a.category_id = c.id
-            WHERE a.status IN ('published', 'updated')
+            WHERE a.status = 'published'
             ORDER BY a.views_count DESC, a.published_at DESC
             LIMIT :limit
         ");
@@ -73,14 +53,27 @@ class Article {
         return $stmt->fetchAll();
     }
 
-    public function getByCategory(int $categoryId, int $limit = 15, int $offset = 0): array {
+    public function getLatestPublished(int $limit = 10, int $offset = 0): array {
         $stmt = $this->db->prepare("
-            SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon, s.authority_name
+            SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
             FROM articles a
             JOIN categories c ON a.category_id = c.id
-            LEFT JOIN source_items si ON a.source_item_id = si.id
-            LEFT JOIN sources s ON si.source_id = s.id
-            WHERE a.status IN ('published', 'updated') AND a.category_id = :cat_id
+            WHERE a.status = 'published'
+            ORDER BY a.published_at DESC
+            LIMIT :limit OFFSET :offset
+        ");
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function getByCategory(int $categoryId, int $limit = 15, int $offset = 0): array {
+        $stmt = $this->db->prepare("
+            SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
+            FROM articles a
+            JOIN categories c ON a.category_id = c.id
+            WHERE a.status = 'published' AND a.category_id = :cat_id
             ORDER BY a.published_at DESC
             LIMIT :limit OFFSET :offset
         ");
@@ -92,38 +85,94 @@ class Article {
     }
 
     public function countByCategory(int $categoryId): int {
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM articles WHERE status IN ('published', 'updated') AND category_id = :cat_id");
+        $stmt = $this->db->prepare("SELECT COUNT(*) FROM articles WHERE status = 'published' AND category_id = :cat_id");
         $stmt->execute([':cat_id' => $categoryId]);
         return (int)$stmt->fetchColumn();
     }
 
-    public function findBySlug(string $slug): ?array {
+    public function search(string $query, int $limit = 20, int $offset = 0): array {
         $stmt = $this->db->prepare("
-            SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon, s.authority_name, s.base_url as source_domain
+            SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
             FROM articles a
             JOIN categories c ON a.category_id = c.id
-            LEFT JOIN source_items si ON a.source_item_id = si.id
-            LEFT JOIN sources s ON si.source_id = s.id
+            WHERE a.status = 'published' AND (a.title LIKE :q OR a.official_source_name LIKE :q OR a.summary LIKE :q)
+            ORDER BY a.published_at DESC
+            LIMIT :limit OFFSET :offset
+        ");
+        $stmt->bindValue(':q', '%' . $query . '%', \PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function countSearch(string $query): int {
+        $stmt = $this->db->prepare("
+            SELECT COUNT(*)
+            FROM articles
+            WHERE status = 'published' AND (title LIKE :q OR official_source_name LIKE :q OR summary LIKE :q)
+        ");
+        $stmt->bindValue(':q', '%' . $query . '%', \PDO::PARAM_STR);
+        $stmt->execute();
+        return (int)$stmt->fetchColumn();
+    }
+
+    public function getByCategorySlug(string $slug, int $limit = 6): array {
+        $stmt = $this->db->prepare("
+            SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
+            FROM articles a
+            JOIN categories c ON a.category_id = c.id
+            WHERE a.status = 'published' AND c.slug = :slug
+            ORDER BY a.published_at DESC
+            LIMIT :limit
+        ");
+        $stmt->bindValue(':slug', $slug, \PDO::PARAM_STR);
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function getByStateCode(string $stateCode, int $limit = 20): array {
+        $isAll = ($stateCode === 'ALL' || empty($stateCode)) ? 1 : 0;
+        $sql = "
+            SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
+            FROM articles a
+            JOIN categories c ON a.category_id = c.id
+            WHERE a.status = 'published'
+        ";
+        if (!$isAll) {
+            $sql .= " AND a.state_code = :state_code";
+        }
+        $sql .= " ORDER BY a.published_at DESC LIMIT :limit";
+
+        $stmt = $this->db->prepare($sql);
+        if (!$isAll) {
+            $stmt->bindValue(':state_code', $stateCode, \PDO::PARAM_STR);
+        }
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function findBySlug(string $slug): ?array {
+        $stmt = $this->db->prepare("
+            SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
+            FROM articles a
+            JOIN categories c ON a.category_id = c.id
             WHERE a.slug = :slug
             LIMIT 1
         ");
         $stmt->execute([':slug' => $slug]);
-        $article = $stmt->fetch();
-        return $article ?: null;
+        $art = $stmt->fetch();
+        return $art ?: null;
     }
 
-    public function incrementViews(int $id): void {
-        $stmt = $this->db->prepare("UPDATE articles SET views_count = views_count + 1 WHERE id = :id");
-        $stmt->execute([':id' => $id]);
-    }
-
-    public function getRelatedArticles(int $categoryId, int $excludeId, int $limit = 4): array {
+    public function getRelated(int $categoryId, int $excludeId, int $limit = 4): array {
         $stmt = $this->db->prepare("
-            SELECT a.*, c.name as category_name, c.slug as category_slug
-            FROM articles a
-            JOIN categories c ON a.category_id = c.id
-            WHERE a.status IN ('published', 'updated') AND a.category_id = :cat_id AND a.id != :exclude_id
-            ORDER BY a.published_at DESC
+            SELECT id, title, slug, published_at, template_type
+            FROM articles
+            WHERE status = 'published' AND category_id = :cat_id AND id != :exclude_id
+            ORDER BY published_at DESC
             LIMIT :limit
         ");
         $stmt->bindValue(':cat_id', $categoryId, \PDO::PARAM_INT);
@@ -133,52 +182,67 @@ class Article {
         return $stmt->fetchAll();
     }
 
-    public function search(string $query, int $limit = 20, int $offset = 0): array {
-        $term = '%' . trim($query) . '%';
-        $stmt = $this->db->prepare("
-            SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon, s.authority_name
-            FROM articles a
-            JOIN categories c ON a.category_id = c.id
-            LEFT JOIN source_items si ON a.source_item_id = si.id
-            LEFT JOIN sources s ON si.source_id = s.id
-            WHERE a.status IN ('published', 'updated') AND (a.title LIKE :q1 OR a.summary LIKE :q2 OR a.excerpt LIKE :q3)
-            ORDER BY a.published_at DESC
-            LIMIT :limit OFFSET :offset
-        ");
-        $stmt->bindValue(':q1', $term);
-        $stmt->bindValue(':q2', $term);
-        $stmt->bindValue(':q3', $term);
+    public function getFilteredAdminArticles(array $filters = [], int $limit = 50): array {
+        $sql = "SELECT a.*, c.name as category_name FROM articles a JOIN categories c ON a.category_id = c.id WHERE 1=1";
+        $params = [];
+
+        if (!empty($filters['status'])) {
+            $sql .= " AND a.status = :status";
+            $params[':status'] = $filters['status'];
+        }
+
+        if (!empty($filters['category_id'])) {
+            $sql .= " AND a.category_id = :category_id";
+            $params[':category_id'] = (int)$filters['category_id'];
+        }
+
+        if (!empty($filters['search'])) {
+            $sql .= " AND (a.title LIKE :search OR a.official_source_name LIKE :search)";
+            $params[':search'] = '%' . $filters['search'] . '%';
+        }
+
+        if (!empty($filters['min_score'])) {
+            $sql .= " AND a.quality_score >= :min_score";
+            $params[':min_score'] = (int)$filters['min_score'];
+        }
+
+        $sql .= " ORDER BY a.published_at DESC LIMIT :limit";
+
+        $stmt = $this->db->prepare($sql);
+        foreach ($params as $k => $v) {
+            $stmt->bindValue($k, $v);
+        }
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
-        $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll();
     }
 
-    public function countSearch(string $query): int {
-        $term = '%' . trim($query) . '%';
-        $stmt = $this->db->prepare("
-            SELECT COUNT(*) FROM articles 
-            WHERE status IN ('published', 'updated') AND (title LIKE :q1 OR summary LIKE :q2 OR excerpt LIKE :q3)
-        ");
-        $stmt->execute([':q1' => $term, ':q2' => $term, ':q3' => $term]);
-        return (int)$stmt->fetchColumn();
+    public function getAdminStats(): array {
+        $stats = [
+            'total'      => 0,
+            'published'  => 0,
+            'review'     => 0,
+            'draft'      => 0,
+            'duplicates' => 0,
+            'sources'    => 0,
+        ];
+
+        $stmt = $this->db->query("SELECT status, COUNT(*) as count FROM articles GROUP BY status");
+        while ($row = $stmt->fetch()) {
+            $s = $row['status'];
+            if (isset($stats[$s])) {
+                $stats[$s] = (int)$row['count'];
+            }
+        }
+
+        $stats['total'] = (int)$this->db->query("SELECT COUNT(*) FROM articles")->fetchColumn();
+        $stats['duplicates'] = (int)$this->db->query("SELECT COUNT(*) FROM source_items WHERE status = 'duplicate'")->fetchColumn();
+        $stats['sources'] = (int)$this->db->query("SELECT COUNT(*) FROM sources WHERE is_active = 1")->fetchColumn();
+
+        return $stats;
     }
 
-    public function getAdminStats(): array {
-        $total = (int)$this->db->query("SELECT COUNT(*) FROM articles")->fetchColumn();
-        $published = (int)$this->db->query("SELECT COUNT(*) FROM articles WHERE status IN ('published', 'updated')")->fetchColumn();
-        $review = (int)$this->db->query("SELECT COUNT(*) FROM articles WHERE status = 'review'")->fetchColumn();
-        $draft = (int)$this->db->query("SELECT COUNT(*) FROM articles WHERE status = 'draft'")->fetchColumn();
-        $duplicates = (int)$this->db->query("SELECT COUNT(*) FROM source_items WHERE status = 'duplicate'")->fetchColumn();
-        $sources = (int)$this->db->query("SELECT COUNT(*) FROM sources WHERE is_active = 1")->fetchColumn();
-
-        return [
-            'total' => $total,
-            'published' => $published,
-            'review' => $review,
-            'draft' => $draft,
-            'duplicates' => $duplicates,
-            'sources' => $sources,
-        ];
+    public function getLatestArticles(int $limit = 50): array {
+        return $this->getFilteredAdminArticles([], $limit);
     }
 }

@@ -16,12 +16,14 @@ CREATE TABLE IF NOT EXISTS categories (
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
 
--- 2. Sources Table (Official Government Portals & Exam Boards)
+-- 2. Sources Table (25+ Official Government Portals, Boards & Commissions)
 CREATE TABLE IF NOT EXISTS sources (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     name VARCHAR(150) NOT NULL,
     slug VARCHAR(150) NOT NULL UNIQUE,
     authority_name VARCHAR(150) NOT NULL,
+    state_code VARCHAR(20) DEFAULT 'ALL', -- 'ALL', 'WB', 'UP', 'BIHAR', 'RAJ', 'MP', 'MAH', 'DELHI'
+    state_name VARCHAR(100) DEFAULT 'All India / Central',
     source_type VARCHAR(50) NOT NULL DEFAULT 'custom_html',
     adapter_class VARCHAR(100) NOT NULL,
     base_url VARCHAR(255) NOT NULL,
@@ -45,10 +47,10 @@ CREATE TABLE IF NOT EXISTS source_items (
     source_pdf_url VARCHAR(500),
     source_date VARCHAR(50),
     source_content TEXT,
-    source_hash VARCHAR(64) NOT NULL UNIQUE, -- SHA-256 hash of content
+    source_hash VARCHAR(64) NOT NULL UNIQUE,
     title_hash VARCHAR(64) NOT NULL,
-    extracted_data TEXT, -- JSON payload of verified extracted facts
-    status VARCHAR(50) DEFAULT 'new', -- 'new', 'processing', 'processed', 'duplicate', 'error'
+    extracted_data TEXT,
+    status VARCHAR(50) DEFAULT 'new',
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (source_id) REFERENCES sources(id) ON DELETE CASCADE
@@ -59,7 +61,9 @@ CREATE TABLE IF NOT EXISTS articles (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     source_item_id INTEGER,
     category_id INTEGER NOT NULL,
-    template_type VARCHAR(50) DEFAULT 'general_news', -- 'result', 'admit_card', 'recruitment', 'exam_date', 'answer_key', 'general_news'
+    state_code VARCHAR(20) DEFAULT 'ALL',
+    state_name VARCHAR(100) DEFAULT 'All India / Central',
+    template_type VARCHAR(50) DEFAULT 'general_news',
     title VARCHAR(300) NOT NULL,
     slug VARCHAR(350) NOT NULL UNIQUE,
     seo_title VARCHAR(300),
@@ -67,9 +71,9 @@ CREATE TABLE IF NOT EXISTS articles (
     summary TEXT,
     excerpt VARCHAR(350),
     content_html TEXT NOT NULL,
-    structured_data TEXT, -- Grounded structured facts JSON
-    schema_json TEXT, -- Schema.org NewsArticle, Breadcrumb & FAQ JSON-LD
-    internal_links_json TEXT, -- Injected contextual internal links
+    structured_data TEXT,
+    schema_json TEXT,
+    internal_links_json TEXT,
     official_source_name VARCHAR(150),
     official_source_url VARCHAR(500),
     official_pdf_url VARCHAR(500),
@@ -78,7 +82,7 @@ CREATE TABLE IF NOT EXISTS articles (
     views_count INTEGER DEFAULT 0,
     quality_score INTEGER DEFAULT 100,
     validation_notes TEXT,
-    status VARCHAR(50) DEFAULT 'published', -- 'new', 'processing', 'review', 'published', 'updated', 'duplicate', 'error'
+    status VARCHAR(50) DEFAULT 'published',
     version_number INTEGER DEFAULT 1,
     published_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     updated_at DATETIME DEFAULT CURRENT_TIMESTAMP,
@@ -86,7 +90,7 @@ CREATE TABLE IF NOT EXISTS articles (
     FOREIGN KEY (category_id) REFERENCES categories(id) ON DELETE RESTRICT
 );
 
--- 5. Article Versions Table (Audit snapshot history for government notice updates)
+-- 5. Article Versions Table
 CREATE TABLE IF NOT EXISTS article_versions (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     article_id INTEGER NOT NULL,
@@ -99,7 +103,7 @@ CREATE TABLE IF NOT EXISTS article_versions (
     FOREIGN KEY (article_id) REFERENCES articles(id) ON DELETE CASCADE
 );
 
--- 6. Site Settings Table (Dynamic configuration, AI toggles & Quality thresholds)
+-- 6. Site Settings Table
 CREATE TABLE IF NOT EXISTS site_settings (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
     site_name VARCHAR(100) DEFAULT 'EduGov News',
@@ -131,9 +135,9 @@ CREATE TABLE IF NOT EXISTS users (
 -- 8. Pipeline Logs Table
 CREATE TABLE IF NOT EXISTS pipeline_logs (
     id INTEGER PRIMARY KEY AUTOINCREMENT,
-    stage VARCHAR(50) NOT NULL, -- 'fetch', 'process', 'publish', 'update'
+    stage VARCHAR(50) NOT NULL,
     source_id INTEGER,
-    status VARCHAR(50) NOT NULL, -- 'success', 'warning', 'error'
+    status VARCHAR(50) NOT NULL,
     items_found INTEGER DEFAULT 0,
     items_created INTEGER DEFAULT 0,
     items_updated INTEGER DEFAULT 0,
@@ -144,9 +148,9 @@ CREATE TABLE IF NOT EXISTS pipeline_logs (
     FOREIGN KEY (source_id) REFERENCES sources(id) ON DELETE SET NULL
 );
 
--- Indexes for maximum performance
+-- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_articles_slug ON articles(slug);
 CREATE INDEX IF NOT EXISTS idx_articles_status_pub ON articles(status, published_at);
 CREATE INDEX IF NOT EXISTS idx_articles_category ON articles(category_id);
+CREATE INDEX IF NOT EXISTS idx_articles_state ON articles(state_code);
 CREATE INDEX IF NOT EXISTS idx_source_items_hash ON source_items(source_hash);
-CREATE INDEX IF NOT EXISTS idx_source_items_status ON source_items(status);

@@ -1,7 +1,7 @@
 <?php
 /**
  * Secure Admin Control Center Controller
- * Controls AI settings, manual scrapers, article review & publication
+ * Controls AI settings, manual scrapers, article review, filtering & publication
  */
 
 namespace App\Controllers;
@@ -9,6 +9,7 @@ namespace App\Controllers;
 use App\Core\Controller;
 use App\Core\Auth;
 use App\Models\Article;
+use App\Models\Category;
 use App\Models\Source;
 use App\Models\SiteSetting;
 use App\Pipeline\Services\PipelineRunner;
@@ -62,20 +63,23 @@ class AdminController extends Controller {
     public function articles(): void {
         Auth::requireAuth();
         $articleModel = new Article();
-        $statusFilter = trim($_GET['status'] ?? '');
-        $articles = $articleModel->getLatestArticles(50);
+        $categoryModel = new Category();
 
-        if (!empty($statusFilter)) {
-            $db = \Database::getConnection();
-            $stmt = $db->prepare("SELECT a.*, c.name as category_name FROM articles a JOIN categories c ON a.category_id = c.id WHERE a.status = :status ORDER BY a.published_at DESC LIMIT 50");
-            $stmt->execute([':status' => $statusFilter]);
-            $articles = $stmt->fetchAll();
-        }
+        $filters = [
+            'search'      => trim($_GET['q'] ?? ''),
+            'status'      => trim($_GET['status'] ?? ''),
+            'category_id' => trim($_GET['category_id'] ?? ''),
+            'min_score'   => trim($_GET['min_score'] ?? ''),
+        ];
+
+        $articles = $articleModel->getFilteredAdminArticles($filters, 100);
+        $categories = $categoryModel->getActiveCategories();
 
         $this->render('admin/articles', [
-            'page_title'    => 'Articles & Notifications — EduGov Admin',
-            'articles'      => $articles,
-            'status_filter' => $statusFilter,
+            'page_title' => 'Articles & Notifications — EduGov Admin',
+            'articles'   => $articles,
+            'categories' => $categories,
+            'filters'    => $filters,
         ], 'admin');
     }
 
