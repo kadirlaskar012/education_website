@@ -1157,7 +1157,7 @@ a {
     word-break: break-word;
 }
 
-/* Interactive Collapsible State Filter Selector Box */
+/* Interactive Collapsible State Filter Selector Box (Clean Neutral Professional Styling) */
 .state-selector-wrapper {
     margin-top: 1rem;
     border-top: 1px solid var(--color-border);
@@ -1174,9 +1174,9 @@ a {
 }
 
 .btn-state-dropdown-trigger {
-    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    background: #0f172a;
     color: #ffffff;
-    border: none;
+    border: 1px solid #1e293b;
     padding: 0.45rem 1rem;
     border-radius: 8px;
     font-size: 0.8125rem;
@@ -1186,17 +1186,24 @@ a {
     align-items: center;
     gap: 0.45rem;
     transition: all 0.15s ease;
-    box-shadow: 0 2px 4px rgba(37, 99, 235, 0.2);
     user-select: none;
+    box-shadow: var(--shadow-sm);
 }
 
 .btn-state-dropdown-trigger:hover {
+    background: #1e293b;
     transform: translateY(-1px);
-    box-shadow: 0 4px 8px rgba(37, 99, 235, 0.3);
+    box-shadow: var(--shadow-md);
 }
 
 [data-theme="dark"] .btn-state-dropdown-trigger {
-    background: linear-gradient(135deg, #0284c7, #2563eb);
+    background: #1e293b;
+    border-color: #334155;
+    color: #f8fafc;
+}
+
+[data-theme="dark"] .btn-state-dropdown-trigger:hover {
+    background: #334155;
 }
 
 .trigger-icon {
@@ -1208,39 +1215,34 @@ a {
     transition: transform 0.2s ease;
 }
 
+/* Neutral Clean Active State Badge */
 .selected-state-active-badge {
     display: inline-flex;
     align-items: center;
     gap: 0.5rem;
-    background: #f0fdf4;
-    border: 1px solid #bbf7d0;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
     padding: 0.35rem 0.75rem;
     border-radius: 8px;
     font-size: 0.8125rem;
+    color: var(--color-text-main);
 }
 
 [data-theme="dark"] .selected-state-active-badge {
-    background: #064e3b;
-    border-color: #059669;
+    background: #1e293b;
+    border-color: #334155;
+    color: #f1f5f9;
 }
 
 .badge-prefix {
-    color: #166534;
-    font-weight: 700;
+    color: var(--color-text-muted);
+    font-weight: 600;
     font-size: 0.75rem;
 }
 
-[data-theme="dark"] .badge-prefix {
-    color: #a7f3d0;
-}
-
 .badge-state-name {
-    color: #15803d;
+    color: var(--color-text-main);
     font-weight: 800;
-}
-
-[data-theme="dark"] .badge-state-name {
-    color: #34d399;
 }
 
 .badge-count {
@@ -1249,13 +1251,13 @@ a {
 }
 
 .btn-clear-state-filter {
-    background: #fee2e2;
-    color: #dc2626;
-    border: 1px solid #fca5a5;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
     padding: 0.15rem 0.55rem;
     border-radius: 6px;
     font-size: 0.75rem;
-    font-weight: 800;
+    font-weight: 700;
     transition: all 0.15s ease;
     text-decoration: none;
     display: inline-flex;
@@ -1263,9 +1265,21 @@ a {
 }
 
 .btn-clear-state-filter:hover {
-    background: #dc2626;
+    background: #0f172a;
     color: #ffffff;
-    border-color: #dc2626;
+    border-color: #0f172a;
+}
+
+[data-theme="dark"] .btn-clear-state-filter {
+    background: #334155;
+    color: #cbd5e1;
+    border-color: #475569;
+}
+
+[data-theme="dark"] .btn-clear-state-filter:hover {
+    background: #ffffff;
+    color: #0f172a;
+    border-color: #ffffff;
 }
 
 .selected-state-default-badge {
@@ -1315,8 +1329,8 @@ a {
 }
 
 .btn-close-state-panel:hover {
-    color: #dc2626;
-    background-color: #fee2e2;
+    color: var(--color-text-main);
+    background-color: var(--color-border);
 }
 
 .state-options-grid {
@@ -1341,8 +1355,8 @@ a {
 }
 
 .state-option-item:hover {
-    border-color: #2563eb;
-    color: #2563eb;
+    border-color: #0f172a;
+    color: #0f172a;
     transform: translateY(-1px);
     box-shadow: var(--shadow-sm);
 }
@@ -1353,14 +1367,25 @@ a {
 }
 
 .state-option-item.active {
-    background: #2563eb;
+    background: #0f172a;
     color: #ffffff;
-    border-color: #2563eb;
+    border-color: #0f172a;
+}
+
+[data-theme="dark"] .state-option-item.active {
+    background: #38bdf8;
+    color: #0b1120;
+    border-color: #38bdf8;
 }
 
 .state-option-item.active .opt-count {
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.2);
     color: #ffffff;
+}
+
+[data-theme="dark"] .state-option-item.active .opt-count {
+    background: rgba(0, 0, 0, 0.15);
+    color: #0b1120;
 }
 
 .opt-name {
@@ -2408,5 +2433,30 @@ a {
     .main-wrapper {
         margin-top: 1rem;
         margin-bottom: 2rem;
+    }
+
+    /* Category Page State Selector Middle Alignment on Mobile Only */
+    .state-selector-bar {
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        text-align: center;
+        gap: 0.65rem;
+    }
+
+    .btn-state-dropdown-trigger {
+        margin: 0 auto;
+        justify-content: center;
+    }
+
+    .selected-state-active-badge {
+        margin: 0 auto;
+        justify-content: center;
+        text-align: center;
+    }
+
+    .selected-state-default-badge {
+        margin: 0 auto;
+        text-align: center;
     }
 }
