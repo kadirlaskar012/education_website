@@ -1,18 +1,21 @@
 /**
  * Education News Portal - High-Performance Interactive Logic
- * Zero dependencies, pure vanilla JS
+ * Features: Mobile App Bottom Sheet, Smooth Category Tab Centering, Share & Copy
  */
 
 document.addEventListener('DOMContentLoaded', function () {
     // ---------------------------------------------------------
-    // 1. Mobile Offcanvas Navigation Drawer
+    // 1. Mobile App-Style Bottom Sheet / Drawer
     // ---------------------------------------------------------
     const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+    const mobileExploreTrigger = document.getElementById('mobileExploreTrigger');
+    const bottomMenuTrigger = document.getElementById('bottomMenuTrigger');
     const closeDrawerBtn = document.getElementById('closeDrawerBtn');
     const drawerBackdrop = document.getElementById('drawerBackdrop');
     const mobileDrawer = document.getElementById('mobileDrawer');
     const mobileSearchTrigger = document.getElementById('mobileSearchTrigger');
     const drawerSearchInput = document.getElementById('drawerSearchInput');
+    const drawerHandleBar = document.querySelector('.drawer-handle-bar');
 
     function openDrawer(focusSearch = false) {
         if (mobileDrawer && drawerBackdrop) {
@@ -40,6 +43,20 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    if (mobileExploreTrigger) {
+        mobileExploreTrigger.addEventListener('click', function (e) {
+            e.preventDefault();
+            openDrawer(false);
+        });
+    }
+
+    if (bottomMenuTrigger) {
+        bottomMenuTrigger.addEventListener('click', function (e) {
+            e.preventDefault();
+            openDrawer(false);
+        });
+    }
+
     if (mobileSearchTrigger) {
         mobileSearchTrigger.addEventListener('click', function (e) {
             e.preventDefault();
@@ -60,6 +77,12 @@ document.addEventListener('DOMContentLoaded', function () {
         });
     }
 
+    if (drawerHandleBar) {
+        drawerHandleBar.addEventListener('click', function () {
+            closeDrawer();
+        });
+    }
+
     // Close drawer on ESC key
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
@@ -68,7 +91,24 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ---------------------------------------------------------
-    // 2. Desktop "More Categories ▾" Dropdown
+    // 2. Auto-Scroll Active Category Tab into Center View
+    // ---------------------------------------------------------
+    const activeTab = document.querySelector('.smart-tab-pill.active');
+    const scrollTrack = document.getElementById('categoryScrollTrack');
+    if (activeTab && scrollTrack) {
+        setTimeout(() => {
+            const trackRect = scrollTrack.getBoundingClientRect();
+            const tabRect = activeTab.getBoundingClientRect();
+            const scrollLeft = activeTab.offsetLeft - (trackRect.width / 2) + (tabRect.width / 2);
+            scrollTrack.scrollTo({
+                left: Math.max(0, scrollLeft),
+                behavior: 'smooth'
+            });
+        }, 100);
+    }
+
+    // ---------------------------------------------------------
+    // 3. Desktop "More Categories ▾" Dropdown
     // ---------------------------------------------------------
     const dropdownBtn = document.getElementById('moreCategoriesBtn');
     const dropdownParent = dropdownBtn ? dropdownBtn.closest('.nav-dropdown') : null;
@@ -81,7 +121,6 @@ document.addEventListener('DOMContentLoaded', function () {
             dropdownBtn.setAttribute('aria-expanded', isOpen);
         });
 
-        // Close dropdown when clicking outside
         document.addEventListener('click', function (e) {
             if (!dropdownParent.contains(e.target)) {
                 dropdownParent.classList.remove('open');
@@ -91,7 +130,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 
     // ---------------------------------------------------------
-    // 3. One-Click Copy & Share Article Link
+    // 4. One-Click Copy & Share Article Link
     // ---------------------------------------------------------
     const copyBtns = document.querySelectorAll('.js-copy-link');
     copyBtns.forEach(btn => {
@@ -109,7 +148,7 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     // ---------------------------------------------------------
-    // 4. Infinite Smooth Breaking News Ticker Loop
+    // 5. Infinite Smooth Breaking News Ticker Loop
     // ---------------------------------------------------------
     const tickerItems = document.querySelector('.ticker-items');
     if (tickerItems && tickerItems.children.length > 0) {
