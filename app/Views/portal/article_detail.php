@@ -57,28 +57,25 @@
     </div>
 </article>
 
-<!-- Related Articles Section -->
+<!-- Related Articles Section (Compact Modern Cards) -->
 <?php if (!empty($related_articles)): ?>
-<section class="news-section-box" style="margin-top: 2rem;">
-    <div class="section-header blue-accent">
-        <h2 class="section-title">
-            📌 Related <?= htmlspecialchars($article['category_name']) ?> Updates
-        </h2>
-    </div>
-    <ul class="compact-news-list">
+<section class="related-posts-section" style="margin-top: 2rem; margin-bottom: 2rem;">
+    <h3 class="related-section-heading">
+        📌 Related <?= htmlspecialchars($article['category_name']) ?> Updates
+    </h3>
+    <div class="related-cards-grid">
         <?php foreach ($related_articles as $rel): ?>
-        <li class="compact-news-item">
-            <h3 class="news-item-headline">
-                <a href="/news/<?= htmlspecialchars($rel['slug']) ?>">
-                    <?= htmlspecialchars($rel['title']) ?>
-                </a>
-            </h3>
-            <div class="news-item-footer">
-                <span>Published: <?= date('M j, Y', strtotime($rel['published_at'])) ?></span>
+        <a href="/news/<?= htmlspecialchars($rel['slug']) ?>" class="related-post-card">
+            <h4 class="related-card-title">
+                <?= htmlspecialchars($rel['title']) ?>
+            </h4>
+            <div class="related-card-meta">
+                <span>📅 <?= date('M j, Y', strtotime($rel['published_at'])) ?></span>
+                <span class="related-card-arrow">Read Notice →</span>
             </div>
-        </li>
+        </a>
         <?php endforeach; ?>
-    </ul>
+    </div>
 </section>
 <?php endif; ?>
 

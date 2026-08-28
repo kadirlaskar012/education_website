@@ -51,9 +51,30 @@
                     <span class="bar"></span>
                 </button>
 
+                <!-- Modern Vector SVG Brand Logo -->
                 <a href="/" class="brand-logo" title="EduGov News Homepage">
-                    <span class="logo-accent">EduGov</span><span class="logo-sub">News<span class="logo-dot">.</span></span>
-                    <span class="logo-tagline"><span class="live-dot"></span> Verified Official Education Updates</span>
+                    <div class="brand-logo-wrap">
+                        <div class="brand-emblem-icon">
+                            <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="32" height="32" rx="8" fill="url(#logo-grad)"/>
+                                <path d="M16 7L6 12L16 17L26 12L16 7Z" fill="#FFFFFF"/>
+                                <path d="M10 14.5V19.5C10 22.5 16 25 16 25C16 25 22 22.5 22 19.5V14.5L16 17.5L10 14.5Z" fill="#93C5FD" fill-opacity="0.9"/>
+                                <circle cx="26" cy="16" r="2.5" fill="#EF4444"/>
+                                <defs>
+                                    <linearGradient id="logo-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                                        <stop stop-color="#1E3A8A"/>
+                                        <stop offset="1" stop-color="#2563EB"/>
+                                    </linearGradient>
+                                </defs>
+                            </svg>
+                        </div>
+                        <div class="brand-text-stack">
+                            <div class="brand-title">
+                                <span class="logo-accent">EduGov</span><span class="logo-sub">News<span class="logo-dot">.</span></span>
+                            </div>
+                            <span class="logo-tagline"><span class="live-dot"></span> OFFICIAL PORTAL</span>
+                        </div>
+                    </div>
                 </a>
             </div>
 
@@ -65,6 +86,7 @@
                 </form>
             </div>
 
+            <!-- Header Right Actions -->
             <div class="header-right-actions">
                 <button class="mobile-icon-btn js-theme-toggle" aria-label="Toggle Dark Mode">🌓</button>
                 <button id="mobileSearchTrigger" class="mobile-icon-btn" aria-label="Search">🔍</button>
@@ -77,12 +99,12 @@
         <nav class="desktop-main-nav">
             <div class="site-container nav-items-row">
                 <a href="/" class="nav-item <?= ($current_category ?? '') === '' && $_SERVER['REQUEST_URI'] === '/' ? 'active' : '' ?>">🏠 Home</a>
-                <a href="/results" class="nav-item <?= ($current_category ?? '') === 'results' ? 'active' : '' ?>">📋 Results</a>
-                <a href="/admit-card" class="nav-item <?= ($current_category ?? '') === 'admit-card' ? 'active' : '' ?>">🎫 Admit Card</a>
-                <a href="/recruitment" class="nav-item <?= ($current_category ?? '') === 'recruitment' ? 'active' : '' ?>">💼 Recruitment</a>
-                <a href="/exam" class="nav-item <?= ($current_category ?? '') === 'exam' ? 'active' : '' ?>">📝 Exam Dates</a>
-                <a href="/answer-key" class="nav-item <?= ($current_category ?? '') === 'answer-key' ? 'active' : '' ?>">🔑 Answer Key</a>
-                <a href="/category/scholarship" class="nav-item <?= ($current_category ?? '') === 'scholarship' ? 'active' : '' ?>">🏆 Scholarship</a>
+                <a href="/results" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'results') ? 'active' : '' ?>">📋 Results</a>
+                <a href="/admit-card" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'admit-card') ? 'active' : '' ?>">🎫 Admit Card</a>
+                <a href="/recruitment" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'recruitment') ? 'active' : '' ?>">💼 Recruitment</a>
+                <a href="/exam" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'exam') ? 'active' : '' ?>">📝 Exam Dates</a>
+                <a href="/answer-key" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'answer-key') ? 'active' : '' ?>">🔑 Answer Key</a>
+                <a href="/category/scholarship" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'scholarship') ? 'active' : '' ?>">🏆 Scholarship</a>
                 
                 <!-- Desktop Dropdown -->
                 <div class="nav-dropdown">
@@ -130,16 +152,27 @@
         </div>
     </header>
 
-    <!-- Breaking News Marquee Ticker -->
+    <!-- Breaking News Marquee Ticker (Clickable Articles!) -->
     <div class="breaking-ticker-bar">
         <div class="site-container ticker-inner">
             <span class="ticker-badge">⚡ BREAKING</span>
             <div class="ticker-marquee">
                 <div class="ticker-items">
-                    <span class="ticker-item">• SSC CGL 2026 Tier-1 Examination Result and Cutoff Marks Declared</span>
-                    <span class="ticker-item">• [Admit Card] SSC CHSL 2026 Tier-1 Admit Card & Application Status Released</span>
-                    <span class="ticker-item">• [Notification] RRB NTPC 2026 Centralized Notification for 11,558 Posts</span>
-                    <span class="ticker-item">• [Exam Date] CBSE Class 10th & 12th Board Examination 2026 Date Sheet Announced</span>
+                    <?php if (!empty($breaking_articles)): ?>
+                        <?php foreach ($breaking_articles as $b): ?>
+                            <a href="/news/<?= htmlspecialchars($b['slug']) ?>" class="ticker-link" title="<?= htmlspecialchars($b['title']) ?>">
+                                • <?= htmlspecialchars($b['title']) ?>
+                            </a>
+                        <?php endforeach; ?>
+                        <!-- Duplicate set for seamless continuous marquee loop -->
+                        <?php foreach ($breaking_articles as $b): ?>
+                            <a href="/news/<?= htmlspecialchars($b['slug']) ?>" class="ticker-link" title="<?= htmlspecialchars($b['title']) ?>">
+                                • <?= htmlspecialchars($b['title']) ?>
+                            </a>
+                        <?php endforeach; ?>
+                    <?php else: ?>
+                        <span class="ticker-link">• National Education & Recruitment Ingestion Network Active</span>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
@@ -184,7 +217,9 @@
         </div>
 
         <div class="drawer-header">
-            <div class="drawer-title">EduGov News<span class="logo-dot">.</span></div>
+            <div class="drawer-title">
+                <span class="logo-accent">EduGov</span><span class="logo-sub">News<span class="logo-dot">.</span></span>
+            </div>
             <div style="display: flex; gap: 0.5rem; align-items: center;">
                 <button class="theme-toggle-btn js-theme-toggle" style="padding: 0.3rem 0.6rem;">🌓 Theme</button>
                 <button class="drawer-close-btn" id="closeDrawerBtn" aria-label="Close menu">✕</button>
@@ -272,8 +307,12 @@
     <footer class="site-footer">
         <div class="site-container footer-content">
             <div class="footer-col brand-col">
-                <div class="footer-logo">
-                    <span class="logo-accent">EduGov</span><span class="logo-sub">News.</span>
+                <div class="brand-logo-wrap" style="margin-bottom: 0.75rem;">
+                    <div class="brand-text-stack">
+                        <div class="brand-title">
+                            <span class="logo-accent" style="color: #60a5fa;">EduGov</span><span class="logo-sub" style="color: #ffffff;">News<span class="logo-dot">.</span></span>
+                        </div>
+                    </div>
                 </div>
                 <p class="footer-desc">
                     EduGov News is a high-speed education news dissemination platform providing direct access to verified public government announcements.
