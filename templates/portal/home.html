@@ -1,0 +1,120 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ site_settings.site_name }} — {{ site_settings.site_tagline }}{% endblock %}
+
+{% block content %}
+<div class="portal-grid">
+    <!-- Main Content Stream -->
+    <div class="portal-main-col">
+
+        <!-- Top Featured Editorial Box -->
+        {% if featured_article %}
+        <div class="featured-headline-box">
+            <div class="item-meta-top">
+                <span class="cat-badge">{{ featured_article.category.name }}</span>
+                {% if featured_article.source %}
+                <span class="source-domain-badge">🏛️ Official: {{ featured_article.source.official_domain|default:featured_article.source.name }}</span>
+                {% endif %}
+                <span style="font-size: 0.75rem; color: var(--color-text-muted);">{{ featured_article.published_at|date:"M j, Y — g:i A" }}</span>
+            </div>
+            <h2>
+                <a href="{{ featured_article.get_absolute_url }}">{{ featured_article.title }}</a>
+            </h2>
+            <p>{{ featured_article.excerpt|default:"Check complete official notice details, schedules, eligibility, direct download links and instructions." }}</p>
+            <div style="margin-top: 0.75rem;">
+                <a href="{{ featured_article.get_absolute_url }}" class="link-btn">Read Full Notice & Links &raquo;</a>
+            </div>
+        </div>
+        {% endif %}
+
+        <!-- Section 1: Latest Education News -->
+        <section class="news-section-box" aria-labelledby="heading-latest-news">
+            <div class="section-header">
+                <h2 id="heading-latest-news" class="section-title">
+                    📰 Latest Education News
+                </h2>
+                <a href="{% url 'category_detail' slug='latest-news' %}" class="section-view-all">View All &raquo;</a>
+            </div>
+            <ul class="compact-news-list">
+                {% for item in latest_news %}
+                    {% include 'includes/news_list_item.html' with item=item %}
+                {% empty %}
+                    <li class="compact-news-item" style="color: var(--color-text-muted);">No news published yet.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <!-- Section 2: Latest Results -->
+        <section class="news-section-box" aria-labelledby="heading-results">
+            <div class="section-header blue-accent">
+                <h2 id="heading-results" class="section-title">
+                    🏆 Latest Results & Cut-Offs
+                </h2>
+                <a href="{% url 'results_hub' %}" class="section-view-all">View All Results &raquo;</a>
+            </div>
+            <ul class="compact-news-list">
+                {% for item in results_list %}
+                    {% include 'includes/news_list_item.html' with item=item %}
+                {% empty %}
+                    <li class="compact-news-item" style="color: var(--color-text-muted);">No result announcements yet.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <!-- Section 3: Latest Admit Cards -->
+        <section class="news-section-box" aria-labelledby="heading-admit-cards">
+            <div class="section-header">
+                <h2 id="heading-admit-cards" class="section-title">
+                    🪪 Latest Admit Cards & Hall Tickets
+                </h2>
+                <a href="{% url 'admit_card_hub' %}" class="section-view-all">View All Admit Cards &raquo;</a>
+            </div>
+            <ul class="compact-news-list">
+                {% for item in admit_cards_list %}
+                    {% include 'includes/news_list_item.html' with item=item %}
+                {% empty %}
+                    <li class="compact-news-item" style="color: var(--color-text-muted);">No admit card updates yet.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <!-- Section 4: Latest Recruitment -->
+        <section class="news-section-box" aria-labelledby="heading-recruitment">
+            <div class="section-header red-accent">
+                <h2 id="heading-recruitment" class="section-title">
+                    💼 Latest Government Recruitment & Vacancies
+                </h2>
+                <a href="{% url 'recruitment_hub' %}" class="section-view-all">View All Jobs &raquo;</a>
+            </div>
+            <ul class="compact-news-list">
+                {% for item in recruitment_list %}
+                    {% include 'includes/news_list_item.html' with item=item %}
+                {% empty %}
+                    <li class="compact-news-item" style="color: var(--color-text-muted);">No recruitment updates yet.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+        <!-- Section 5: Latest Exams & Datesheets -->
+        <section class="news-section-box" aria-labelledby="heading-exams">
+            <div class="section-header">
+                <h2 id="heading-exams" class="section-title">
+                    📅 Exam Schedules & Datesheets
+                </h2>
+                <a href="{% url 'exam_hub' %}" class="section-view-all">View All Schedules &raquo;</a>
+            </div>
+            <ul class="compact-news-list">
+                {% for item in exams_list %}
+                    {% include 'includes/news_list_item.html' with item=item %}
+                {% empty %}
+                    <li class="compact-news-item" style="color: var(--color-text-muted);">No exam schedules yet.</li>
+                {% endfor %}
+            </ul>
+        </section>
+
+    </div>
+
+    <!-- Sidebar Column -->
+    {% include 'includes/sidebar.html' %}
+</div>
+{% endblock %}

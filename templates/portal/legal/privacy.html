@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Privacy Policy — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="portal-grid">
+    <div class="portal-main-col">
+        <div class="legal-card">
+            <h1>Privacy Policy</h1>
+            <p><em>Last updated: {{ current_time|date:"F Y" }}</em></p>
+
+            <p>
+                At {{ site_settings.site_name }}, accessible from our website, one of our main priorities is the privacy of our visitors. This Privacy Policy document contains types of information that is collected and recorded by {{ site_settings.site_name }} and how we use it.
+            </p>
+
+            <h2>Log Files</h2>
+            <p>
+                {{ site_settings.site_name }} follows a standard procedure of using log files. These files log visitors when they visit websites. The information collected by log files includes internet protocol (IP) addresses, browser type, Internet Service Provider (ISP), date and time stamp, referring/exit pages, and possibly the number of clicks. These are not linked to any information that is personally identifiable.
+            </p>
+
+            <h2>Cookies and Web Beacons</h2>
+            <p>
+                Like any other website, {{ site_settings.site_name }} uses 'cookies'. These cookies are used to store information including visitors' preferences, and the pages on the website that the visitor accessed or visited. The information is used to optimize the users' experience by customizing our web page content based on visitors' browser type and/or other information.
+            </p>
+
+            <h2>Third Party Privacy Policies</h2>
+            <p>
+                {{ site_settings.site_name }}'s Privacy Policy does not apply to other advertisers or websites. Thus, we are advising you to consult the respective Privacy Policies of these third-party ad servers for more detailed information.
+            </p>
+
+            <h2>Consent</h2>
+            <p>
+                By using our website, you hereby consent to our Privacy Policy and agree to its terms.
+            </p>
+        </div>
+    </div>
+    {% include 'includes/sidebar.html' %}
+</div>
+{% endblock %}

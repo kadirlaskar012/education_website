@@ -1,0 +1,20 @@
+<div class="breaking-ticker">
+    <div class="container" style="display: flex; align-items: stretch; width: 100%; padding: 0;">
+        <div class="ticker-badge">
+            ⚡ Breaking
+        </div>
+        <div class="ticker-content">
+            <div class="ticker-items">
+                {% if breaking_articles %}
+                    {% for item in breaking_articles %}
+                    <a href="{{ item.get_absolute_url }}" class="ticker-item">
+                        • <strong>[{{ item.category.name }}]</strong> {{ item.title }}
+                    </a>
+                    {% endfor %}
+                {% else %}
+                    <span class="ticker-item">Welcome to {{ site_settings.site_name }} — Real-time automated education updates and government notifications.</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,129 @@
+{% extends 'base.html' %}
+
+{% block title %}{{ article.title }} — {{ site_settings.site_name }}{% endblock %}
+
+{% block meta_description %}{{ article.excerpt|default:article.title }}{% endblock %}
+
+{% block canonical_url %}{{ canonical_url }}{% endblock %}
+
+{% block og_title %}{{ article.title }}{% endblock %}
+{% block og_description %}{{ article.excerpt }}{% endblock %}
+{% block og_type %}article{% endblock %}
+
+{% block extra_head %}
+<!-- Schema.org Structured Data (JSON-LD) -->
+<script type="application/ld+json">
+{{ json_ld_str|safe }}
+</script>
+{% endblock %}
+
+{% block content %}
+<div class="portal-grid">
+    <article class="portal-main-col" itemscope itemtype="https://schema.org/NewsArticle">
+        
+        <!-- Article Header & Meta -->
+        <header class="article-header">
+            <!-- Breadcrumbs -->
+            <nav class="breadcrumb-nav" aria-label="Breadcrumb">
+                <a href="{% url 'home' %}">Home</a>
+                <span class="separator">/</span>
+                <a href="{{ article.category.get_absolute_url }}">{{ article.category.name }}</a>
+                <span class="separator">/</span>
+                <span>{{ article.title|truncatechars:35 }}</span>
+            </nav>
+
+            <!-- H1 Title -->
+            <h1 class="article-title-h1" itemprop="headline">
+                {{ article.title }}
+            </h1>
+
+            <!-- Meta Bar -->
+            <div class="article-meta-bar">
+                <a href="{{ article.category.get_absolute_url }}" class="cat-badge">
+                    {{ article.category.name }}
+                </a>
+
+                {% if article.source %}
+                <span class="official-verified-badge">
+                    ✓ Verified Official: {{ article.source.official_domain|default:article.source.name }}
+                </span>
+                {% endif %}
+
+                <span>
+                    📅 Published: 
+                    <time itemprop="datePublished" datetime="{{ article.published_at|date:'c' }}">
+                        {{ article.published_at|date:"M j, Y — g:i A"|default:article.created_at|date:"M j, Y" }}
+                    </time>
+                </span>
+
+                {% if article.status == 'updated' and article.updated_at %}
+                <span style="color: #0d9488; font-weight: 600;">
+                    (Updated: <time itemprop="dateModified" datetime="{{ article.updated_at|date:'c' }}">{{ article.updated_at|date:"M j, Y — g:i A" }}</time>)
+                </span>
+                {% endif %}
+
+                <span>⏱️ {{ article.reading_time_mins|default:"2" }} min read</span>
+                <span>👁️ {{ article.views_count }} views</span>
+            </div>
+
+            <!-- Quick Action / Share Bar -->
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem; align-items: center; font-size: 0.8125rem;">
+                <span style="color: var(--color-text-muted); font-weight: 600;">Share:</span>
+                <a href="https://api.whatsapp.com/send?text={{ article.title|urlencode }}%20{{ canonical_url|urlencode }}" target="_blank" rel="noopener noreferrer nofollow" class="category-pill" style="background: #25D366; color: white; border: none;">
+                    WhatsApp
+                </a>
+                <a href="https://t.me/share/url?url={{ canonical_url|urlencode }}&text={{ article.title|urlencode }}" target="_blank" rel="noopener noreferrer nofollow" class="category-pill" style="background: #229ED9; color: white; border: none;">
+                    Telegram
+                </a>
+                <button class="category-pill js-copy-link" style="cursor: pointer; background: #e2e8f0; color: #1e293b; border: 1px solid #cbd5e1;">
+                    📋 Copy Link
+                </button>
+                <button onclick="window.print()" class="category-pill" style="cursor: pointer; background: #e2e8f0; color: #1e293b; border: 1px solid #cbd5e1;">
+                    🖨️ Print
+                </button>
+            </div>
+        </header>
+
+        <!-- In-Article Ad Slot (If Enabled) -->
+        {% if site_settings.enable_ads and site_settings.ad_in_article %}
+        <div class="ad-slot-container">
+            <div class="ad-label">Advertisement</div>
+            {{ site_settings.ad_in_article|safe }}
+        </div>
+        {% endif %}
+
+        <!-- Generated Structured Article Body -->
+        <div class="article-body-wrapper" itemprop="articleBody">
+            {{ article.content_html|safe }}
+        </div>
+
+        <!-- Related Internal Links Section -->
+        {% if related_articles %}
+        <section class="news-section-box" style="margin-top: 2.5rem;" aria-label="Related Updates">
+            <div class="section-header">
+                <h3 class="section-title">
+                    🔗 Related Education Updates & Notices
+                </h3>
+            </div>
+            <ul class="compact-news-list">
+                {% for rel in related_articles %}
+                <li class="compact-news-item">
+                    <div class="item-meta-top">
+                        <span class="cat-badge">{{ rel.category.name }}</span>
+                        <span>{{ rel.published_at|date:"M j, Y" }}</span>
+                    </div>
+                    <a href="{{ rel.get_absolute_url }}" style="font-weight: 600; font-size: 0.9375rem; color: var(--color-navy-900);">
+                        {{ rel.title }}
+                    </a>
+                </li>
+                {% endfor %}
+            </ul>
+        </section>
+        {% endif %}
+
+    </article>
+
+    <!-- Sidebar Column -->
+    {% include 'includes/sidebar.html' %}
+</div>
+{% endblock %}

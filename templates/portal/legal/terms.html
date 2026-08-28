@@ -1,0 +1,34 @@
+{% extends 'base.html' %}
+
+{% block title %}Terms & Conditions — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="portal-grid">
+    <div class="portal-main-col">
+        <div class="legal-card">
+            <h1>Terms and Conditions</h1>
+            <p><em>Last updated: {{ current_time|date:"F Y" }}</em></p>
+
+            <p>
+                Welcome to {{ site_settings.site_name }}. These terms and conditions outline the rules and regulations for the use of our website.
+            </p>
+
+            <h2>Educational & Informational Use Only</h2>
+            <p>
+                The information provided on this website is for general informational and educational purposes only. While we endeavor to keep the information up to date and correct, we make no representations or warranties of any kind, express or implied, about the completeness, accuracy, reliability, or suitability with respect to the website or the information contained on the website.
+            </p>
+
+            <h2>Official Primary Sources</h2>
+            <p>
+                Users and exam candidates are strictly advised to cross-verify all examination dates, eligibility criteria, fees, result scores, and admit cards directly with the respective official government websites linked on each notification page before taking any formal actions or paying application fees.
+            </p>
+
+            <h2>Hyperlinking to Our Content</h2>
+            <p>
+                Educational institutions, career counselors, and news portals may link to our home page or to educational publications so long as the link is not misleading and does not falsely imply sponsorship or endorsement.
+            </p>
+        </div>
+    </div>
+    {% include 'includes/sidebar.html' %}
+</div>
+{% endblock %}

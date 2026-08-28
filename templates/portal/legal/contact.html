@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Contact Us — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="portal-grid">
+    <div class="portal-main-col">
+        <div class="legal-card">
+            <h1>Contact {{ site_settings.site_name }}</h1>
+            <p>
+                Have questions, source suggestions, feedback, or report a correction? Reach out to our editorial and technical team using the form below or via email.
+            </p>
+
+            <div style="background-color: var(--color-navy-50); border: 1px solid var(--color-border); padding: 1rem; border-radius: 4px; margin-bottom: 1.5rem;">
+                <strong>Official Contact Email:</strong> <a href="mailto:{{ site_settings.contact_email }}">{{ site_settings.contact_email }}</a>
+            </div>
+
+            <h2>Send Us a Message</h2>
+            <form method="post" action="{% url 'contact' %}" class="contact-form">
+                {% csrf_token %}
+                <div class="form-group">
+                    <label for="id_name">Your Full Name</label>
+                    <input type="text" id="id_name" name="name" required placeholder="Enter your name">
+                </div>
+
+                <div class="form-group">
+                    <label for="id_email">Email Address</label>
+                    <input type="email" id="id_email" name="email" required placeholder="name@example.com">
+                </div>
+
+                <div class="form-group">
+                    <label for="id_subject">Subject</label>
+                    <input type="text" id="id_subject" name="subject" required placeholder="e.g., Question regarding SSC notice or Source suggestion">
+                </div>
+
+                <div class="form-group">
+                    <label for="id_message">Message Details</label>
+                    <textarea id="id_message" name="message" rows="5" required placeholder="Write your message here..."></textarea>
+                </div>
+
+                <button type="submit">Submit Message</button>
+            </form>
+        </div>
+    </div>
+    {% include 'includes/sidebar.html' %}
+</div>
+{% endblock %}

@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+
+{% block title %}Copyright & Source Attribution Policy — {{ site_settings.site_name }}{% endblock %}
+
+{% block content %}
+<div class="portal-grid">
+    <div class="portal-main-col">
+        <div class="legal-card">
+            <h1>Copyright & Source Attribution Policy</h1>
+            
+            <p>
+                At {{ site_settings.site_name }}, we respect the intellectual property of original content creators and government authorities while upholding public access to official educational information.
+            </p>
+
+            <h2>Public Government Notifications</h2>
+            <p>
+                Official exam notifications, recruitment circulars, gazette announcements, and press releases issued by Government Departments, Ministries, and Commissions are public information intended for broad dissemination to citizens and candidates.
+            </p>
+
+            <h2>Attribution Principles</h2>
+            <ul>
+                <li><strong>Clear Source Labeling:</strong> Every article generated and indexed on our platform visibly credits the publishing authority (e.g., Staff Selection Commission, National Testing Agency).</li>
+                <li><strong>Canonical Official Links:</strong> We provide direct canonical URLs and original official PDF download links so readers can inspect the source directly.</li>
+                <li><strong>No Deceptive Representation:</strong> We never alter the substance, dates, or official eligibility criteria published by authorities.</li>
+            </ul>
+
+            <h2>Original Editorial Content</h2>
+            <p>
+                The organizational compilation, database schemas, summaries, search indices, user interface layouts, and editorial guides on {{ site_settings.site_name }} are copyright &copy; {{ current_year }} {{ site_settings.site_name }}. All rights reserved.
+            </p>
+        </div>
+    </div>
+    {% include 'includes/sidebar.html' %}
+</div>
+{% endblock %}

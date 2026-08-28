@@ -1,0 +1,169 @@
+<header class="site-header">
+    <!-- Top Utility Bar -->
+    <div class="top-bar">
+        <div class="container top-bar-inner">
+            <div class="top-date">
+                <span>🗓️ {{ current_time|date:"l, F j, Y" }}</span>
+                {% if site_settings.top_breaking_announcement %}
+                <span class="top-announcement">📢 {{ site_settings.top_breaking_announcement }}</span>
+                {% endif %}
+            </div>
+            <div class="top-links">
+                <a href="{% url 'about' %}">About</a>
+                <a href="{% url 'contact' %}">Contact</a>
+                <a href="{% url 'disclaimer' %}">Disclaimer</a>
+                <a href="{% url 'rss_feed' %}">RSS Feed</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Branding Header -->
+    <div class="main-header">
+        <div class="container header-branding-row">
+            <!-- Mobile Menu Toggle Button (Visible ONLY on Mobile/Tablet) -->
+            <button id="mobileMenuBtn" class="mobile-drawer-toggle" aria-label="Open Navigation Drawer">
+                <span>☰</span>
+            </button>
+
+            <!-- Site Logo & Tagline -->
+            <div class="site-logo">
+                <a href="{% url 'home' %}" class="brand-name">
+                    {{ site_settings.site_name|default:"EduGov News" }}<span>.</span>
+                </a>
+                <div class="brand-tagline">
+                    {{ site_settings.site_tagline|default:"Verified Official Education Updates & Notifications" }}
+                </div>
+            </div>
+
+            <!-- Desktop Search Bar -->
+            <form action="{% url 'search' %}" method="get" class="header-search-box">
+                <div class="search-input-group">
+                    <input type="text" name="q" placeholder="Search exams, results, admit cards..." value="{{ request.GET.q|default:'' }}" aria-label="Search">
+                    <button type="submit" aria-label="Submit Search">🔍</button>
+                </div>
+            </form>
+
+            <!-- Mobile Search Icon Button (Visible ONLY on Mobile) -->
+            <button id="mobileSearchTrigger" class="mobile-search-btn" aria-label="Open Search">
+                🔍
+            </button>
+        </div>
+    </div>
+
+    <!-- Desktop Navigation Bar with Primary Hubs + "More Categories ▾" Dropdown -->
+    <nav class="desktop-nav-bar" aria-label="Desktop Navigation">
+        <div class="container nav-container">
+            <ul class="desktop-nav-links">
+                <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}">Home</a></li>
+                <li><a href="{% url 'results_hub' %}" class="{% if 'results' in request.path %}active{% endif %}">Results</a></li>
+                <li><a href="{% url 'admit_card_hub' %}" class="{% if 'admit-card' in request.path %}active{% endif %}">Admit Cards</a></li>
+                <li><a href="{% url 'recruitment_hub' %}" class="{% if 'recruitment' in request.path %}active{% endif %}">Recruitment</a></li>
+                <li><a href="{% url 'exam_hub' %}" class="{% if 'exam' in request.path %}active{% endif %}">Exams</a></li>
+                <li><a href="{% url 'answer_key_hub' %}" class="{% if 'answer-key' in request.path %}active{% endif %}">Answer Key</a></li>
+                <li><a href="{% url 'category_detail' slug='latest-news' %}" class="{% if 'latest-news' in request.path %}active{% endif %}">Latest News</a></li>
+
+                {% if more_categories %}
+                <li class="nav-dropdown">
+                    <button class="nav-dropdown-btn {% for cat in more_categories %}{% if cat.slug in request.path %}active{% endif %}{% endfor %}" id="moreCategoriesBtn" aria-haspopup="true" aria-expanded="false">
+                        More Categories <span class="dropdown-arrow">▾</span>
+                    </button>
+                    <div class="dropdown-menu" id="moreCategoriesMenu">
+                        {% for cat in more_categories %}
+                        <a href="{{ cat.get_absolute_url }}" class="dropdown-item {% if cat.slug in request.path %}active{% endif %}">
+                            {{ cat.name }}
+                        </a>
+                        {% endfor %}
+                    </div>
+                </li>
+                {% endif %}
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Mobile Horizontal Swipeable Category Ribbon (Zero screen clutter, swipe with thumb) -->
+    <div class="mobile-category-ribbon" aria-label="Quick Category Filter">
+        <div class="ribbon-scroll-track">
+            <a href="{% url 'home' %}" class="ribbon-chip {% if request.path == '/' %}active{% endif %}">
+                🏠 All
+            </a>
+            <a href="{% url 'results_hub' %}" class="ribbon-chip {% if 'results' in request.path %}active{% endif %}">
+                📋 Results
+            </a>
+            <a href="{% url 'admit_card_hub' %}" class="ribbon-chip {% if 'admit-card' in request.path %}active{% endif %}">
+                🎫 Admit Cards
+            </a>
+            <a href="{% url 'recruitment_hub' %}" class="ribbon-chip {% if 'recruitment' in request.path %}active{% endif %}">
+                💼 Recruitment
+            </a>
+            <a href="{% url 'exam_hub' %}" class="ribbon-chip {% if 'exam' in request.path %}active{% endif %}">
+                📝 Exams
+            </a>
+            <a href="{% url 'answer_key_hub' %}" class="ribbon-chip {% if 'answer-key' in request.path %}active{% endif %}">
+                🔑 Answer Key
+            </a>
+            {% for cat in nav_categories %}
+                {% if cat.slug not in 'results,admit-card,recruitment,exam,answer-key' %}
+                <a href="{{ cat.get_absolute_url }}" class="ribbon-chip {% if cat.slug in request.path %}active{% endif %}">
+                    {{ cat.name }}
+                </a>
+                {% endif %}
+            {% endfor %}
+        </div>
+    </div>
+</header>
+
+<!-- Mobile Slide-over Offcanvas Drawer & Backdrop -->
+<div id="drawerBackdrop" class="offcanvas-backdrop"></div>
+
+<aside id="mobileDrawer" class="mobile-offcanvas-drawer" aria-label="Mobile Navigation Drawer">
+    <!-- Drawer Header -->
+    <div class="drawer-header">
+        <div class="drawer-brand">
+            {{ site_settings.site_name|default:"EduGov News" }}<span>.</span>
+        </div>
+        <button id="closeDrawerBtn" class="drawer-close-btn" aria-label="Close Navigation Drawer">
+            ✕
+        </button>
+    </div>
+
+    <!-- Drawer Search Bar -->
+    <div class="drawer-search-box">
+        <form action="{% url 'search' %}" method="get">
+            <div class="search-input-group">
+                <input type="text" name="q" id="drawerSearchInput" placeholder="Search exams, notices..." value="{{ request.GET.q|default:'' }}">
+                <button type="submit">🔍</button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Drawer Navigation Links -->
+    <div class="drawer-content-scroll">
+        <div class="drawer-section-title">Major Portals</div>
+        <ul class="drawer-nav-list">
+            <li><a href="{% url 'home' %}" class="{% if request.path == '/' %}active{% endif %}"><span>🏠</span> Home</a></li>
+            <li><a href="{% url 'results_hub' %}" class="{% if 'results' in request.path %}active{% endif %}"><span>📋</span> Results Portal</a></li>
+            <li><a href="{% url 'admit_card_hub' %}" class="{% if 'admit-card' in request.path %}active{% endif %}"><span>🎫</span> Admit Cards</a></li>
+            <li><a href="{% url 'recruitment_hub' %}" class="{% if 'recruitment' in request.path %}active{% endif %}"><span>💼</span> Latest Recruitment</a></li>
+            <li><a href="{% url 'exam_hub' %}" class="{% if 'exam' in request.path %}active{% endif %}"><span>📝</span> Examination Notices</a></li>
+            <li><a href="{% url 'answer_key_hub' %}" class="{% if 'answer-key' in request.path %}active{% endif %}"><span>🔑</span> Answer Keys</a></li>
+        </ul>
+
+        <div class="drawer-section-title" style="margin-top: 1.25rem;">All Categories</div>
+        <div class="drawer-category-grid">
+            {% for cat in nav_categories %}
+            <a href="{{ cat.get_absolute_url }}" class="drawer-cat-chip {% if cat.slug in request.path %}active{% endif %}">
+                {{ cat.name }}
+            </a>
+            {% endfor %}
+        </div>
+
+        <div class="drawer-section-title" style="margin-top: 1.5rem;">Quick Links</div>
+        <ul class="drawer-quick-links">
+            <li><a href="{% url 'about' %}">About Us</a></li>
+            <li><a href="{% url 'contact' %}">Contact Us</a></li>
+            <li><a href="{% url 'disclaimer' %}">Disclaimer & Official Sources</a></li>
+            <li><a href="{% url 'privacy_policy' %}">Privacy Policy</a></li>
+            <li><a href="{% url 'rss_feed' %}">RSS Feeds</a></li>
+        </ul>
+    </div>
+</aside>

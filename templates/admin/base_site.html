@@ -1,0 +1,20 @@
+{% extends "admin/base.html" %}
+{% load static %}
+
+{% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | EduGov News Control Center{% endblock %}
+
+{% block extrahead %}
+    {{ block.super }}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=yes">
+    <link rel="stylesheet" href="{% static 'admin/css/custom_admin.css' %}">
+{% endblock %}
+
+{% block branding %}
+    <h1 id="site-name">
+        <a href="{% url 'admin:index' %}">
+            🏛️ EduGov <span>Administration</span>
+        </a>
+    </h1>
+{% endblock %}
+
+{% block nav-global %}{% endblock %}

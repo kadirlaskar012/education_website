@@ -1,0 +1,72 @@
+<aside class="portal-sidebar" aria-label="Sidebar Content">
+    <!-- Quick Search Widget -->
+    <div class="sidebar-widget">
+        <div class="sidebar-widget-header">
+            🔎 Find Updates
+        </div>
+        <div style="padding: 1rem;">
+            <form action="{% url 'search' %}" method="get">
+                <div class="search-input-group">
+                    <input type="text" name="q" placeholder="Enter exam / board..." value="{{ request.GET.q|default:'' }}">
+                    <button type="submit">Search</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Trending / Popular Updates -->
+    <div class="sidebar-widget">
+        <div class="sidebar-widget-header">
+            🔥 Trending & Popular
+        </div>
+        <ul class="sidebar-news-list">
+            {% for item in trending_articles %}
+            <li class="sidebar-news-item">
+                <a href="{{ item.get_absolute_url }}">{{ item.title }}</a>
+                <div class="sidebar-meta">
+                    <span>{{ item.category.name }}</span> • <span>{{ item.published_at|date:"M d, Y" }}</span>
+                </div>
+            </li>
+            {% empty %}
+            <li class="sidebar-news-item" style="color: var(--color-text-muted); font-size: 0.8125rem;">
+                No trending updates yet.
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <!-- Official Source Verification Trust Box -->
+    <div class="sidebar-widget">
+        <div class="sidebar-widget-header">
+            🏛️ Official Verification
+        </div>
+        <div class="source-trust-box">
+            <strong>Direct Government Tracking</strong>
+            <p style="margin-top: 0.25rem;">All notifications are fetched and parsed directly from official government portals (SSC, UPSC, NTA, RRB, State Boards). Direct links and official PDF files are attached to each notice.</p>
+        </div>
+    </div>
+
+    <!-- Categories Cloud -->
+    <div class="sidebar-widget">
+        <div class="sidebar-widget-header">
+            📂 Explore Categories
+        </div>
+        <div class="category-pills">
+            {% for cat in nav_categories %}
+            <a href="{{ cat.get_absolute_url }}" class="category-pill">
+                {{ cat.name }}
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <!-- Sidebar Ad Slot (If Enabled) -->
+    {% if site_settings.enable_ads and site_settings.ad_sidebar %}
+    <div class="sidebar-widget">
+        <div class="ad-slot-container">
+            <div class="ad-label">Advertisement</div>
+            {{ site_settings.ad_sidebar|safe }}
+        </div>
+    </div>
+    {% endif %}
+</aside>

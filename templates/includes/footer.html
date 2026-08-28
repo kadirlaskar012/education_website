@@ -1,0 +1,63 @@
+<footer class="main-footer">
+    <div class="container">
+        <div class="footer-grid">
+            <!-- Col 1: About Portal -->
+            <div class="footer-col">
+                <h4>{{ site_settings.site_name }}</h4>
+                <p style="font-size: 0.8125rem; line-height: 1.6; color: #94a3b8;">
+                    {{ site_settings.meta_description }}
+                </p>
+                <div style="margin-top: 1rem; font-size: 0.775rem; color: #64748b;">
+                    Contact: <a href="mailto:{{ site_settings.contact_email }}" style="color: #cbd5e1;">{{ site_settings.contact_email }}</a>
+                </div>
+            </div>
+
+            <!-- Col 2: Major Hubs -->
+            <div class="footer-col">
+                <h4>Quick Portals</h4>
+                <ul>
+                    <li><a href="{% url 'results_hub' %}">Latest Results</a></li>
+                    <li><a href="{% url 'admit_card_hub' %}">Admit Cards</a></li>
+                    <li><a href="{% url 'recruitment_hub' %}">Recruitment & Jobs</a></li>
+                    <li><a href="{% url 'exam_hub' %}">Exam Schedules</a></li>
+                    <li><a href="{% url 'answer_key_hub' %}">Answer Keys</a></li>
+                </ul>
+            </div>
+
+            <!-- Col 3: Government Sources Tracked -->
+            <div class="footer-col">
+                <h4>Tracked Authorities</h4>
+                <ul>
+                    <li><a href="https://ssc.gov.in" target="_blank" rel="noopener noreferrer nofollow">SSC Portal ↗</a></li>
+                    <li><a href="https://upsc.gov.in" target="_blank" rel="noopener noreferrer nofollow">UPSC Portal ↗</a></li>
+                    <li><a href="https://nta.ac.in" target="_blank" rel="noopener noreferrer nofollow">NTA Testing Agency ↗</a></li>
+                    <li><a href="https://rrbcdg.gov.in" target="_blank" rel="noopener noreferrer nofollow">Railway Boards (RRB) ↗</a></li>
+                    <li><a href="https://cbse.gov.in" target="_blank" rel="noopener noreferrer nofollow">CBSE Academic ↗</a></li>
+                </ul>
+            </div>
+
+            <!-- Col 4: Legal & Policy -->
+            <div class="footer-col">
+                <h4>Legal & Policies</h4>
+                <ul>
+                    <li><a href="{% url 'about' %}">About Us</a></li>
+                    <li><a href="{% url 'contact' %}">Contact Us</a></li>
+                    <li><a href="{% url 'privacy_policy' %}">Privacy Policy</a></li>
+                    <li><a href="{% url 'terms_conditions' %}">Terms & Conditions</a></li>
+                    <li><a href="{% url 'disclaimer' %}">Disclaimer Policy</a></li>
+                    <li><a href="{% url 'copyright_policy' %}">Source & Copyright</a></li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- Official Disclaimer Notice -->
+        <div style="background-color: rgba(255,255,255,0.03); border-radius: 4px; padding: 0.85rem; margin-bottom: 1.5rem; font-size: 0.75rem; color: #94a3b8; line-height: 1.5; border: 1px solid rgba(255,255,255,0.06);">
+            <strong>Notice:</strong> {{ site_settings.disclaimer_text }}
+        </div>
+
+        <!-- Bottom Copyright -->
+        <div class="footer-bottom">
+            <p>&copy; {{ current_year }} {{ site_settings.site_name }}. All rights reserved. Built for fast, accessible educational news dissemination.</p>
+        </div>
+    </div>
+</footer>
