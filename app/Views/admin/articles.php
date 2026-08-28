@@ -1,7 +1,7 @@
 <div class="admin-header-row">
     <div>
-        <h1 style="font-size: 1.5rem; font-weight: 800; color: #0a192f;">Articles & Notifications Management</h1>
-        <p style="font-size: 0.8125rem; color: #64748b; margin-top: 0.25rem;">Filter, review, edit, select multiple posts, and audit all scraped & generated education notices</p>
+        <h1 style="font-size: 1.5rem; font-weight: 800; color: #0a192f; margin: 0;">Education Notices Management</h1>
+        <p style="font-size: 0.8125rem; color: #64748b; margin-top: 0.25rem;">Filter, review, edit, select multiple posts, and audit all official & generated education notices</p>
     </div>
     <div>
         <a href="/admin" class="admin-btn admin-btn-secondary">← Back to Dashboard</a>

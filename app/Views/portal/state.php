@@ -78,17 +78,6 @@
         <?php endif; ?>
     </main>
 
-    <!-- Sidebar Quick Hubs -->
-    <aside class="feed-sidebar-col">
-        <div class="sidebar-card">
-            <h3 class="sidebar-title">⚡ Quick Categories</h3>
-            <ul class="sidebar-links-list">
-                <li><a href="/results">📋 Results & Merit Lists</a></li>
-                <li><a href="/admit-card">🎫 Admit Cards & Slips</a></li>
-                <li><a href="/recruitment">💼 Government Recruitment</a></li>
-                <li><a href="/exam">📝 Exam Calendar</a></li>
-                <li><a href="/answer-key">🔑 Answer Keys</a></li>
-            </ul>
-        </div>
-    </aside>
+    <!-- Standard Reusable Right Sidebar -->
+    <?php require __DIR__ . '/../partials/sidebar.php'; ?>
 </div>

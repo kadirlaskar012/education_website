@@ -154,33 +154,8 @@ if (!empty($selected_state) && !empty($available_states)) {
         <?php endif; ?>
     </main>
 
-    <!-- Sidebar Quick Links -->
-    <aside class="feed-sidebar-col">
-        <div class="sidebar-card" style="margin-bottom: 1.5rem;">
-            <h3 class="sidebar-title">⚡ Quick Categories</h3>
-            <ul class="sidebar-links-list">
-                <li><a href="/results">📋 Results & Merit Lists</a></li>
-                <li><a href="/admit-card">🎫 Admit Cards & Slips</a></li>
-                <li><a href="/recruitment">💼 Government Recruitment</a></li>
-                <li><a href="/exam">📝 Exam Calendar</a></li>
-                <li><a href="/answer-key">🔑 Answer Keys</a></li>
-                <li><a href="/category/scholarship">🏆 Scholarships</a></li>
-            </ul>
-        </div>
-
-        <div class="sidebar-card">
-            <h3 class="sidebar-title">🗺️ State Portals</h3>
-            <ul class="sidebar-links-list">
-                <li><a href="/state/central-govt">🏛️ Central Government</a></li>
-                <li><a href="/state/west-bengal">🌊 West Bengal (WBPSC)</a></li>
-                <li><a href="/state/uttar-pradesh">🌾 Uttar Pradesh (UPPSC)</a></li>
-                <li><a href="/state/bihar">🚩 Bihar (BPSC)</a></li>
-                <li><a href="/state/rajasthan">🏰 Rajasthan (RPSC)</a></li>
-                <li><a href="/state/madhya-pradesh">🌲 Madhya Pradesh (MPPSC)</a></li>
-                <li><a href="/state/maharashtra">🏙️ Maharashtra (MPSC)</a></li>
-            </ul>
-        </div>
-    </aside>
+    <!-- Standard Reusable Right Sidebar -->
+    <?php require __DIR__ . '/../partials/sidebar.php'; ?>
 </div>
 
 <script>

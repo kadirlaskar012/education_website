@@ -1,72 +1,47 @@
-<!-- Top 5 Latest & Trending News Hero Showcase -->
-<?php if (!empty($hero_main)): ?>
-<section class="hero-showcase-section">
-    <div class="hero-showcase-grid">
-        <!-- 1. Main Featured Large Card (Item #1) -->
-        <div class="hero-main-card">
-            <div class="hero-badge-row">
-                <span class="hero-tag-pill">🔥 Top Story #1</span>
-                <span class="cat-badge"><?= htmlspecialchars($hero_main['category_name']) ?></span>
-                <?php if (!empty($hero_main['official_source_name'])): ?>
-                <span class="official-verified-badge">
-                    ✓ <?= htmlspecialchars($hero_main['official_source_name']) ?>
-                </span>
-                <?php endif; ?>
-                <span class="card-time"><?= date('M j, Y — g:i A', strtotime($hero_main['published_at'])) ?></span>
-            </div>
-
-            <h1 class="hero-main-title">
-                <a href="/news/<?= htmlspecialchars($hero_main['slug']) ?>">
-                    <?= htmlspecialchars($hero_main['title']) ?>
-                </a>
-            </h1>
-
-            <p class="hero-main-summary">
-                <?= htmlspecialchars($hero_main['summary'] ?? $hero_main['excerpt'] ?? mb_substr(strip_tags($hero_main['content_html']), 0, 220) . '...') ?>
-            </p>
-
-            <div class="hero-main-footer">
-                <a href="/news/<?= htmlspecialchars($hero_main['slug']) ?>" class="btn-hero-primary">
-                    Read Full Notice & Direct Links »
-                </a>
-                <span class="badge-verified-small">✓ Official Verified Source</span>
-            </div>
+<!-- Top 10 Latest Added Notices Text Hero Section (No Carding, Clean Text-Based & Clickable) -->
+<?php if (!empty($top10_notices)): ?>
+<section class="hero-notices-board">
+    <div class="hero-notices-header">
+        <div class="notices-header-left">
+            <span class="live-pulse-icon">🔴</span>
+            <h1 class="hero-notices-title">Latest Official Notices (Top 10 Updates)</h1>
         </div>
+        <div class="notices-header-badge">
+            ⚡ Real-Time Government Feed
+        </div>
+    </div>
 
-        <!-- 2. Trending Top 4 List (Items #2 to #5) -->
-        <div class="hero-trending-panel">
-            <div class="trending-panel-header">
-                <div class="trending-header-title">
-                    <span>⚡</span> Top Trending Today
+    <div class="hero-notices-list">
+        <?php 
+        $rank = 1;
+        foreach ($top10_notices as $notice): 
+            $rankPadded = str_pad((string)$rank++, 2, '0', STR_PAD_LEFT);
+        ?>
+        <div class="hero-notice-row">
+            <div class="notice-num">#<?= $rankPadded ?></div>
+            <div class="notice-details">
+                <div class="notice-meta-tags">
+                    <span class="cat-badge-text"><?= htmlspecialchars($notice['category_name']) ?></span>
+                    <?php if (!empty($notice['official_source_name'])): ?>
+                    <span class="authority-badge-text">🏛️ <?= htmlspecialchars($notice['official_source_name']) ?></span>
+                    <?php endif; ?>
+                    <time class="notice-time-text" datetime="<?= $notice['published_at'] ?>">
+                        📅 <?= date('M j, Y — g:i A', strtotime($notice['published_at'])) ?>
+                    </time>
                 </div>
-                <span class="trending-badge-count">5 Top Updates</span>
+                <h2 class="notice-text-headline">
+                    <a href="/news/<?= htmlspecialchars($notice['slug']) ?>">
+                        <?= htmlspecialchars($notice['title']) ?>
+                    </a>
+                </h2>
             </div>
-
-            <div class="trending-items-list">
-                <?php 
-                $rank = 2;
-                foreach ($hero_trending as $trItem): 
-                ?>
-                <a href="/news/<?= htmlspecialchars($trItem['slug']) ?>" class="trending-news-row">
-                    <div class="trending-rank-num">#<?= $rank++ ?></div>
-                    <div class="trending-content-wrap">
-                        <div class="trending-meta-small">
-                            <span class="cat-badge-micro"><?= htmlspecialchars($trItem['category_name']) ?></span>
-                            <?php if (!empty($trItem['official_source_name'])): ?>
-                            <span class="source-micro">🏛️ <?= htmlspecialchars(mb_substr($trItem['official_source_name'], 0, 24)) ?></span>
-                            <?php endif; ?>
-                        </div>
-                        <h2 class="trending-row-headline">
-                            <?= htmlspecialchars($trItem['title']) ?>
-                        </h2>
-                        <div class="trending-date-small">
-                            📅 <?= date('M j, Y', strtotime($trItem['published_at'])) ?>
-                        </div>
-                    </div>
+            <div class="notice-action-col">
+                <a href="/news/<?= htmlspecialchars($notice['slug']) ?>" class="btn-notice-read">
+                    Read Notice →
                 </a>
-                <?php endforeach; ?>
             </div>
         </div>
+        <?php endforeach; ?>
     </div>
 </section>
 <?php endif; ?>
@@ -75,7 +50,7 @@
 <div class="social-alert-banner">
     <div class="social-alert-text">
         <div class="social-alert-heading">
-            <span>🔔 Never Miss an Exam or Job Update!</span>
+            <span>🔔 Never Miss an Exam or Job Notice!</span>
         </div>
         <p class="social-alert-sub">
             Join 100,000+ students receiving instant verified official notifications directly on phone.
@@ -110,7 +85,7 @@
     </div>
 </section>
 
-<!-- Homepage Main Category-Wise Feed -->
+<!-- Homepage Main Category-Wise Feed with Right Sidebar -->
 <div class="feed-layout-grid">
     <!-- Main Categorized Columns -->
     <main class="feed-main-col">
@@ -237,26 +212,6 @@
 
     </main>
 
-    <!-- Sidebar Quick Hubs & Official Links -->
-    <aside class="feed-sidebar-col">
-        <div class="sidebar-card">
-            <h3 class="sidebar-title">⚡ 25+ Official Portals Scraped</h3>
-            <ul class="sidebar-links-list">
-                <li><a href="/search?q=SSC">🏛️ Staff Selection Commission (SSC)</a></li>
-                <li><a href="/search?q=UPSC">🏛️ Union Public Service (UPSC)</a></li>
-                <li><a href="/search?q=Railway">🚂 Railway Recruitment (RRB)</a></li>
-                <li><a href="/search?q=IBPS">🏦 Banking & IBPS / SBI</a></li>
-                <li><a href="/search?q=NTA">🎯 National Testing Agency (NTA)</a></li>
-                <li><a href="/search?q=Defense">🎖️ Indian Army / IAF / Navy</a></li>
-                <li><a href="/search?q=Police">👮 State Police & PSC Boards</a></li>
-            </ul>
-        </div>
-
-        <div class="sidebar-card" style="margin-top: 1.5rem;">
-            <h3 class="sidebar-title">🛡️ Official Authenticity Notice</h3>
-            <p style="font-size: 0.8125rem; color: var(--color-text-muted, #64748b); line-height: 1.55; margin-bottom: 0;">
-                All articles on EduGov News are strictly generated from verified government notifications. Candidates are always provided direct official links to official .gov.in and .ac.in portals.
-            </p>
-        </div>
-    </aside>
+    <!-- Standard Reusable Right Sidebar (Latest 10 Notices, Categories, State Portals, Official Portals) -->
+    <?php require __DIR__ . '/../partials/sidebar.php'; ?>
 </div>

@@ -15,14 +15,7 @@ class HomeController extends Controller {
         $articleModel = new Article();
         $categoryModel = new Category();
 
-        // Top 5 Latest / Trending updates for the dynamic Hero Showcase
-        $top5Articles = $articleModel->getTrendingArticles(5);
-        if (count($top5Articles) < 5) {
-            $top5Articles = $articleModel->getLatestPublished(5);
-        }
-        $heroMain = $top5Articles[0] ?? null;
-        $heroTrending = array_slice($top5Articles, 1, 4);
-
+        $latest10Notices = $articleModel->getLatestPublished(10);
         $latestArticles = $articleModel->getLatestPublished(12);
 
         // Fetch category-specific blocks for structured homepage layout
@@ -37,9 +30,7 @@ class HomeController extends Controller {
         $this->render('portal/home', [
             'page_title'           => 'EduGov News — Instant & Verified Official Education & Job Notifications',
             'meta_description'     => 'Real-time verified government notifications, exam dates, admit cards, results, and job vacancy alerts across India.',
-            'hero_main'            => $heroMain,
-            'hero_trending'        => $heroTrending,
-            'top5_articles'        => $top5Articles,
+            'top10_notices'        => $latest10Notices,
             'latest_articles'      => $latestArticles,
             'results_articles'     => $resultsArticles,
             'admit_articles'       => $admitCardArticles,

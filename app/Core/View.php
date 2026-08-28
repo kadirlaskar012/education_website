@@ -58,19 +58,21 @@ class View {
             }
 
             $trendingArticles = $articleModel->getTrendingArticles(5);
+            $sidebarLatestNotices = $articleModel->getLatestPublished(10);
 
             $settingModel = new \App\Models\SiteSetting();
             $siteSettings = $settingModel->getSettings();
 
             $context = [
-                'nav_categories'     => $allCategories,
-                'primary_categories' => $primaryCategories,
-                'more_categories'    => $moreCategories,
-                'breaking_articles'  => $breakingArticles,
-                'trending_articles'  => $trendingArticles,
-                'site_settings'      => $siteSettings,
-                'current_time'       => new \DateTime(),
-                'current_year'       => date('Y'),
+                'nav_categories'         => $allCategories,
+                'primary_categories'     => $primaryCategories,
+                'more_categories'        => $moreCategories,
+                'breaking_articles'      => $breakingArticles,
+                'trending_articles'      => $trendingArticles,
+                'sidebar_latest_notices' => $sidebarLatestNotices,
+                'site_settings'          => $siteSettings,
+                'current_time'           => new \DateTime(),
+                'current_year'           => date('Y'),
             ];
         } catch (\Exception $e) {
             $context = [

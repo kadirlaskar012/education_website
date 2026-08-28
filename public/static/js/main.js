@@ -43,18 +43,61 @@ document.addEventListener('DOMContentLoaded', function () {
     const closeDrawerBtn = document.getElementById('closeDrawerBtn');
     const drawerBackdrop = document.getElementById('drawerBackdrop');
     const mobileDrawer = document.getElementById('mobileDrawer');
-    const mobileSearchTrigger = document.getElementById('mobileSearchTrigger');
-    const drawerSearchInput = document.getElementById('drawerSearchInput');
     const drawerHandleBar = document.querySelector('.drawer-handle-bar');
 
-    function openDrawer(focusSearch = false) {
+    // Dedicated Quick Search Modal Elements
+    const mobileSearchTrigger = document.getElementById('mobileSearchTrigger');
+    const quickSearchModal = document.getElementById('quickSearchModal');
+    const searchModalBackdrop = document.getElementById('searchModalBackdrop');
+    const closeSearchModalBtn = document.getElementById('closeSearchModalBtn');
+    const quickSearchModalInput = document.getElementById('quickSearchModalInput');
+
+    function openSearchModal() {
+        if (quickSearchModal && searchModalBackdrop) {
+            closeDrawer();
+            quickSearchModal.classList.add('open');
+            searchModalBackdrop.classList.add('active');
+            document.body.classList.add('modal-locked');
+            setTimeout(() => {
+                if (quickSearchModalInput) quickSearchModalInput.focus();
+            }, 100);
+        }
+    }
+
+    function closeSearchModal() {
+        if (quickSearchModal && searchModalBackdrop) {
+            quickSearchModal.classList.remove('open');
+            searchModalBackdrop.classList.remove('active');
+            document.body.classList.remove('modal-locked');
+        }
+    }
+
+    if (mobileSearchTrigger) {
+        mobileSearchTrigger.addEventListener('click', function (e) {
+            e.preventDefault();
+            openSearchModal();
+        });
+    }
+
+    if (closeSearchModalBtn) {
+        closeSearchModalBtn.addEventListener('click', function (e) {
+            e.preventDefault();
+            closeSearchModal();
+        });
+    }
+
+    if (searchModalBackdrop) {
+        searchModalBackdrop.addEventListener('click', function () {
+            closeSearchModal();
+        });
+    }
+
+    function openDrawer() {
+        closeSearchModal();
         if (mobileDrawer && drawerBackdrop) {
             mobileDrawer.classList.add('open');
             drawerBackdrop.classList.add('active');
             document.body.classList.add('drawer-locked');
-            if (focusSearch && drawerSearchInput) {
-                setTimeout(() => { drawerSearchInput.focus(); }, 300);
-            }
         }
     }
 
@@ -69,28 +112,21 @@ document.addEventListener('DOMContentLoaded', function () {
     if (mobileMenuBtn) {
         mobileMenuBtn.addEventListener('click', function (e) {
             e.preventDefault();
-            openDrawer(false);
+            openDrawer();
         });
     }
 
     if (mobileExploreTrigger) {
         mobileExploreTrigger.addEventListener('click', function (e) {
             e.preventDefault();
-            openDrawer(false);
+            openDrawer();
         });
     }
 
     if (bottomMenuTrigger) {
         bottomMenuTrigger.addEventListener('click', function (e) {
             e.preventDefault();
-            openDrawer(false);
-        });
-    }
-
-    if (mobileSearchTrigger) {
-        mobileSearchTrigger.addEventListener('click', function (e) {
-            e.preventDefault();
-            openDrawer(true);
+            openDrawer();
         });
     }
 
@@ -115,6 +151,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
     document.addEventListener('keydown', function (e) {
         if (e.key === 'Escape') {
+            closeSearchModal();
             closeDrawer();
         }
     });

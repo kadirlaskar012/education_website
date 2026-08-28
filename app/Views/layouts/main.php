@@ -19,7 +19,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/main.css?v=<?= time() ?>">
 </head>
 <body class="site-body">
     <!-- Top Verified Trust Header (Desktop only) -->
@@ -259,7 +259,42 @@
         </div>
     </nav>
 
-    <!-- 4. Categorized Bottom Sheet Modal (Drawer) -->
+    <!-- 4. Dedicated Quick Search Modal / Overlay (Direct Search Trigger) -->
+    <div class="search-modal-backdrop" id="searchModalBackdrop"></div>
+    <div class="quick-search-modal" id="quickSearchModal" role="dialog" aria-modal="true" aria-label="Quick Search">
+        <div class="search-modal-header">
+            <div class="search-modal-title">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="11" cy="11" r="8"></circle>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <span>Search Official Notices</span>
+            </div>
+            <button type="button" class="btn-close-search-modal" id="closeSearchModalBtn" aria-label="Close search">✕</button>
+        </div>
+        <div class="search-modal-body">
+            <form action="/search" method="get" class="search-modal-form">
+                <div class="search-modal-input-wrap">
+                    <input type="text" name="q" id="quickSearchModalInput" placeholder="Search exams, results, admit cards, notices..." required autocomplete="off">
+                    <button type="submit" class="btn-search-modal-submit">Search</button>
+                </div>
+            </form>
+            <div class="search-modal-quick-tags">
+                <span class="quick-tag-label">Popular Searches:</span>
+                <div class="quick-tag-pills">
+                    <a href="/search?q=SSC" class="search-tag-pill">SSC</a>
+                    <a href="/search?q=UPSC" class="search-tag-pill">UPSC</a>
+                    <a href="/search?q=Railway" class="search-tag-pill">Railway</a>
+                    <a href="/search?q=Admit+Card" class="search-tag-pill">Admit Card</a>
+                    <a href="/search?q=Results" class="search-tag-pill">Results</a>
+                    <a href="/search?q=Rajasthan" class="search-tag-pill">Rajasthan</a>
+                    <a href="/search?q=West+Bengal" class="search-tag-pill">West Bengal</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- 5. Categorized Bottom Sheet Modal (Drawer) -->
     <div class="drawer-backdrop" id="drawerBackdrop"></div>
     <div class="mobile-offcanvas-drawer" id="mobileDrawer">
         <div class="drawer-handle-bar">
@@ -427,6 +462,6 @@
     </footer>
 
     <!-- Interactive Scripts -->
-    <script src="/static/js/main.js"></script>
+    <script src="/static/js/main.js?v=<?= time() ?>"></script>
 </body>
 </html>
