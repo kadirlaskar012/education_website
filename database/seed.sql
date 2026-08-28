@@ -2,13 +2,13 @@
 -- INITIAL SEED DATA: CATEGORIES, SOURCES, SITE SETTINGS & ADMIN USER
 -- ==========================================================================
 
--- 1. Default Admin User: admin / admin123 (password_hash for admin123)
+-- 1. Default Admin User: admin / admin123
 INSERT OR IGNORE INTO users (id, username, password_hash, email) VALUES 
 (1, 'admin', '$2y$12$6P4v9d15i6fIqYf75YqY1eEGBw8aQZ6z.fQYd7V5h8X0hGqI5eMee', 'admin@edugovnews.in');
 
--- 2. Default Site Settings
-INSERT OR IGNORE INTO site_settings (id, site_name, site_tagline, contact_email, top_breaking_announcement) VALUES
-(1, 'EduGov News', 'Verified Official Education Updates & Notifications', 'contact@edugovnews.in', 'RRB NTPC 2026 Notification Out — Check Dates & Links');
+-- 2. Default Site Settings (with Auto-Publish & AI Rewrite enabled)
+INSERT OR IGNORE INTO site_settings (id, site_name, site_tagline, contact_email, top_breaking_announcement, auto_publish, ai_rewrite, min_quality_score) VALUES
+(1, 'EduGov News', 'Verified Official Education Updates & Notifications', 'contact@edugovnews.in', 'RRB NTPC 2026 Notification Out — Check Dates & Links', 1, 1, 80);
 
 -- 3. 14 Official Education Categories
 INSERT OR IGNORE INTO categories (id, name, slug, description, icon, display_order) VALUES

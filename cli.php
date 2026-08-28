@@ -1,10 +1,13 @@
 <?php
 /**
- * Command Line Interface (CLI)
+ * Command Line Interface (CLI) for EduGov News Engine
  * Usage:
- *   php cli.php seed          (Seeds database with initial categories and sources)
- *   php cli.php run-pipeline  (Runs automated scraper pipeline)
- *   php cli.php stats         (Displays article and database statistics)
+ *   php cli.php seed              (Seeds database schema, categories and sources)
+ *   php cli.php run-pipeline      (Executes complete scraping, AI generation & publishing pipeline)
+ *   php cli.php fetch-sources     (Cron step 1: Scrapes active sources)
+ *   php cli.php process-articles  (Cron step 2: AI rewrites & SEO optimizes)
+ *   php cli.php publish-articles  (Cron step 3: Auto-publishes validated articles)
+ *   php cli.php stats             (Displays database & quality statistics)
  */
 
 declare(strict_types=1);
@@ -37,11 +40,23 @@ switch ($action) {
         break;
 
     case 'run-pipeline':
-        echo "--> Running automated scraper pipeline...\n";
+        echo "--> Running complete automated AI scraper pipeline...\n";
         $runner = new \App\Pipeline\Services\PipelineRunner();
         $stats = $runner->runAll();
         echo "--> Pipeline finished in {$stats['execution_time']}s!\n";
         print_r($stats);
+        break;
+
+    case 'fetch-sources':
+        require_once __DIR__ . '/cron/fetch_sources.php';
+        break;
+
+    case 'process-articles':
+        require_once __DIR__ . '/cron/process_articles.php';
+        break;
+
+    case 'publish-articles':
+        require_once __DIR__ . '/cron/publish_articles.php';
         break;
 
     case 'stats':
@@ -55,8 +70,11 @@ switch ($action) {
 
     default:
         echo "EduGov CLI Usage:\n";
-        echo "  php cli.php seed          - Seed categories and sources\n";
-        echo "  php cli.php run-pipeline  - Fetch and scrape sources\n";
-        echo "  php cli.php stats         - View article statistics\n";
+        echo "  php cli.php seed              - Seed categories and sources\n";
+        echo "  php cli.php run-pipeline      - Fetch, AI rewrite, validate & publish\n";
+        echo "  php cli.php fetch-sources     - Step 1: Scrape active sources\n";
+        echo "  php cli.php process-articles  - Step 2: Extract & generate articles\n";
+        echo "  php cli.php publish-articles  - Step 3: Auto-publish validated articles\n";
+        echo "  php cli.php stats             - View article statistics\n";
         break;
 }

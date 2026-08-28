@@ -60,6 +60,8 @@ $router->get('/admin/articles', [AdminController::class, 'articles']);
 $router->get('/admin/articles/edit/{id}', [AdminController::class, 'editArticle']);
 $router->post('/admin/articles/edit/{id}', [AdminController::class, 'editArticle']);
 $router->get('/admin/sources', [AdminController::class, 'sources']);
+$router->get('/admin/settings', [AdminController::class, 'settings']);
+$router->post('/admin/settings', [AdminController::class, 'settings']);
 $router->post('/admin/pipeline/run', [AdminController::class, 'triggerScraper']);
 
 return $router;

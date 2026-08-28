@@ -19,6 +19,9 @@
             </span>
             <?php endif; ?>
             <span>📅 Published: <?= date('M j, Y — g:i A', strtotime($article['published_at'])) ?></span>
+            <?php if ($article['version_number'] > 1): ?>
+            <span style="color: #0369a1; font-weight: 600;">(Updated v<?= (int)$article['version_number'] ?>)</span>
+            <?php endif; ?>
             <span>⏱️ 2 min read</span>
             <span>👁️ <?= (int)$article['views_count'] ?> views</span>
         </div>
@@ -42,10 +45,13 @@
             <?php if (!empty($article['official_source_url'])): ?>
             <br>Direct Official Source: <a href="<?= htmlspecialchars($article['official_source_url']) ?>" target="_blank" rel="noopener noreferrer nofollow" style="color: #15803d; text-decoration: underline; word-break: break-all;"><?= htmlspecialchars($article['official_source_url']) ?></a>
             <?php endif; ?>
+            <?php if (!empty($article['official_pdf_url'])): ?>
+            <br>Official PDF Document: <a href="<?= htmlspecialchars($article['official_pdf_url']) ?>" target="_blank" rel="noopener noreferrer nofollow" style="color: #15803d; text-decoration: underline; word-break: break-all;">Download PDF ↗</a>
+            <?php endif; ?>
         </div>
     </div>
 
-    <!-- Structured Grounded Content Body -->
+    <!-- Structured Grounded Content Body (with injected tables and contextual links) -->
     <div class="article-main-body">
         <?= $article['content_html'] ?>
     </div>
@@ -76,7 +82,12 @@
 </section>
 <?php endif; ?>
 
-<!-- Schema.org JSON-LD Structured Data for Google SEO -->
+<!-- Schema.org JSON-LD Structured Data for Google News, Articles, Breadcrumbs, & FAQs -->
+<?php if (!empty($article['schema_json'])): ?>
+<script type="application/ld+json">
+<?= $article['schema_json'] ?>
+</script>
+<?php else: ?>
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -95,3 +106,4 @@
   }
 }
 </script>
+<?php endif; ?>

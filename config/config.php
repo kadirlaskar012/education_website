@@ -30,16 +30,27 @@ return [
         ],
     ],
 
-    // Admin Credentials (default)
+    // Admin Credentials
     'admin' => [
         'username' => getenv('ADMIN_USER') ?: 'admin',
-        'password' => getenv('ADMIN_PASS') ?: 'admin123', // Will be hashed via password_hash()
+        'password' => getenv('ADMIN_PASS') ?: 'admin123',
     ],
 
-    // Scraper Pipeline Configuration
+    // AI & Gemini API Configuration
+    'ai' => [
+        'provider'        => 'gemini',
+        'api_key'         => getenv('GEMINI_API_KEY') ?: '',
+        'model'           => getenv('GEMINI_MODEL') ?: 'gemini-1.5-flash',
+        'temperature'     => 0.4, // Low temperature for high factual accuracy
+        'enable_rewrite'  => true,
+        'auto_publish'    => true, // Auto-publish if quality validation passes
+    ],
+
+    // Scraper & Pipeline Configuration
     'pipeline' => [
         'fetch_timeout_seconds' => 15,
-        'user_agent' => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 EduGovBot/2.0',
+        'user_agent'            => 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36 EduGovBot/2.0 (Verified Education Scraper; +https://edugovnews.in/about)',
         'cron_interval_minutes' => 15,
+        'min_quality_score'     => 80,
     ]
 ];

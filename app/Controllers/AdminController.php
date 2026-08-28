@@ -1,6 +1,7 @@
 <?php
 /**
  * Secure Admin Control Center Controller
+ * Controls AI settings, manual scrapers, article review & publication
  */
 
 namespace App\Controllers;
@@ -9,7 +10,7 @@ use App\Core\Controller;
 use App\Core\Auth;
 use App\Models\Article;
 use App\Models\Source;
-use App\Models\Category;
+use App\Models\SiteSetting;
 use App\Pipeline\Services\PipelineRunner;
 
 class AdminController extends Controller {
@@ -18,11 +19,14 @@ class AdminController extends Controller {
         $articleModel = new Article();
         $stats = $articleModel->getAdminStats();
         $recentArticles = $articleModel->getLatestArticles(10);
+        $settingModel = new SiteSetting();
+        $settings = $settingModel->getSettings();
 
         $this->render('admin/dashboard', [
             'page_title'      => 'Control Center Dashboard — EduGov Administration',
             'stats'           => $stats,
             'recent_articles' => $recentArticles,
+            'settings'        => $settings,
             'user'            => Auth::user(),
         ], 'admin');
     }
@@ -58,11 +62,20 @@ class AdminController extends Controller {
     public function articles(): void {
         Auth::requireAuth();
         $articleModel = new Article();
+        $statusFilter = trim($_GET['status'] ?? '');
         $articles = $articleModel->getLatestArticles(50);
 
+        if (!empty($statusFilter)) {
+            $db = \Database::getConnection();
+            $stmt = $db->prepare("SELECT a.*, c.name as category_name FROM articles a JOIN categories c ON a.category_id = c.id WHERE a.status = :status ORDER BY a.published_at DESC LIMIT 50");
+            $stmt->execute([':status' => $statusFilter]);
+            $articles = $stmt->fetchAll();
+        }
+
         $this->render('admin/articles', [
-            'page_title' => 'Articles & Notifications — EduGov Admin',
-            'articles'   => $articles,
+            'page_title'    => 'Articles & Notifications — EduGov Admin',
+            'articles'      => $articles,
+            'status_filter' => $statusFilter,
         ], 'admin');
     }
 
@@ -113,6 +126,24 @@ class AdminController extends Controller {
         ], 'admin');
     }
 
+    public function settings(): void {
+        Auth::requireAuth();
+        $settingModel = new SiteSetting();
+        $message = null;
+
+        if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+            $settingModel->updateSettings($_POST);
+            $message = 'Settings updated successfully!';
+        }
+
+        $settings = $settingModel->getSettings();
+        $this->render('admin/settings', [
+            'page_title' => 'Automation & AI Settings — EduGov Admin',
+            'settings'   => $settings,
+            'message'    => $message,
+        ], 'admin');
+    }
+
     public function sources(): void {
         Auth::requireAuth();
         $sourceModel = new Source();
@@ -131,7 +162,7 @@ class AdminController extends Controller {
 
         $this->json([
             'success' => true,
-            'message' => 'Scraper pipeline executed successfully!',
+            'message' => 'Scraper & AI pipeline executed successfully!',
             'stats'   => $stats,
         ]);
     }
