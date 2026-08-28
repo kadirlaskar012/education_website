@@ -2181,20 +2181,46 @@ a {
     font-weight: 700;
 }
 
-.link-btn {
-    display: inline-block;
-    background-color: #1e3a8a;
-    color: #ffffff;
-    padding: 0.35rem 0.75rem;
-    border-radius: 4px;
-    font-size: 0.75rem;
-    font-weight: 600;
+/* Action Link Buttons (Tables, Verified Links, Modals) */
+.link-btn,
+a.link-btn,
+.article-main-body a.link-btn,
+.data-table a.link-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.35rem;
+    background: linear-gradient(135deg, #1e3a8a, #2563eb);
+    color: #ffffff !important;
+    text-decoration: none !important;
+    padding: 0.45rem 0.95rem;
+    border-radius: 6px;
+    font-size: 0.775rem;
+    font-weight: 700;
     text-align: center;
     white-space: nowrap;
+    border: none;
+    box-shadow: 0 2px 4px rgba(30, 58, 138, 0.25);
+    transition: all 0.15s ease;
 }
 
-.link-btn:hover {
-    background-color: #1d4ed8;
+.link-btn:hover,
+a.link-btn:hover,
+.article-main-body a.link-btn:hover,
+.data-table a.link-btn:hover {
+    background: #1d4ed8;
+    color: #ffffff !important;
+    text-decoration: none !important;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 8px rgba(30, 58, 138, 0.35);
+}
+
+[data-theme="dark"] .link-btn,
+[data-theme="dark"] a.link-btn,
+[data-theme="dark"] .article-main-body a.link-btn,
+[data-theme="dark"] .data-table a.link-btn {
+    background: linear-gradient(135deg, #0284c7, #2563eb);
+    color: #ffffff !important;
 }
 
 /* Mobile Offcanvas Bottom Sheet */
