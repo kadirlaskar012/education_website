@@ -22,7 +22,6 @@
             <?php if ($article['version_number'] > 1): ?>
             <span style="color: #0369a1; font-weight: 600;">(Updated v<?= (int)$article['version_number'] ?>)</span>
             <?php endif; ?>
-            <span>⏱️ 2 min read</span>
             <span>👁️ <?= (int)$article['views_count'] ?> views</span>
         </div>
 

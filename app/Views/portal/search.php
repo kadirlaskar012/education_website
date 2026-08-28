@@ -59,7 +59,7 @@
                         <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="read-more-btn">
                             Read Full Notice & Direct Links »
                         </a>
-                        <span class="read-time">⏱️ 2 min read</span>
+                        <span class="badge-verified-small">✓ Verified</span>
                     </div>
                 </article>
                 <?php endforeach; ?>

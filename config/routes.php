@@ -59,6 +59,7 @@ $router->get('/admin/login', [AdminController::class, 'login']);
 $router->post('/admin/login', [AdminController::class, 'login']);
 $router->get('/admin/logout', [AdminController::class, 'logout']);
 $router->get('/admin/articles', [AdminController::class, 'articles']);
+$router->post('/admin/articles/bulk', [AdminController::class, 'bulkArticles']);
 $router->get('/admin/articles/edit/{id}', [AdminController::class, 'editArticle']);
 $router->post('/admin/articles/edit/{id}', [AdminController::class, 'editArticle']);
 $router->get('/admin/sources', [AdminController::class, 'sources']);

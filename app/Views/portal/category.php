@@ -12,13 +12,34 @@
             <?= htmlspecialchars($category['icon'] ?? '📰') ?> <?= htmlspecialchars($category['name']) ?>
         </h1>
         <span class="cat-header-count">
-            Total <?= (int)$total_items ?> Updates
+            <?= (int)$total_items ?> Updates
         </span>
     </div>
     <?php if (!empty($category['description'])): ?>
     <p class="cat-header-desc">
         <?= htmlspecialchars($category['description']) ?>
     </p>
+    <?php endif; ?>
+
+    <!-- Dynamic State-Wise Filter Pills (Only states with active posts appear) -->
+    <?php if (!empty($available_states)): ?>
+    <div class="category-state-filter-wrap" style="margin-top: 1.25rem; border-top: 1px solid var(--color-border); padding-top: 1rem;">
+        <div style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.35rem;">
+            <span>🗺️ Filter by State:</span>
+        </div>
+        <div class="state-chips-scroll-track" style="display: flex; flex-wrap: wrap; gap: 0.45rem;">
+            <a href="/category/<?= htmlspecialchars($category['slug']) ?>" 
+               class="smart-tab-pill <?= empty($selected_state) ? 'active' : '' ?>">
+                All Regions
+            </a>
+            <?php foreach ($available_states as $st): ?>
+            <a href="/category/<?= htmlspecialchars($category['slug']) ?>?state=<?= urlencode($st['state_code']) ?>" 
+               class="smart-tab-pill <?= ($selected_state === $st['state_code']) ? 'active' : '' ?>">
+                <?= htmlspecialchars($st['state_name']) ?> <span style="opacity: 0.75; font-size: 0.7rem;">(<?= (int)$st['count'] ?>)</span>
+            </a>
+            <?php endforeach; ?>
+        </div>
+    </div>
     <?php endif; ?>
 </header>
 
@@ -56,7 +77,7 @@
                         <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="read-more-btn">
                             Read Full Notice & Direct Links »
                         </a>
-                        <span class="read-time">⏱️ 2 min read</span>
+                        <span class="badge-verified-small">✓ Verified</span>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -65,8 +86,11 @@
             <!-- Pagination -->
             <?php if ($total_pages > 1): ?>
             <div class="pagination-container">
-                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
-                <a href="?page=<?= $i ?>" class="pagination-item <?= $i === $current_page ? 'active' : '' ?>">
+                <?php 
+                $stateParam = !empty($selected_state) ? '&state=' . urlencode($selected_state) : '';
+                for ($i = 1; $i <= $total_pages; $i++): 
+                ?>
+                <a href="?page=<?= $i ?><?= $stateParam ?>" class="pagination-item <?= $i === $current_page ? 'active' : '' ?>">
                     <?= $i ?>
                 </a>
                 <?php endfor; ?>
@@ -76,9 +100,9 @@
         <?php else: ?>
             <div class="empty-state-box">
                 <div class="empty-icon">📭</div>
-                <h3>No notices currently found under <?= htmlspecialchars($category['name']) ?></h3>
-                <p>New recruitment and exam notifications are being synchronized by the automated pipeline.</p>
-                <a href="/" class="admin-btn admin-btn-primary" style="margin-top: 1rem; display: inline-block;">Return to Homepage</a>
+                <h3>No notices found for this selection</h3>
+                <p>New recruitment and exam notifications are synchronized daily.</p>
+                <a href="/category/<?= htmlspecialchars($category['slug']) ?>" class="admin-btn admin-btn-primary" style="margin-top: 1rem; display: inline-block;">View All States</a>
             </div>
         <?php endif; ?>
     </main>
@@ -98,7 +122,7 @@
         </div>
 
         <div class="sidebar-card">
-            <h3 class="sidebar-title">🗺️ State-Wise Portals</h3>
+            <h3 class="sidebar-title">🗺️ State Portals</h3>
             <ul class="sidebar-links-list">
                 <li><a href="/state/central-govt">🏛️ Central Government</a></li>
                 <li><a href="/state/west-bengal">🌊 West Bengal (WBPSC)</a></li>

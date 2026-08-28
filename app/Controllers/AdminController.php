@@ -1,7 +1,7 @@
 <?php
 /**
  * Secure Admin Control Center Controller
- * Controls AI settings, manual scrapers, article review, filtering & publication
+ * Controls AI settings, manual scrapers, article review, filtering, bulk actions & publication
  */
 
 namespace App\Controllers;
@@ -74,13 +74,54 @@ class AdminController extends Controller {
 
         $articles = $articleModel->getFilteredAdminArticles($filters, 100);
         $categories = $categoryModel->getActiveCategories();
+        $message = $_GET['msg'] ?? null;
 
         $this->render('admin/articles', [
             'page_title' => 'Articles & Notifications — EduGov Admin',
             'articles'   => $articles,
             'categories' => $categories,
             'filters'    => $filters,
+            'message'    => $message,
         ], 'admin');
+    }
+
+    /**
+     * Handle bulk actions: Status change or Delete on selected articles
+     */
+    public function bulkArticles(): void {
+        Auth::requireAuth();
+        if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
+            $this->redirect('/admin/articles');
+        }
+
+        $action = trim($_POST['bulk_action'] ?? '');
+        $ids = $_POST['article_ids'] ?? [];
+
+        if (is_array($ids)) {
+            $ids = array_map('intval', $ids);
+            $ids = array_filter($ids, fn($id) => $id > 0);
+        } else {
+            $ids = [];
+        }
+
+        $articleModel = new Article();
+        $count = count($ids);
+
+        if ($count > 0) {
+            if ($action === 'delete') {
+                $affected = $articleModel->bulkDelete($ids);
+                $msg = "Successfully deleted $affected articles.";
+            } elseif (in_array($action, ['published', 'draft', 'in_review'])) {
+                $affected = $articleModel->bulkUpdateStatus($ids, $action);
+                $msg = "Successfully updated status of $affected articles to " . ucfirst($action) . ".";
+            } else {
+                $msg = "Invalid bulk action selected.";
+            }
+        } else {
+            $msg = "No articles were selected.";
+        }
+
+        $this->redirect('/admin/articles?msg=' . urlencode($msg));
     }
 
     public function editArticle(string $id): void {

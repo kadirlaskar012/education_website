@@ -25,7 +25,7 @@ class Article {
         return $art ?: ($this->getLatestPublished(1)[0] ?? null);
     }
 
-    public function getBreakingArticles(int $limit = 5): array {
+    public function getBreakingArticles(int $limit = 8): array {
         $stmt = $this->db->prepare("
             SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
             FROM articles a
@@ -73,26 +73,56 @@ class Article {
         return $stmt->fetchAll();
     }
 
-    public function getByCategory(int $categoryId, int $limit = 15, int $offset = 0): array {
-        $stmt = $this->db->prepare("
+    public function getByCategory(int $categoryId, int $limit = 15, int $offset = 0, ?string $stateCode = null): array {
+        $sql = "
             SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
             FROM articles a
             JOIN categories c ON a.category_id = c.id
             WHERE a.status = 'published' AND a.category_id = :cat_id
-            ORDER BY a.published_at DESC
-            LIMIT :limit OFFSET :offset
-        ");
+        ";
+        if (!empty($stateCode) && $stateCode !== 'ALL') {
+            $sql .= " AND a.state_code = :state_code";
+        }
+        $sql .= " ORDER BY a.published_at DESC LIMIT :limit OFFSET :offset";
+
+        $stmt = $this->db->prepare($sql);
         $stmt->bindValue(':cat_id', $categoryId, \PDO::PARAM_INT);
+        if (!empty($stateCode) && $stateCode !== 'ALL') {
+            $stmt->bindValue(':state_code', $stateCode, \PDO::PARAM_STR);
+        }
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll();
     }
 
-    public function countByCategory(int $categoryId): int {
-        $stmt = $this->db->prepare("SELECT COUNT(*) FROM articles WHERE status = 'published' AND category_id = :cat_id");
-        $stmt->execute([':cat_id' => $categoryId]);
+    public function countByCategory(int $categoryId, ?string $stateCode = null): int {
+        $sql = "SELECT COUNT(*) FROM articles WHERE status = 'published' AND category_id = :cat_id";
+        if (!empty($stateCode) && $stateCode !== 'ALL') {
+            $sql .= " AND state_code = :state_code";
+        }
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':cat_id', $categoryId, \PDO::PARAM_INT);
+        if (!empty($stateCode) && $stateCode !== 'ALL') {
+            $stmt->bindValue(':state_code', $stateCode, \PDO::PARAM_STR);
+        }
+        $stmt->execute();
         return (int)$stmt->fetchColumn();
+    }
+
+    /**
+     * Get distinct states that have active published posts in this category
+     */
+    public function getDistinctStatesByCategory(int $categoryId): array {
+        $stmt = $this->db->prepare("
+            SELECT state_code, state_name, COUNT(*) as count
+            FROM articles
+            WHERE category_id = :cat_id AND status = 'published' AND state_code IS NOT NULL AND state_code != ''
+            GROUP BY state_code, state_name
+            ORDER BY count DESC, state_name ASC
+        ");
+        $stmt->execute([':cat_id' => $categoryId]);
+        return $stmt->fetchAll();
     }
 
     public function search(string $query, int $limit = 20, int $offset = 0): array {
@@ -191,7 +221,7 @@ class Article {
         return $stmt->fetchAll();
     }
 
-    public function getFilteredAdminArticles(array $filters = [], int $limit = 50): array {
+    public function getFilteredAdminArticles(array $filters = [], int $limit = 100): array {
         $sql = "SELECT a.*, c.name as category_name FROM articles a JOIN categories c ON a.category_id = c.id WHERE 1=1";
         $params = [];
 
@@ -224,6 +254,31 @@ class Article {
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    /**
+     * Bulk update status of articles
+     */
+    public function bulkUpdateStatus(array $ids, string $status): int {
+        if (empty($ids)) return 0;
+        $validStatuses = ['published', 'draft', 'in_review'];
+        if (!in_array($status, $validStatuses)) return 0;
+
+        $inClause = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $this->db->prepare("UPDATE articles SET status = ? WHERE id IN ($inClause)");
+        $stmt->execute(array_merge([$status], $ids));
+        return $stmt->rowCount();
+    }
+
+    /**
+     * Bulk delete articles
+     */
+    public function bulkDelete(array $ids): int {
+        if (empty($ids)) return 0;
+        $inClause = implode(',', array_fill(0, count($ids), '?'));
+        $stmt = $this->db->prepare("DELETE FROM articles WHERE id IN ($inClause)");
+        $stmt->execute($ids);
+        return $stmt->rowCount();
     }
 
     public function getAdminStats(): array {

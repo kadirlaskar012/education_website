@@ -1,6 +1,7 @@
 /* ==========================================================================
    EDUGOV NEWS - HIGH-PERFORMANCE MODERN CSS DESIGN SYSTEM
-   Features: Vector Brand Logo, Eye-Comfort Dark Mode, Responsive Cards, Clickable Ticker
+   Features: Vector Brand Logo, Eye-Comfort Dark Mode, Responsive Cards,
+             Clickable Slow Ticker, Dynamic State Matrix, Multi-Select Admin
    ========================================================================== */
 
 :root {
@@ -62,6 +63,7 @@
 [data-theme="dark"] .admin-card,
 [data-theme="dark"] .category-header-banner,
 [data-theme="dark"] .related-post-card,
+[data-theme="dark"] .compact-card,
 [data-theme="dark"] .empty-state-box {
     background-color: var(--color-card-bg);
     border-color: var(--color-border);
@@ -87,18 +89,21 @@
     color: #38bdf8;
 }
 
-[data-theme="dark"] .data-table th {
+[data-theme="dark"] .data-table th,
+[data-theme="dark"] .admin-table th {
     background-color: #0f172a;
     color: #93c5fd;
     border-color: #334155;
 }
 
-[data-theme="dark"] .data-table td {
+[data-theme="dark"] .data-table td,
+[data-theme="dark"] .admin-table td {
     border-color: #334155;
     color: #e2e8f0;
 }
 
-[data-theme="dark"] .data-table tr:hover {
+[data-theme="dark"] .data-table tr:hover,
+[data-theme="dark"] .admin-table tr:hover {
     background-color: #1e293b;
 }
 
@@ -241,24 +246,43 @@ a {
     gap: 0.75rem;
 }
 
+/* Unique Hamburger Menu Button */
 .mobile-menu-btn {
     display: none;
     flex-direction: column;
-    justify-content: space-between;
-    width: 26px;
-    height: 19px;
-    background: transparent;
-    border: none;
+    justify-content: center;
+    gap: 4px;
+    width: 36px;
+    height: 36px;
+    background: var(--color-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
     cursor: pointer;
-    padding: 0;
+    padding: 7px;
     flex-shrink: 0;
+    transition: all 0.15s ease;
+}
+
+.mobile-menu-btn:hover {
+    background-color: #eff6ff;
+    border-color: #2563eb;
+}
+
+[data-theme="dark"] .mobile-menu-btn:hover {
+    background-color: #1e293b;
+    border-color: #38bdf8;
 }
 
 .mobile-menu-btn .bar {
     width: 100%;
-    height: 2.5px;
+    height: 2px;
     background-color: var(--color-text-main);
     border-radius: 2px;
+    transition: all 0.2s ease;
+}
+
+.mobile-menu-btn .bar:nth-child(2) {
+    width: 75%;
 }
 
 /* Brand Logo (Vector SVG Emblem + Typography) */
@@ -541,7 +565,33 @@ a {
     border-color: #38bdf8;
 }
 
-/* Breaking Ticker (Clickable & Pause-on-Hover) */
+/* State Matrix Buttons */
+.state-card-btn {
+    display: block;
+    text-align: center;
+    background-color: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    padding: 0.6rem 0.5rem;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--color-text-main);
+    transition: all 0.15s ease;
+}
+
+.state-card-btn:hover {
+    border-color: #2563eb;
+    color: #2563eb;
+    transform: translateY(-1px);
+    box-shadow: var(--shadow-sm);
+}
+
+[data-theme="dark"] .state-card-btn:hover {
+    border-color: #38bdf8;
+    color: #38bdf8;
+}
+
+/* Breaking Ticker (Smooth Slow 90s Marquee & Pause-on-Hover) */
 .breaking-ticker-bar {
     background: linear-gradient(90deg, #dc2626, #b91c1c);
     color: #ffffff;
@@ -580,13 +630,13 @@ a {
 
 .ticker-items {
     display: inline-block;
-    animation: marquee 45s linear infinite;
+    animation: marquee 90s linear infinite; /* Slowed down for easy reading */
 }
 
 .ticker-link {
     color: #ffffff;
     text-decoration: none;
-    margin-right: 2.5rem;
+    margin-right: 3rem;
     display: inline-block;
     transition: opacity 0.15s;
 }
@@ -764,6 +814,16 @@ a {
     border-top: 1px dashed var(--color-border);
     padding-top: 0.75rem;
     font-size: 0.75rem;
+}
+
+.badge-verified-small {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: #15803d;
+}
+
+[data-theme="dark"] .badge-verified-small {
+    color: #34d399;
 }
 
 .read-more-btn {
@@ -1421,6 +1481,119 @@ a {
     text-align: center;
     font-size: 0.75rem;
 }
+
+/* Admin Dashboard Specific Styles */
+.admin-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.admin-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 1.25rem;
+    margin-bottom: 1.5rem;
+}
+
+.admin-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+}
+
+.metric-card {
+    background: #ffffff;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 1rem;
+}
+
+.metric-card.border-blue { border-left: 4px solid #2563eb; }
+.metric-card.border-green { border-left: 4px solid #16a34a; }
+.metric-card.border-amber { border-left: 4px solid #d97706; }
+.metric-card.border-purple { border-left: 4px solid #9333ea; }
+.metric-card.border-slate { border-left: 4px solid #64748b; }
+
+.metric-label {
+    font-size: 0.75rem;
+    color: #64748b;
+    font-weight: 600;
+}
+
+.metric-value {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #0a192f;
+    margin-top: 0.25rem;
+}
+
+.admin-btn {
+    display: inline-block;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    font-size: 0.8125rem;
+    font-weight: 600;
+    cursor: pointer;
+    border: none;
+}
+
+.admin-btn-primary {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+.admin-btn-secondary {
+    background: #f1f5f9;
+    color: #334155;
+    border: 1px solid #cbd5e1;
+}
+
+.admin-btn-sm {
+    background: #f1f5f9;
+    border: 1px solid #cbd5e1;
+    padding: 0.2rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: #1e3a8a;
+}
+
+.admin-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.8125rem;
+}
+
+.admin-table th, .admin-table td {
+    padding: 0.65rem 0.75rem;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: left;
+}
+
+.admin-table th {
+    background-color: #f8fafc;
+    color: #475569;
+    font-weight: 700;
+}
+
+.status-badge {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    padding: 0.15rem 0.4rem;
+    border-radius: 3px;
+}
+
+.status-published { background: #f0fdf4; color: #166534; }
+.status-updated { background: #eff6ff; color: #1e40af; }
+.status-review, .status-in_review { background: #fffbeb; color: #92400e; }
+.status-draft { background: #f1f5f9; color: #475569; }
+.status-error { background: #fef2f2; color: #991b1b; }
 
 /* Responsive Media Queries */
 @media (max-width: 900px) {

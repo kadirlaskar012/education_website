@@ -21,21 +21,25 @@ class CategoryController extends Controller {
         }
 
         $page = max(1, (int)($_GET['page'] ?? 1));
+        $stateCode = trim($_GET['state'] ?? '');
         $limit = 15;
         $offset = ($page - 1) * $limit;
 
         $articleModel = new Article();
-        $articles = $articleModel->getByCategory($category['id'], $limit, $offset);
-        $total = $articleModel->countByCategory($category['id']);
+        $availableStates = $articleModel->getDistinctStatesByCategory($category['id']);
+        $articles = $articleModel->getByCategory($category['id'], $limit, $offset, $stateCode ?: null);
+        $total = $articleModel->countByCategory($category['id'], $stateCode ?: null);
         $totalPages = ceil($total / $limit);
 
         $this->render('portal/category', [
-            'page_title'   => $category['name'] . ' — EduGov News',
-            'category'     => $category,
-            'articles'     => $articles,
-            'current_page' => $page,
-            'total_pages'  => $totalPages,
-            'total_items'  => $total,
+            'page_title'       => $category['name'] . (!empty($stateCode) ? " ($stateCode)" : "") . ' — EduGov News',
+            'category'         => $category,
+            'articles'         => $articles,
+            'available_states' => $availableStates,
+            'selected_state'   => $stateCode,
+            'current_page'     => $page,
+            'total_pages'      => $totalPages,
+            'total_items'      => $total,
         ]);
     }
 }

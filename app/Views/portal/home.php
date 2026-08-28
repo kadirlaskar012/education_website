@@ -21,7 +21,6 @@
         <a href="/news/<?= htmlspecialchars($featured['slug']) ?>" class="btn-hero-primary">
             Read Full Notice & Direct Links »
         </a>
-        <span class="text-sm text-slate-500 font-medium">⏱️ 2 min read</span>
     </div>
 </section>
 <?php endif; ?>
