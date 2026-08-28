@@ -1,32 +1,16 @@
-# Python
-__pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-env/
-venv/
-ENV/
+# Environment variables
 .env
 
-# Django
-*.log
-local_settings.py
-db.sqlite3
-db.sqlite3-journal
-media/
-staticfiles/
+# Database (optional for local SQLite)
+database/database.sqlite
+database/database.sqlite-journal
+database/database.sqlite-wal
+database/database.sqlite-shm
 
-# IDEs
-.idea/
-.vscode/
-*.swp
-*.swo
-
-# Celery
-celerybeat-schedule
-celerybeat.pid
-
-# OS
+# OS generated files
 .DS_Store
 Thumbs.db
+
+# IDE
+.idea/
+.vscode/

@@ -1,146 +1,145 @@
-# EduGov News — Automated Education News & Information Website
+# 🎓 EduGov News — Automated Education News & Notifications Portal
 
-A production-ready, minimal, high-performance **Automated Education News & Information Portal** built with **Python, Django, Celery, Redis, and PostgreSQL**.
-
-The system automatically monitors, fetches, parses, classifies, deduplicates, and publishes official education circulars, exam dates, recruitment notices, admit cards, and results from government portals (SSC, UPSC, NTA, RRB, CBSE, State Boards) into clean, modern news articles with strict fact-grounding.
+A modern, high-performance, automated Education News & Notification Portal built with **PHP 8+ & MySQL / SQLite**. Designed specifically for **ultra-low-cost shared hosting (Hostinger, cPanel, Namecheap at ₹80–₹120/month)** with zero server maintenance, automated government notice scrapers, SHA-256 deduplication, and an editorial news layout.
 
 ---
 
-## 🏛️ System Architecture
+## 🌟 Key Features
 
-```
-                               ┌─────────────────────────────────┐
-                               │   Official Government Portals   │
-                               │   (SSC, UPSC, NTA, RRB, RSS)    │
-                               └────────────────┬────────────────┘
-                                                │
-                                    [1. Source Scraper / Fetcher]
-                                                │
-                                   [2. SHA-256 Change Detector]
-                                                │
-                                  [3. PDF & Notice Text Parser]
-                                                │
-                                   [4. Duplicate & Update Check]
-                                                │
-                                     [5. Structured Generator]
-                                                │
-                                       [6. Data Validator]
-                                                │
-                         ┌──────────────────────┴──────────────────────┐
-                         │                                             │
-             (Auto-Publish Enabled)                          (Admin Review Mode)
-                         │                                             │
-                 [Status: Published]                           [Status: Review]
-                         │                                             │
-                         └──────────────────────┬──────────────────────┘
-                                                │
-                                 ┌──────────────┴──────────────┐
-                                 │      Web & Public Portal    │
-                                 │  • Fast SSR Clean News UI   │
-                                 │  • Structured Tables & FAQ  │
-                                 │  • Schema.org JSON-LD & RSS │
-                                 │  • Admin Control Dashboard  │
-                                 └─────────────────────────────┘
-```
+1. **Ultra-Low Cost Shared Hosting Compatibility**:
+   - Runs natively on **any standard cPanel or Apache/Nginx shared hosting** with PHP 8.0+.
+   - No Docker, Celery, Redis, or VPS server configurations required.
+2. **Dual-Mode Database**:
+   - **Local Development**: Runs instantly with **SQLite** out of the box with zero setup (`php -S 127.0.0.1:8000 -t public`).
+   - **Production (cPanel / Live)**: Seamlessly connects to **MySQL / MariaDB** via standard PDO.
+3. **Automated Scraper Pipeline & SHA-256 Deduplication**:
+   - Automatically checks official government portals (SSC, UPSC, NTA, RRB) for new recruitment, results, admit cards, and exam dates.
+   - Computes cryptographic SHA-256 content hashes to prevent duplicate notices.
+4. **Editorial & Responsive Design**:
+   - Desktop Navigation Bar with Primary Hubs + "More Categories ▾" Dropdown.
+   - **Mobile Category Ribbon**: Horizontal swipeable chip bar (`🏠 All`, `📋 Results`, `🎫 Admit Cards`, `💼 Recruitment`, `📝 Exams`, `🔑 Answer Key`).
+   - **Mobile Slide-Over Drawer**: Offcanvas navigation with frosted backdrop blur and built-in search.
+   - Touch-scrollable responsive data tables for Important Dates, Vacancies, and Direct Links.
+5. **SEO & Discovery Engine**:
+   - Auto-generated **XML Sitemap** (`/sitemap.xml`)
+   - **RSS 2.0 Feed** (`/rss.xml`)
+   - **Robots.txt** (`/robots.txt`)
+   - Google News & Schema.org JSON-LD Structured Data on every article.
+6. **Secure Admin Control Center**:
+   - Access at `/admin` (Default: `admin` / `admin123`).
+   - Live metrics (Total articles, published, review drafts, duplicate notices skipped, active scrapers).
+   - One-click "⚡ Fetch & Scrape Sources Now" trigger.
+   - Article editor and source management.
 
 ---
 
-## 🚀 Key Features
+## 🚀 Local Development Setup (Quick Start)
 
-* **Clean News Portal Aesthetics**: Editorial white/light layout, deep navy accents, thin dividers, compact news stream, mobile-first drawer navigation.
-* **Modular Adapter Architecture**: Extensible adapters (`SSCAdapter`, `UPSCAdapter`, `NTAAdapter`, `RailwayAdapter`, `GenericRSSAdapter`, `GenericHTMLAdapter`) that plug in effortlessly.
-* **Automated PDF Parsing**: Extracts exam dates, vacancies, application deadlines, eligibility criteria, and fee structures from official PDF releases.
-* **Strict Fact-Grounding**: Never hallucinates or invents dates or details. Unspecified items are marked *"Not specified in the official notification"*.
-* **Duplicate & Update Detection**: SHA-256 hash tracking. Detects amendments and saves `ArticleVersion` revision histories with original canonical URLs preserved.
-* **SEO & Discovery**: Automated Schema.org JSON-LD (`NewsArticle`, `FAQPage`, `BreadcrumbList`), dynamic XML sitemap (`/sitemap.xml`), and RSS 2.0 feed (`/rss.xml`).
-* **Background Automation**: Celery + Redis + Celery Beat schedules periodic scraping runs without blocking web requests.
-* **Full Django Admin Control**: Live metrics dashboard, Source Health monitoring, and 1-click manual fetch triggers.
+### Requirements:
+- PHP 8.0 or higher (with `pdo_sqlite`, `pdo_mysql`, `curl`, `mbstring`, `openssl` enabled in `php.ini`).
+
+### 1. Run the Development Server
+```bash
+php -S 127.0.0.1:8000 -t public
+```
+
+Open your browser and visit:
+- **Portal**: [http://127.0.0.1:8000](http://127.0.0.1:8000)
+- **Admin Control Center**: [http://127.0.0.1:8000/admin](http://127.0.0.1:8000/admin) *(Username: `admin`, Password: `admin123`)*
 
 ---
 
-## 🛠️ Local Development & Quickstart
+## 🛠️ CLI Terminal Commands
 
-### 1. Install Dependencies
+You can run automated tasks or inspect the database directly from the terminal:
+
 ```bash
-python -m pip install -r requirements.txt
-```
+# Seed initial 14 categories and official sources
+php cli.php seed
 
-### 2. Apply Migrations
-```bash
-python manage.py makemigrations
-python manage.py migrate
-```
+# Run automated scraper pipeline manually
+php cli.php run-pipeline
 
-### 3. Seed Initial Categories, Templates, Sources & Live Articles
-```bash
-python manage.py seed_education_data
-```
-
-### 4. Create Superuser (for Admin Access)
-```bash
-python manage.py createsuperuser
-```
-
-### 5. Run the Local Development Server
-```bash
-python manage.py runserver 8000
-```
-Open [http://127.0.0.1:8000/](http://127.0.0.1:8000/) in your browser.
-
----
-
-## ⚙️ Background Automation & CLI Commands
-
-### Run Full Ingestion Pipeline via CLI
-```bash
-# Ingest from all active sources
-python manage.py run_pipeline --all
-
-# Ingest from a specific source ID
-python manage.py run_pipeline --source 1
-```
-
-### Test an Adapter Directly
-```bash
-python manage.py test_adapter ssc
-python manage.py test_adapter upsc
-python manage.py test_adapter nta
-python manage.py test_adapter railway
-```
-
-### Run Celery Worker & Beat (Production Automation)
-```bash
-# Start Celery Worker
-celery -A core worker -l info
-
-# Start Celery Periodic Scheduler (Beat)
-celery -A core beat -l info
+# View article inventory & database statistics
+php cli.php stats
 ```
 
 ---
 
-## 🐳 Docker Deployment
+## 🌐 cPanel / Hostinger Shared Hosting Deployment Guide
 
-To launch the complete production stack (Django Web + PostgreSQL + Redis + Celery Worker + Celery Beat):
+### Step 1: Upload Files
+1. Compress the project folder into a `.zip` archive.
+2. In your cPanel / Hostinger File Manager, navigate to `public_html/` and extract the files.
 
-```bash
-docker compose up -d --build
+### Step 2: Create MySQL Database & Import Schema
+1. In cPanel, open **MySQL Database Wizard**.
+2. Create a database (e.g. `youruser_edugov`) and a user with full privileges.
+3. Open **phpMyAdmin**, select your database, and import:
+   - `database/schema.sql` (Creates all tables and indexes)
+   - `database/seed.sql` (Inserts categories, sources, and admin account)
+
+### Step 3: Configure Database Credentials
+Open `config/config.php` (or create a `.env` file) and update your MySQL settings:
+
+```php
+'database' => [
+    'driver' => 'mysql',
+    'mysql' => [
+        'host'     => 'localhost',
+        'port'     => '3306',
+        'database' => 'youruser_edugov',
+        'username' => 'youruser_dbuser',
+        'password' => 'your_db_password',
+        'charset'  => 'utf8mb4',
+    ],
+],
 ```
 
-The website will be accessible on `http://localhost:8000/`.
+### Step 4: Set up Automated 15-Minute Cron Job
+In cPanel, open the **Cron Jobs** tool and add the following scheduled task:
+
+- **Schedule**: Every 15 minutes (`*/15 * * * *`)
+- **Command**:
+  ```bash
+  php /home/yourusername/public_html/public/cron.php >/dev/null 2>&1
+  ```
+
+*(Replace `/home/yourusername/public_html/` with your actual server document root path shown in cPanel File Manager).*
+
+That's it! Your education news portal is now live and will automatically fetch, process, and publish official notices 24/7.
 
 ---
 
-## 🧩 Adding New Government Sources
+## 📁 Directory Structure
 
-Adding a new government source requires zero core refactoring:
+```
+education_website/
+├── app/
+│   ├── Controllers/          # HomeController, ArticleController, CategoryController, etc.
+│   ├── Core/                 # Router, Controller, Model, Auth, View engines
+│   ├── Models/               # Article, Category, Source, SourceItem, SiteSetting
+│   ├── Pipeline/             # Scraper Adapters (SSC, UPSC, NTA, RRB) & HttpFetcher
+│   └── Views/                # Layouts, Portal views, Legal pages & Admin panel
+├── config/
+│   ├── config.php            # Environment & Database settings
+│   ├── database.php          # PDO DB Connection Manager
+│   └── routes.php            # SEO-friendly clean routing table
+├── database/
+│   ├── schema.sql            # MySQL schema for cPanel import
+│   ├── seed.sql              # 14 categories & official sources
+│   └── database.sqlite       # Local SQLite development database
+├── public/
+│   ├── index.php             # Front Controller
+│   ├── cron.php              # Automated 15-minute cPanel cron runner
+│   ├── .htaccess             # Apache URL rewrite rules
+│   └── static/               # Responsive CSS, Vanilla JS, and Admin assets
+├── cli.php                   # Terminal CLI tool
+├── .htaccess                 # Root cPanel public directory rewrite
+└── README.md                 # Complete documentation
+```
 
-1. Log in to `/admin/` & navigate to **Sources**.
-2. Click **Add Source**:
-   - **Name**: e.g., `CBSE Academic Notices`
-   - **URL**: `https://www.cbse.gov.in/`
-   - **Official Domain**: `cbse.gov.in`
-   - **Parser**: Select existing adapter or `generic_html` / `generic_rss`
-   - **Fetch Frequency**: `15` (minutes)
-   - **Auto Publish**: `True` (or `False` for review mode)
-3. Click **Save** and click **Fetch Now** to immediately trigger ingestion!
+---
+
+## 📄 License & Attribution
+Data is fetched strictly from public domain government notices and examination boards (.gov.in, .nic.in, .ac.in). Editorial layout and automation engine © 2026.
