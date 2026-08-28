@@ -5,11 +5,12 @@
     <span><?= htmlspecialchars($category['name']) ?></span>
 </nav>
 
-<!-- Category Header Box -->
+<!-- Category Header Box (Fully Responsive) -->
 <header class="category-header-banner">
     <div class="cat-header-top">
         <h1 class="cat-header-title">
-            <?= htmlspecialchars($category['icon'] ?? '📰') ?> <?= htmlspecialchars($category['name']) ?>
+            <span class="cat-title-icon"><?= htmlspecialchars($category['icon'] ?? '📰') ?></span>
+            <span><?= htmlspecialchars($category['name']) ?></span>
         </h1>
         <span class="cat-header-count">
             <?= (int)$total_items ?> Updates
@@ -23,11 +24,11 @@
 
     <!-- Dynamic State-Wise Filter Pills (Only states with active posts appear) -->
     <?php if (!empty($available_states)): ?>
-    <div class="category-state-filter-wrap" style="margin-top: 1.25rem; border-top: 1px solid var(--color-border); padding-top: 1rem;">
-        <div style="font-size: 0.75rem; font-weight: 700; color: var(--color-text-muted); margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.35rem;">
+    <div class="category-state-filter-wrap">
+        <div class="filter-label-row">
             <span>🗺️ Filter by State:</span>
         </div>
-        <div class="state-chips-scroll-track" style="display: flex; flex-wrap: wrap; gap: 0.45rem;">
+        <div class="state-chips-scroll-track">
             <a href="/category/<?= htmlspecialchars($category['slug']) ?>" 
                class="smart-tab-pill <?= empty($selected_state) ? 'active' : '' ?>">
                 All Regions
@@ -35,7 +36,7 @@
             <?php foreach ($available_states as $st): ?>
             <a href="/category/<?= htmlspecialchars($category['slug']) ?>?state=<?= urlencode($st['state_code']) ?>" 
                class="smart-tab-pill <?= ($selected_state === $st['state_code']) ? 'active' : '' ?>">
-                <?= htmlspecialchars($st['state_name']) ?> <span style="opacity: 0.75; font-size: 0.7rem;">(<?= (int)$st['count'] ?>)</span>
+                <?= htmlspecialchars($st['state_name']) ?> <span class="pill-count">(<?= (int)$st['count'] ?>)</span>
             </a>
             <?php endforeach; ?>
         </div>

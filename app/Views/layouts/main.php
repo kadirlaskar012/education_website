@@ -201,56 +201,57 @@
         <?= $content ?>
     </div>
 
-    <!-- 3. Mobile App-Style Fixed Bottom Dock -->
+    <!-- 3. Mobile App-Style Fixed Bottom Dock with Vibrant Colorful Icons -->
     <nav class="mobile-bottom-nav">
         <div class="bottom-nav-inner">
-            <a href="/" class="bottom-nav-item <?= ($_SERVER['REQUEST_URI'] === '/') ? 'active' : '' ?>">
-                <span class="nav-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"></path>
+            <a href="/" class="bottom-nav-item nav-item-home <?= ($_SERVER['REQUEST_URI'] === '/') ? 'active' : '' ?>">
+                <span class="nav-icon icon-home">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z" fill="#dbeafe" fill-opacity="0.6"></path>
                         <polyline points="9 22 9 12 15 12 15 22"></polyline>
                     </svg>
                 </span>
                 <span class="nav-text">Home</span>
             </a>
-            <a href="/results" class="bottom-nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'results') ? 'active' : '' ?>">
-                <span class="nav-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+            <a href="/results" class="bottom-nav-item nav-item-results <?= str_contains($_SERVER['REQUEST_URI'], 'results') ? 'active' : '' ?>">
+                <span class="nav-icon icon-results">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z" fill="#d1fae5" fill-opacity="0.6"></path>
                         <polyline points="14 2 14 8 20 8"></polyline>
                         <line x1="16" y1="13" x2="8" y2="13"></line>
                         <line x1="16" y1="17" x2="8" y2="17"></line>
+                        <polyline points="10 9 9 9 8 9"></polyline>
                     </svg>
                 </span>
                 <span class="nav-text">Results</span>
             </a>
-            <a href="/admit-card" class="bottom-nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'admit-card') ? 'active' : '' ?>">
-                <span class="nav-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="4" width="20" height="16" rx="2"></rect>
+            <a href="/admit-card" class="bottom-nav-item nav-item-admit <?= str_contains($_SERVER['REQUEST_URI'], 'admit-card') ? 'active' : '' ?>">
+                <span class="nav-icon icon-admit">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#0284c7" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="4" width="20" height="16" rx="2" fill="#e0f2fe" fill-opacity="0.6"></rect>
                         <line x1="2" y1="10" x2="22" y2="10"></line>
-                        <line x1="6" y1="15" x2="10" y2="15"></line>
-                        <line x1="14" y1="15" x2="18" y2="15"></line>
+                        <circle cx="6" cy="15" r="1.5" fill="#0284c7"></circle>
+                        <circle cx="10" cy="15" r="1.5" fill="#0284c7"></circle>
                     </svg>
                 </span>
                 <span class="nav-text">Admit Card</span>
             </a>
-            <a href="/recruitment" class="bottom-nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'recruitment') ? 'active' : '' ?>">
-                <span class="nav-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2"></rect>
+            <a href="/recruitment" class="bottom-nav-item nav-item-jobs <?= str_contains($_SERVER['REQUEST_URI'], 'recruitment') ? 'active' : '' ?>">
+                <span class="nav-icon icon-jobs">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="7" width="20" height="14" rx="2" ry="2" fill="#fef3c7" fill-opacity="0.6"></rect>
                         <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                     </svg>
                 </span>
                 <span class="nav-text">Jobs</span>
             </a>
-            <button type="button" class="bottom-nav-item" id="bottomMenuTrigger" aria-label="Open Full Category Explorer">
-                <span class="nav-icon">
-                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                        <rect x="3" y="3" width="7" height="7" rx="1.5"></rect>
-                        <rect x="14" y="3" width="7" height="7" rx="1.5"></rect>
-                        <rect x="14" y="14" width="7" height="7" rx="1.5"></rect>
-                        <rect x="3" y="14" width="7" height="7" rx="1.5"></rect>
+            <button type="button" class="bottom-nav-item nav-item-explore" id="bottomMenuTrigger" aria-label="Open Full Category Explorer">
+                <span class="nav-icon icon-explore">
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="3" width="7" height="7" rx="1.5" fill="#ede9fe"></rect>
+                        <rect x="14" y="3" width="7" height="7" rx="1.5" fill="#ede9fe"></rect>
+                        <rect x="14" y="14" width="7" height="7" rx="1.5" fill="#ede9fe"></rect>
+                        <rect x="3" y="14" width="7" height="7" rx="1.5" fill="#ede9fe"></rect>
                     </svg>
                 </span>
                 <span class="nav-text">Explore</span>
