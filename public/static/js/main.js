@@ -182,6 +182,7 @@ document.addEventListener('DOMContentLoaded', function () {
     if (dropdownBtn && dropdownParent) {
         dropdownBtn.addEventListener('click', function (e) {
             e.preventDefault();
+            e.stopPropagation();
             dropdownParent.classList.toggle('open');
             const isOpen = dropdownParent.classList.contains('open');
             dropdownBtn.setAttribute('aria-expanded', isOpen);

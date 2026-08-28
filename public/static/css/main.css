@@ -503,13 +503,15 @@ a {
 .desktop-main-nav {
     background-color: var(--color-surface);
     border-top: 1px solid var(--color-border);
+    position: relative;
+    z-index: 50;
 }
 
 .nav-items-row {
     display: flex;
     align-items: center;
     gap: 0.25rem;
-    overflow-x: auto;
+    position: relative;
 }
 
 .nav-item {
@@ -546,6 +548,20 @@ a {
     color: var(--color-text-muted);
     cursor: pointer;
     font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: color 0.15s;
+}
+
+.nav-dropdown-btn:hover,
+.nav-dropdown.open .nav-dropdown-btn {
+    color: #1e3a8a;
+}
+
+[data-theme="dark"] .nav-dropdown-btn:hover,
+[data-theme="dark"] .nav-dropdown.open .nav-dropdown-btn {
+    color: #38bdf8;
 }
 
 .nav-dropdown-menu {
@@ -553,11 +569,11 @@ a {
     position: absolute;
     top: 100%;
     right: 0;
-    background-color: #ffffff;
+    background-color: var(--color-surface);
     border: 1px solid var(--color-border);
-    box-shadow: var(--shadow-md);
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.2);
     border-radius: 8px;
-    min-width: 230px;
+    min-width: 240px;
     z-index: 1000;
     padding: 0.5rem 0;
 }
@@ -568,15 +584,21 @@ a {
 
 .nav-dropdown-menu a {
     display: block;
-    padding: 0.55rem 1.1rem;
+    padding: 0.6rem 1.1rem;
     font-size: 0.8125rem;
     color: var(--color-text-main);
-    transition: background-color 0.15s;
+    text-decoration: none;
+    transition: background-color 0.15s, color 0.15s;
 }
 
 .nav-dropdown-menu a:hover {
-    background-color: #f1f5f9;
-    color: #1e3a8a;
+    background-color: var(--color-bg);
+    color: #2563eb;
+}
+
+[data-theme="dark"] .nav-dropdown-menu a:hover {
+    background-color: #1e293b;
+    color: #38bdf8;
 }
 
 /* Mobile Smart Tabs Bar */
