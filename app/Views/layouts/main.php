@@ -22,7 +22,7 @@
     <link rel="stylesheet" href="/static/css/main.css">
 </head>
 <body class="site-body">
-    <!-- Top Verified Trust Header -->
+    <!-- Top Verified Trust Header (Desktop only) -->
     <div class="top-trust-bar">
         <div class="site-container trust-bar-inner">
             <div class="trust-left">
@@ -30,7 +30,7 @@
                 <span class="trust-meta">Automated Official Synchronization Active</span>
             </div>
             <div class="trust-right">
-                <button id="themeToggleBtn" class="theme-toggle-btn" aria-label="Toggle Eye Comfort Dark Mode">
+                <button class="theme-toggle-btn js-theme-toggle" aria-label="Toggle Eye Comfort Dark Mode">
                     🌓 <span class="theme-label">Eye Comfort</span>
                 </button>
                 <a href="/sitemap.xml" class="trust-link">Sitemap</a>
@@ -53,11 +53,11 @@
 
                 <a href="/" class="brand-logo" title="EduGov News Homepage">
                     <span class="logo-accent">EduGov</span><span class="logo-sub">News<span class="logo-dot">.</span></span>
-                    <span class="logo-tagline"><span class="live-dot"></span> Verified Official Education Updates & Notifications</span>
+                    <span class="logo-tagline"><span class="live-dot"></span> Verified Official Education Updates</span>
                 </a>
             </div>
 
-            <!-- Header Quick Search Bar -->
+            <!-- Header Quick Search Bar (Desktop) -->
             <div class="header-search-box">
                 <form action="/search" method="get" class="search-form">
                     <input type="text" name="q" placeholder="Search exams, results, admit cards..." aria-label="Search notifications" required>
@@ -66,6 +66,7 @@
             </div>
 
             <div class="header-right-actions">
+                <button class="mobile-icon-btn js-theme-toggle" aria-label="Toggle Dark Mode">🌓</button>
                 <button id="mobileSearchTrigger" class="mobile-icon-btn" aria-label="Search">🔍</button>
                 <button id="mobileExploreTrigger" class="mobile-icon-btn" aria-label="Explore Categories">⚡</button>
                 <a href="/recruitment" class="btn-gov-jobs">🏛️ Latest Jobs</a>
@@ -184,7 +185,10 @@
 
         <div class="drawer-header">
             <div class="drawer-title">EduGov News<span class="logo-dot">.</span></div>
-            <button class="drawer-close-btn" id="closeDrawerBtn" aria-label="Close menu">✕</button>
+            <div style="display: flex; gap: 0.5rem; align-items: center;">
+                <button class="theme-toggle-btn js-theme-toggle" style="padding: 0.3rem 0.6rem;">🌓 Theme</button>
+                <button class="drawer-close-btn" id="closeDrawerBtn" aria-label="Close menu">✕</button>
+            </div>
         </div>
 
         <!-- In-Drawer Quick Search -->

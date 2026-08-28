@@ -53,6 +53,11 @@ class Article {
         return $stmt->fetchAll();
     }
 
+    public function incrementViews(int $id): void {
+        $stmt = $this->db->prepare("UPDATE articles SET views_count = views_count + 1 WHERE id = :id");
+        $stmt->execute([':id' => $id]);
+    }
+
     public function getLatestPublished(int $limit = 10, int $offset = 0): array {
         $stmt = $this->db->prepare("
             SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
@@ -165,6 +170,10 @@ class Article {
         $stmt->execute([':slug' => $slug]);
         $art = $stmt->fetch();
         return $art ?: null;
+    }
+
+    public function getRelatedArticles(int $categoryId, int $excludeId, int $limit = 4): array {
+        return $this->getRelated($categoryId, $excludeId, $limit);
     }
 
     public function getRelated(int $categoryId, int $excludeId, int $limit = 4): array {

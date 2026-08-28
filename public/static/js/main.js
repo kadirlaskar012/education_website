@@ -7,32 +7,31 @@ document.addEventListener('DOMContentLoaded', function () {
     // ---------------------------------------------------------
     // 1. Eye-Comfort Dark / Light Theme Toggle & Persistence
     // ---------------------------------------------------------
-    const themeToggleBtn = document.getElementById('themeToggleBtn');
+    const themeToggles = document.querySelectorAll('.js-theme-toggle');
     const htmlEl = document.documentElement;
 
     const savedTheme = localStorage.getItem('theme') || 'light';
     htmlEl.setAttribute('data-theme', savedTheme);
-    updateThemeBtnText(savedTheme);
+    updateAllThemeButtons(savedTheme);
 
-    if (themeToggleBtn) {
-        themeToggleBtn.addEventListener('click', function (e) {
+    themeToggles.forEach(btn => {
+        btn.addEventListener('click', function (e) {
             e.preventDefault();
             const currentTheme = htmlEl.getAttribute('data-theme') || 'light';
             const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
             htmlEl.setAttribute('data-theme', newTheme);
             localStorage.setItem('theme', newTheme);
-            updateThemeBtnText(newTheme);
+            updateAllThemeButtons(newTheme);
         });
-    }
+    });
 
-    function updateThemeBtnText(theme) {
-        if (!themeToggleBtn) return;
-        const label = themeToggleBtn.querySelector('.theme-label');
-        if (theme === 'dark') {
-            themeToggleBtn.innerHTML = '☀️ <span class="theme-label">Light Mode</span>';
-        } else {
-            themeToggleBtn.innerHTML = '🌓 <span class="theme-label">Eye Comfort</span>';
-        }
+    function updateAllThemeButtons(theme) {
+        themeToggles.forEach(btn => {
+            const label = btn.querySelector('.theme-label');
+            if (label) {
+                label.innerText = (theme === 'dark') ? 'Light Mode' : 'Eye Comfort';
+            }
+        });
     }
 
     // ---------------------------------------------------------
