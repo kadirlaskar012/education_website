@@ -26,26 +26,34 @@
         </div>
 
         <!-- Social Share & Print Bar -->
-        <div style="margin-top: 1rem; display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
-            <span style="font-size: 0.75rem; font-weight: 600; color: #64748b;">Share:</span>
-            <a href="https://api.whatsapp.com/send?text=<?= urlencode($article['title'] . ' - ' . 'http://' . $_SERVER['HTTP_HOST'] . '/news/' . $article['slug']) ?>" target="_blank" rel="noopener noreferrer" class="link-btn" style="background-color: #25d366;">WhatsApp</a>
-            <a href="https://t.me/share/url?url=<?= urlencode('http://' . $_SERVER['HTTP_HOST'] . '/news/' . $article['slug']) ?>&text=<?= urlencode($article['title']) ?>" target="_blank" rel="noopener noreferrer" class="link-btn" style="background-color: #0088cc;">Telegram</a>
-            <button class="link-btn js-copy-link" style="background-color: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; cursor: pointer;">📋 Copy Link</button>
-            <button onclick="window.print()" class="link-btn" style="background-color: #f1f5f9; color: #1e293b; border: 1px solid #cbd5e1; cursor: pointer;">🖨️ Print</button>
+        <div class="article-share-bar">
+            <span class="share-label">Share:</span>
+            <a href="https://api.whatsapp.com/send?text=<?= urlencode($article['title'] . ' - ' . 'http://' . $_SERVER['HTTP_HOST'] . '/news/' . $article['slug']) ?>" target="_blank" rel="noopener noreferrer" class="link-btn share-btn-wa">WhatsApp</a>
+            <a href="https://t.me/share/url?url=<?= urlencode('http://' . $_SERVER['HTTP_HOST'] . '/news/' . $article['slug']) ?>&text=<?= urlencode($article['title']) ?>" target="_blank" rel="noopener noreferrer" class="link-btn share-btn-tg">Telegram</a>
+            <button class="link-btn share-btn-action js-copy-link" type="button">📋 Copy Link</button>
+            <button onclick="window.print()" class="link-btn share-btn-action" type="button">🖨️ Print</button>
         </div>
     </header>
 
-    <!-- Source Trust Callout Box -->
+    <!-- Source Trust Callout Box (Crystal Clear in Light & Dark Mode) -->
     <div class="source-verification-box">
         <div class="source-icon">🏛️</div>
         <div class="source-info">
-            <strong>Official Government Source Verification</strong>
-            This article is automatically generated based on the official notification released by <strong><?= htmlspecialchars($article['official_source_name'] ?? 'Government Authority') ?></strong>.
+            <strong class="source-info-heading">Official Government Source Verification</strong>
+            <p class="source-info-text">
+                This article is automatically generated based on the official notification released by <strong><?= htmlspecialchars($article['official_source_name'] ?? 'Government Authority') ?></strong>.
+            </p>
             <?php if (!empty($article['official_source_url'])): ?>
-            <br>Direct Official Source: <a href="<?= htmlspecialchars($article['official_source_url']) ?>" target="_blank" rel="noopener noreferrer nofollow" style="color: #15803d; text-decoration: underline; word-break: break-all;"><?= htmlspecialchars($article['official_source_url']) ?></a>
+            <div class="source-link-row">
+                <span class="source-link-label">Direct Official Source:</span> 
+                <a href="<?= htmlspecialchars($article['official_source_url']) ?>" target="_blank" rel="noopener noreferrer nofollow" class="source-verify-link"><?= htmlspecialchars($article['official_source_url']) ?></a>
+            </div>
             <?php endif; ?>
             <?php if (!empty($article['official_pdf_url'])): ?>
-            <br>Official PDF Document: <a href="<?= htmlspecialchars($article['official_pdf_url']) ?>" target="_blank" rel="noopener noreferrer nofollow" style="color: #15803d; text-decoration: underline; word-break: break-all;">Download PDF ↗</a>
+            <div class="source-link-row">
+                <span class="source-link-label">Official PDF Document:</span> 
+                <a href="<?= htmlspecialchars($article['official_pdf_url']) ?>" target="_blank" rel="noopener noreferrer nofollow" class="source-verify-link">Download PDF ↗</a>
+            </div>
             <?php endif; ?>
         </div>
     </div>
