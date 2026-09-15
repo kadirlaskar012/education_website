@@ -13,13 +13,11 @@ use App\Controllers\FeedController;
 use App\Controllers\LegalController;
 use App\Controllers\AdminController;
 use App\Controllers\CronController;
-use App\Controllers\PreviewController;
 
 $router = new Router();
 
 // Portal Routes
 $router->get('/', [HomeController::class, 'index']);
-$router->get('/preview-themes', [PreviewController::class, 'index']);
 $router->get('/news/{slug}', [ArticleController::class, 'show']);
 $router->get('/og-image/{slug}', [ArticleController::class, 'ogImage']);
 $router->get('/category/{slug}', [CategoryController::class, 'show']);
