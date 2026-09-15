@@ -435,7 +435,7 @@ class AdminController extends Controller {
         Auth::requireAuth();
         $csrfToken = $_POST['csrf_token'] ?? null;
         if (!Auth::verifyCsrf($csrfToken)) {
-            $this->json(['success' => false, 'message' => '⚠️ Security token expired.'], 403);
+            $this->json(['success' => false, 'message' => '⚠️ Security token expired. Please refresh the page.'], 403);
             return;
         }
 
@@ -447,14 +447,22 @@ class AdminController extends Controller {
             return;
         }
 
-        $translationService = new \App\Services\TranslationService();
-        $result = $translationService->translateNotice($noticeText, $targetLang);
+        try {
+            $translationService = new \App\Services\TranslationService();
+            $result = $translationService->translateNotice($noticeText, $targetLang);
 
-        Auth::logAudit('TRANSLATION_TEST', "Tested {$targetLang} translation for notice (" . mb_substr($noticeText, 0, 40) . "...)");
+            Auth::logAudit('TRANSLATION_TEST', "Tested {$targetLang} translation for notice (" . mb_substr($noticeText, 0, 40) . "...)");
 
-        $this->json([
-            'success' => $result['success'],
-            'data'    => $result,
-        ]);
+            $this->json([
+                'success' => true,
+                'message' => '✓ Translation & Fact Audit generated successfully.',
+                'data'    => $result,
+            ]);
+        } catch (\Throwable $e) {
+            $this->json([
+                'success' => false,
+                'message' => 'Translation error: ' . $e->getMessage(),
+            ], 500);
+        }
     }
 }

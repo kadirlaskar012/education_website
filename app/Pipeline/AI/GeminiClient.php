@@ -30,7 +30,7 @@ class GeminiClient {
         return !empty(trim($this->apiKey));
     }
 
-    public function generate(string $prompt, int $maxRetries = 2): ?string {
+    public function generate(string $prompt, int $maxRetries = 1): ?string {
         if (!$this->isConfigured()) {
             return null;
         }
@@ -61,8 +61,8 @@ class GeminiClient {
                 CURLOPT_POST           => true,
                 CURLOPT_POSTFIELDS     => $jsonData,
                 CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_TIMEOUT        => 90,
-                CURLOPT_CONNECTTIMEOUT => 20,
+                CURLOPT_TIMEOUT        => 12,
+                CURLOPT_CONNECTTIMEOUT => 5,
                 CURLOPT_SSL_VERIFYPEER => false,
                 CURLOPT_SSL_VERIFYHOST => false,
                 CURLOPT_HTTPHEADER     => [
@@ -84,15 +84,13 @@ class GeminiClient {
                 }
             }
 
-            // If rate limited (429), wait 2 seconds before retry
-            if ($httpCode === 429 && $attempt < $maxRetries) {
-                sleep(2);
-                continue;
+            // If rate limited (429) or quota exhausted, fail immediately to allow fast local synthesis
+            if ($httpCode === 429 || $httpCode === 403 || $httpCode === 400 || $httpCode === 404) {
+                break;
             }
 
-            // Exponential backoff before retry
             if ($attempt < $maxRetries) {
-                usleep(800000 * $attempt);
+                usleep(400000);
             }
         }
 

@@ -274,11 +274,11 @@ $readingTime = max(1, (int)ceil($wordCount / 200));
 
     <div class="related-cards-grid">
         <?php foreach ($related_source_articles as $rel): ?>
-        <a href="/news/<?= htmlspecialchars($rel['slug']) ?>" class="related-post-card">
-            <span class="related-card-badge"><?= htmlspecialchars($rel['category_name']) ?></span>
-            <h4 class="related-card-title"><?= htmlspecialchars($rel['title']) ?></h4>
+        <a href="/news/<?= htmlspecialchars($rel['slug'] ?? '') ?>" class="related-post-card">
+            <span class="related-card-badge"><?= htmlspecialchars($rel['category_name'] ?? 'Notification') ?></span>
+            <h4 class="related-card-title"><?= htmlspecialchars($rel['title'] ?? '') ?></h4>
             <div class="related-card-meta">
-                <time datetime="<?= $rel['published_at'] ?>">📅 <?= date('M j, Y', strtotime($rel['published_at'])) ?></time>
+                <time datetime="<?= $rel['published_at'] ?? '' ?>">📅 <?= !empty($rel['published_at']) ? date('M j, Y', strtotime($rel['published_at'])) : 'Recent' ?></time>
                 <span class="related-card-arrow">Read Notice →</span>
             </div>
         </a>

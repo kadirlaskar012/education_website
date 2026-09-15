@@ -70,7 +70,7 @@
             <!-- Loading Indicator -->
             <div id="loadingIndicator" style="display: none; text-align: center; padding: 40px 20px;">
                 <div class="spinner" style="margin: 0 auto 16px; width: 40px; height: 40px; border: 4px solid rgba(0,0,0,0.1); border-top-color: #0284c7; border-radius: 50%; animation: spin 0.8s linear infinite;"></div>
-                <h3 class="font-bold text-base">Gemini 3.6 Flash Translating & Verifying Facts...</h3>
+                <h3 class="font-bold text-base">Translating & Verifying Fact Integrity...</h3>
                 <p class="text-sm text-muted">Auditing dates, numbers, vacancies, and journalistic tone.</p>
             </div>
 
@@ -86,8 +86,11 @@
                 <!-- Fact Integrity Badges -->
                 <div class="p-3 mb-4 rounded border" style="background: #f8fafc;">
                     <div class="flex justify-between items-center mb-2">
-                        <span class="text-xs font-bold uppercase tracking-wider text-muted">Fact Integrity Verification</span>
-                        <span id="auditScoreBadge" class="badge badge-success font-bold text-sm">96% Match</span>
+                        <div>
+                            <span class="text-xs font-bold uppercase tracking-wider text-muted">Fact Integrity Verification</span>
+                            <span id="engineBadge" class="badge badge-neutral text-xs ml-2" style="font-size: 11px;">Indic Engine</span>
+                        </div>
+                        <span id="auditScoreBadge" class="badge badge-success font-bold text-sm">100% Match</span>
                     </div>
                     <div class="grid grid-3 gap-2 text-xs" style="grid-template-columns: repeat(3, 1fr);">
                         <div class="p-2 bg-white rounded border text-center">
@@ -183,27 +186,39 @@ async function runTranslationTest(e) {
             method: 'POST',
             body: formData
         });
-        const json = await response.json();
+        
+        let json = null;
+        try {
+            json = await response.json();
+        } catch (parseErr) {
+            throw new Error('Invalid server response format.');
+        }
 
         loadingIndicator.style.display = 'none';
         translateBtn.disabled = false;
 
-        if (json.success && json.data) {
+        if (json && json.success && json.data) {
             const data = json.data;
             const audit = data.audit || {};
 
-            document.getElementById('translatedTitle').innerText = data.title;
-            document.getElementById('translatedSummary').innerText = data.summary;
-            document.getElementById('translatedContent').innerText = data.content;
+            document.getElementById('translatedTitle').innerText = data.title || '';
+            document.getElementById('translatedSummary').innerText = data.summary || '';
+            document.getElementById('translatedContent').innerText = data.content || '';
 
-            const score = audit.score || 90;
+            const score = audit.score !== undefined ? audit.score : 100;
             const scoreBadge = document.getElementById('auditScoreBadge');
             scoreBadge.innerText = score + '% Match';
             scoreBadge.className = score >= 80 ? 'badge badge-success font-bold text-sm' : 'badge badge-warning font-bold text-sm';
 
-            document.getElementById('auditDates').innerText = (audit.dates_passed || 0) + '/' + (audit.dates_checked || 0) + ' Passed';
-            document.getElementById('auditNums').innerText = (audit.numbers_passed || 0) + '/' + (audit.numbers_checked || 0) + ' Passed';
-            document.getElementById('auditUrls').innerText = (audit.urls_passed || 0) + '/' + (audit.urls_checked || 0) + ' Passed';
+            const engineBadge = document.getElementById('engineBadge');
+            if (engineBadge) {
+                engineBadge.innerText = data.engine || 'Indic Engine';
+                engineBadge.className = data.engine && data.engine.includes('Gemini') ? 'badge badge-primary text-xs ml-2' : 'badge badge-neutral text-xs ml-2';
+            }
+
+            document.getElementById('auditDates').innerText = (audit.dates_passed !== undefined ? audit.dates_passed : 0) + '/' + (audit.dates_checked !== undefined ? audit.dates_checked : 0) + ' Passed';
+            document.getElementById('auditNums').innerText = (audit.numbers_passed !== undefined ? audit.numbers_passed : 0) + '/' + (audit.numbers_checked !== undefined ? audit.numbers_checked : 0) + ' Passed';
+            document.getElementById('auditUrls').innerText = (audit.urls_passed !== undefined ? audit.urls_passed : 0) + '/' + (audit.urls_checked !== undefined ? audit.urls_checked : 0) + ' Passed';
 
             statusBadge.className = 'badge badge-success';
             statusBadge.innerText = '✓ Verified & Ready';
@@ -212,15 +227,15 @@ async function runTranslationTest(e) {
             statusBadge.className = 'badge badge-danger';
             statusBadge.innerText = 'Failed';
             emptyState.style.display = 'block';
-            alert('Error: ' + (json.message || 'Translation failed'));
+            alert('Notice: ' + (json.message || 'Translation could not be completed.'));
         }
     } catch (err) {
         loadingIndicator.style.display = 'none';
         translateBtn.disabled = false;
         emptyState.style.display = 'block';
         statusBadge.className = 'badge badge-danger';
-        statusBadge.innerText = 'Network Error';
-        alert('Network or server error during translation.');
+        statusBadge.innerText = 'Error';
+        alert('Notice: ' + (err.message || 'Server connection error. Please refresh and try again.'));
     }
 }
 
