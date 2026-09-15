@@ -17,6 +17,8 @@ use App\Pipeline\AI\ArticleGenerator;
 use App\Pipeline\Quality\ArticleValidator;
 use App\Pipeline\Quality\InternalLinker;
 use App\Pipeline\Adapters\Registry;
+use App\Services\IndexNowService;
+use App\Services\SocialPublisher;
 
 class PipelineRunner {
     private \PDO $db;
@@ -148,6 +150,16 @@ class PipelineRunner {
 
                     if ($articleData['status'] === 'published') {
                         $stats['created']++;
+                        
+                        // Instant Search Engine Indexing (Bing / Yandex IndexNow & Google WebSub)
+                        try {
+                            IndexNowService::submitArticle($articleData['slug']);
+                        } catch (\Throwable $e) {}
+
+                        // 100% Automated Multi-Channel Social Auto-Posting (Telegram, Facebook, Twitter)
+                        try {
+                            SocialPublisher::broadcast($articleData);
+                        } catch (\Throwable $e) {}
                     } else {
                         $stats['review']++;
                     }

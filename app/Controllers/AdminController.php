@@ -414,4 +414,31 @@ class AdminController extends Controller {
             'message' => '✓ All articles and notices have been successfully reset to 0!',
         ]);
     }
+
+    public function testSocialBroadcast(): void {
+        Auth::requireAuth();
+        $csrfToken = $_POST['csrf_token'] ?? null;
+        if (!Auth::verifyCsrf($csrfToken)) {
+            $this->json(['success' => false, 'message' => '⚠️ Security token expired.'], 403);
+            return;
+        }
+
+        $testArticle = [
+            'title'                => 'RRB NTPC 2026 Official Notification Released — 11,558 Vacancies',
+            'slug'                 => 'rrb-ntpc-2026-recruitment-notification-apply-online',
+            'official_source_name' => 'Railway Recruitment Boards (RRB)',
+            'category_name'        => 'Recruitment',
+            'excerpt'              => 'Railway Recruitment Board has officially released the Centralized Employment Notice for NTPC Graduate and Undergraduate posts.',
+            'published_at'         => date('Y-m-d H:i:s'),
+        ];
+
+        $results = \App\Services\SocialPublisher::broadcast($testArticle);
+        Auth::logAudit('TEST_SOCIAL_BROADCAST', "Administrator triggered a test social broadcast.");
+
+        $this->json([
+            'success' => true,
+            'message' => 'Test broadcast dispatched to configured channels!',
+            'results' => $results,
+        ]);
+    }
 }

@@ -5,9 +5,25 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
     <title><?= htmlspecialchars($page_title ?? 'EduGov News — Official Education & Jobs Portal') ?></title>
     <meta name="description" content="<?= htmlspecialchars($meta_description ?? 'Instant & verified official educational notifications, exam dates, admit cards, results, and government job vacancy alerts.') ?>">
+    <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
+    <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
+    <?php if (!empty($site_settings['google_site_verification'])): ?>
+    <meta name="google-site-verification" content="<?= htmlspecialchars($site_settings['google_site_verification']) ?>">
+    <?php endif; ?>
     <link rel="canonical" href="<?= htmlspecialchars($canonical_url ?? 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>">
     <link rel="alternate" type="application/rss+xml" title="EduGov News RSS Feed" href="/rss.xml">
     <link rel="sitemap" type="application/xml" title="Google News Sitemap" href="/news-sitemap.xml">
+
+    <?php if (!empty($site_settings['ga4_measurement_id'])): ?>
+    <!-- Google Analytics (GA4) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=<?= htmlspecialchars($site_settings['ga4_measurement_id']) ?>"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', '<?= htmlspecialchars($site_settings['ga4_measurement_id']) ?>');
+    </script>
+    <?php endif; ?>
 
     <!-- Performance & DNS Pre-fetching -->
     <link rel="dns-prefetch" href="//fonts.googleapis.com">

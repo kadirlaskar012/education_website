@@ -76,6 +76,7 @@ $router->post('/admin/pipeline/stop', [AdminController::class, 'stopPipeline']);
 $router->post('/admin/pipeline/run', [AdminController::class, 'triggerScraper']);
 $router->post('/admin/pipeline/run-source/{id}', [AdminController::class, 'triggerSource']);
 $router->post('/admin/articles/reset-all', [AdminController::class, 'resetAllArticles']);
+$router->post('/admin/social/test', [AdminController::class, 'testSocialBroadcast']);
 
 // Automated Cron Webhook (CLI, cPanel Cron, or Cron-Job.org)
 $router->get('/api/cron/run', [CronController::class, 'run']);

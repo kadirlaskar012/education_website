@@ -1,6 +1,6 @@
 <?php
 /**
- * SiteSetting Model with AI & Automation toggles
+ * SiteSetting Model with AI, SEO, Analytics & Multi-Channel Social Auto-Publishing toggles
  */
 
 namespace App\Models;
@@ -10,6 +10,39 @@ class SiteSetting {
 
     public function __construct() {
         $this->db = \Database::getConnection();
+        $this->ensureSocialColumns();
+    }
+
+    private function ensureSocialColumns(): void {
+        try {
+            $cols = [];
+            $rawCols = $this->db->query("PRAGMA table_info(site_settings)")->fetchAll(\PDO::FETCH_ASSOC);
+            foreach ($rawCols as $c) {
+                $cols[] = $c['name'];
+            }
+
+            $newColumns = [
+                'telegram_bot_token'      => 'VARCHAR(255) DEFAULT ""',
+                'telegram_channel_id'     => 'VARCHAR(100) DEFAULT ""',
+                'telegram_auto_post'      => 'INTEGER DEFAULT 0',
+                'facebook_page_id'        => 'VARCHAR(100) DEFAULT ""',
+                'facebook_access_token'   => 'TEXT DEFAULT ""',
+                'facebook_auto_post'      => 'INTEGER DEFAULT 0',
+                'twitter_webhook_url'     => 'VARCHAR(500) DEFAULT ""',
+                'twitter_auto_post'       => 'INTEGER DEFAULT 0',
+                'ga4_measurement_id'      => 'VARCHAR(50) DEFAULT ""',
+                'google_site_verification'=> 'VARCHAR(100) DEFAULT ""',
+                'cron_secret_key'         => 'VARCHAR(100) DEFAULT "edugov_auto_cron_secret_2026"',
+            ];
+
+            foreach ($newColumns as $colName => $colDef) {
+                if (!in_array($colName, $cols)) {
+                    $this->db->exec("ALTER TABLE site_settings ADD COLUMN {$colName} {$colDef}");
+                }
+            }
+        } catch (\Throwable $e) {
+            // Ignore if columns exist
+        }
     }
 
     public function getSettings(): array {
@@ -25,6 +58,17 @@ class SiteSetting {
                 'ai_rewrite'                => 1,
                 'gemini_api_key'            => '',
                 'min_quality_score'         => 80,
+                'telegram_bot_token'        => '',
+                'telegram_channel_id'       => '',
+                'telegram_auto_post'        => 0,
+                'facebook_page_id'          => '',
+                'facebook_access_token'     => '',
+                'facebook_auto_post'        => 0,
+                'twitter_webhook_url'       => '',
+                'twitter_auto_post'         => 0,
+                'ga4_measurement_id'        => '',
+                'google_site_verification'  => '',
+                'cron_secret_key'           => 'edugov_auto_cron_secret_2026',
             ];
         }
         return $settings;
@@ -41,6 +85,17 @@ class SiteSetting {
                 ai_rewrite = :ai_rewrite,
                 gemini_api_key = :gemini_api_key,
                 min_quality_score = :min_quality_score,
+                telegram_bot_token = :telegram_bot_token,
+                telegram_channel_id = :telegram_channel_id,
+                telegram_auto_post = :telegram_auto_post,
+                facebook_page_id = :facebook_page_id,
+                facebook_access_token = :facebook_access_token,
+                facebook_auto_post = :facebook_auto_post,
+                twitter_webhook_url = :twitter_webhook_url,
+                twitter_auto_post = :twitter_auto_post,
+                ga4_measurement_id = :ga4_measurement_id,
+                google_site_verification = :google_site_verification,
+                cron_secret_key = :cron_secret_key,
                 updated_at = CURRENT_TIMESTAMP
             WHERE id = 1
         ");
@@ -53,6 +108,17 @@ class SiteSetting {
             ':ai_rewrite'                => isset($data['ai_rewrite']) ? 1 : 0,
             ':gemini_api_key'            => trim($data['gemini_api_key'] ?? ''),
             ':min_quality_score'         => (int)($data['min_quality_score'] ?? 80),
+            ':telegram_bot_token'        => trim($data['telegram_bot_token'] ?? ''),
+            ':telegram_channel_id'       => trim($data['telegram_channel_id'] ?? ''),
+            ':telegram_auto_post'        => isset($data['telegram_auto_post']) ? 1 : 0,
+            ':facebook_page_id'          => trim($data['facebook_page_id'] ?? ''),
+            ':facebook_access_token'     => trim($data['facebook_access_token'] ?? ''),
+            ':facebook_auto_post'        => isset($data['facebook_auto_post']) ? 1 : 0,
+            ':twitter_webhook_url'       => trim($data['twitter_webhook_url'] ?? ''),
+            ':twitter_auto_post'         => isset($data['twitter_auto_post']) ? 1 : 0,
+            ':ga4_measurement_id'        => trim($data['ga4_measurement_id'] ?? ''),
+            ':google_site_verification'  => trim($data['google_site_verification'] ?? ''),
+            ':cron_secret_key'           => trim($data['cron_secret_key'] ?? 'edugov_auto_cron_secret_2026'),
         ]);
     }
 }
