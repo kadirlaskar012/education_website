@@ -29,16 +29,23 @@ class ArticleController extends Controller {
         $adjacent = $articleModel->getAdjacentArticles((int)$article['id']);
         $structuredData = json_decode($article['structured_data'] ?? '{}', true);
 
-        // 1. Apply Contextual Dynamic Keyword Internal Linking
-        $article['content_html'] = InternalLinker::linkify($article['content_html'] ?? '', (int)$article['id']);
-
-        // 2. Inject Editorial "Also Read" Callout Card
-        $article['content_html'] = InternalLinker::injectAlsoReadCards(
-            $article['content_html'],
-            (int)$article['id'],
-            $article['official_source_name'] ?? '',
-            (int)$article['category_id']
-        );
+        // 3. Multi-Language Content Selection
+        $activeLocale = \App\Core\I18n::getLocale();
+        if ($activeLocale !== 'en' && !empty($structuredData['translations'][$activeLocale])) {
+            $trans = $structuredData['translations'][$activeLocale];
+            if (!empty($trans['title'])) $article['title'] = $trans['title'];
+            if (!empty($trans['summary'])) $article['summary'] = $trans['summary'];
+            if (!empty($trans['content'])) {
+                // Parse markdown to HTML if formatted in markdown
+                $contentHtml = htmlspecialchars($trans['content']);
+                $contentHtml = preg_replace('/### (.*?)\n/', '<h3 class="article-h3">$1</h3>', $contentHtml);
+                $contentHtml = preg_replace('/## (.*?)\n/', '<h2 class="article-h2">$1</h2>', $contentHtml);
+                $contentHtml = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $contentHtml);
+                $contentHtml = preg_replace('/^\* (.*?)$/m', '<li>$1</li>', $contentHtml);
+                $contentHtml = nl2br($contentHtml);
+                $article['content_html'] = '<div class="translated-editorial-content">' . $contentHtml . '</div>';
+            }
+        }
 
         $this->render('portal/article_detail', [
             'page_title'             => $article['title'] . ' — EduGov News',

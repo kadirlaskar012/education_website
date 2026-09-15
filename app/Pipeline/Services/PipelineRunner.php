@@ -124,10 +124,41 @@ class PipelineRunner {
                 $articleData['quality_score'] = $valResult['score'];
                 $articleData['validation_notes'] = $valResult['validation_notes'];
 
-                if (!$autoPublish || !$valResult['passed']) {
-                    $articleData['status'] = $valResult['status'];
-                } else {
+                // Automated Multi-Language AI Translation & Fact Verification
+                $multilingual = [];
+                if (!empty($settings['ai_rewrite'])) {
+                    try {
+                        $transService = new \App\Services\TranslationService($settings['gemini_api_key'] ?? null);
+                        $bnTrans = $transService->translateNotice($title . "\n\n" . strip_tags($articleData['content_html']), 'bn');
+                        if ($bnTrans['success']) {
+                            $multilingual['bn'] = [
+                                'title'   => $bnTrans['title'],
+                                'summary' => $bnTrans['summary'],
+                                'content' => $bnTrans['content'],
+                                'score'   => $bnTrans['quality_score'],
+                                'audit'   => $bnTrans['audit'],
+                            ];
+
+                            // If Bengali fact audit score is low, flag for admin review
+                            if ($bnTrans['quality_score'] < $minQualityScore) {
+                                $articleData['quality_score'] = min($articleData['quality_score'], $bnTrans['quality_score']);
+                                $articleData['validation_notes'] .= ' | ⚠️ Translation Fact Audit: ' . $bnTrans['quality_score'] . '%';
+                            }
+                        }
+                    } catch (\Throwable $e) {}
+                }
+
+                if (!empty($multilingual)) {
+                    $existingStruct = json_decode($articleData['structured_data'] ?? '{}', true) ?: [];
+                    $existingStruct['translations'] = $multilingual;
+                    $articleData['structured_data'] = json_encode($existingStruct, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+                }
+
+                // Final Gate: If auto-publish enabled AND Quality Score passed (>= 80%)
+                if ($autoPublish && $valResult['passed'] && $articleData['quality_score'] >= $minQualityScore) {
                     $articleData['status'] = 'published';
+                } else {
+                    $articleData['status'] = 'review';
                 }
 
                 if ($existing && !empty($existing['article_id'])) {
