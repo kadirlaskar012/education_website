@@ -1,0 +1,48 @@
+{
+  "name": "EduGov News — Official Education & Recruitment Alert",
+  "short_name": "EduGov",
+  "description": "Instant verified official government recruitment notifications, exam dates, admit cards, and results.",
+  "start_url": "/?utm_source=pwa",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#0f172a",
+  "theme_color": "#1d4ed8",
+  "icons": [
+    {
+      "src": "/static/img/icon-192.svg",
+      "sizes": "192x192",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/static/img/icon-512.svg",
+      "sizes": "512x512",
+      "type": "image/svg+xml",
+      "purpose": "any maskable"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "Government Recruitment",
+      "short_name": "Jobs",
+      "description": "Latest government vacancies and application forms",
+      "url": "/recruitment?utm_source=pwa",
+      "icons": [{ "src": "/static/img/icon-192.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Admit Cards & Hall Tickets",
+      "short_name": "Admit Cards",
+      "description": "Download direct official exam admit cards",
+      "url": "/admit-card?utm_source=pwa",
+      "icons": [{ "src": "/static/img/icon-192.svg", "sizes": "192x192" }]
+    },
+    {
+      "name": "Exam Results & Merit Lists",
+      "short_name": "Results",
+      "description": "Check verified exam results and scorecards",
+      "url": "/results?utm_source=pwa",
+      "icons": [{ "src": "/static/img/icon-192.svg", "sizes": "192x192" }]
+    }
+  ]
+}

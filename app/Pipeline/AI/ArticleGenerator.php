@@ -35,6 +35,10 @@ class ArticleGenerator {
                 $cleanedJson = preg_replace('/^```(?:json)?\s*/i', '', trim($rawAi));
                 $cleanedJson = preg_replace('/\s*```$/', '', $cleanedJson);
                 $aiResult = json_decode($cleanedJson, true);
+
+                if (!$aiResult && preg_match('/\{[\s\S]*\}/', $rawAi, $matches)) {
+                    $aiResult = json_decode($matches[0], true);
+                }
             }
         }
 
@@ -143,7 +147,7 @@ class ArticleGenerator {
 
             <!-- Important Dates Schedule -->
             <div class='dates-container mb-6' style='margin-bottom: 1.5rem;'>
-                <h3 class='section-heading'>Key Highlights & Important Dates</h3>
+                <h2 class='section-heading'>Key Highlights & Important Dates</h2>
                 <div class='table-responsive'>
                     <table class='data-table'>
                         <thead>
@@ -164,7 +168,7 @@ class ArticleGenerator {
 
             <!-- Step by Step Instructions -->
             <div class='steps-container mb-6' style='margin-bottom: 1.5rem;'>
-                <h3 class='section-heading'>Step-by-Step Instructions</h3>
+                <h2 class='section-heading'>Step-by-Step Instructions</h2>
                 <ol class='step-list'>
                     {$stepsItems}
                 </ol>
@@ -172,7 +176,7 @@ class ArticleGenerator {
 
             <!-- Important Direct Links -->
             <div class='links-container mb-6' style='margin-bottom: 1.5rem;'>
-                <h3 class='section-heading'>Verified Direct Links</h3>
+                <h2 class='section-heading'>Verified Direct Links</h2>
                 <div class='table-responsive'>
                     <table class='data-table links-table'>
                         <thead>
@@ -190,7 +194,7 @@ class ArticleGenerator {
 
             <!-- Frequently Asked Questions -->
             <div class='faq-container mb-6' style='margin-bottom: 1.5rem;'>
-                <h3 class='section-heading'>Frequently Asked Questions (FAQs)</h3>
+                <h2 class='section-heading'>Frequently Asked Questions (FAQs)</h2>
                 <div class='faq-list'>
                     {$faqItems}
                 </div>

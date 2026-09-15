@@ -40,7 +40,7 @@ return [
     'ai' => [
         'provider'        => 'gemini',
         'api_key'         => getenv('GEMINI_API_KEY') ?: '',
-        'model'           => getenv('GEMINI_MODEL') ?: 'gemini-1.5-flash',
+        'model'           => getenv('GEMINI_MODEL') ?: 'gemini-3.6-flash',
         'temperature'     => 0.4, // Low temperature for high factual accuracy
         'enable_rewrite'  => true,
         'auto_publish'    => true, // Auto-publish if quality validation passes

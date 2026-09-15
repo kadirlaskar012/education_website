@@ -23,6 +23,19 @@
             <button type="submit">🔍 Search</button>
         </form>
     </div>
+
+    <div class="search-modal-quick-tags" style="margin-top: 0.85rem;">
+        <span class="quick-tag-label" style="margin-bottom: 0.35rem;">Popular Tags:</span>
+        <div class="quick-tag-pills">
+            <a href="/search?q=SSC" class="search-tag-pill">🏛️ SSC</a>
+            <a href="/search?q=UPSC" class="search-tag-pill">🏛️ UPSC</a>
+            <a href="/search?q=Railway" class="search-tag-pill">🚂 Railway (RRB)</a>
+            <a href="/search?q=Admit+Card" class="search-tag-pill">🎫 Admit Card</a>
+            <a href="/search?q=Results" class="search-tag-pill">📋 Results</a>
+            <a href="/search?q=Rajasthan" class="search-tag-pill">📍 Rajasthan</a>
+            <a href="/search?q=West+Bengal" class="search-tag-pill">📍 West Bengal</a>
+        </div>
+    </div>
 </header>
 
 <!-- Main Feed & Sidebar Grid -->
@@ -77,3 +90,14 @@
     <!-- Standard Reusable Right Sidebar -->
     <?php require __DIR__ . '/../partials/sidebar.php'; ?>
 </div>
+
+<!-- Schema.org JSON-LD Structured Data for Search Results -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "SearchResultsPage",
+  "name": <?= json_encode('Search results for: ' . ($query ?? 'Notices')) ?>,
+  "url": "http://<?= $_SERVER['HTTP_HOST'] ?>/search?q=<?= urlencode($query ?? '') ?>"
+}
+</script>
+

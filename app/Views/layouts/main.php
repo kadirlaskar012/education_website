@@ -7,21 +7,79 @@
     <meta name="description" content="<?= htmlspecialchars($meta_description ?? 'Instant & verified official educational notifications, exam dates, admit cards, results, and government job vacancy alerts.') ?>">
     <link rel="canonical" href="<?= htmlspecialchars($canonical_url ?? 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>">
     <link rel="alternate" type="application/rss+xml" title="EduGov News RSS Feed" href="/rss.xml">
+    <link rel="sitemap" type="application/xml" title="Google News Sitemap" href="/news-sitemap.xml">
 
-    <!-- OpenGraph & Twitter Meta Tags -->
+    <!-- Performance & DNS Pre-fetching -->
+    <link rel="dns-prefetch" href="//fonts.googleapis.com">
+    <link rel="dns-prefetch" href="//fonts.gstatic.com">
+
+    <!-- Progressive Web App (PWA) Meta & Manifest -->
+    <link rel="manifest" href="/manifest.json">
+    <meta name="theme-color" content="#1d4ed8">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="EduGov">
+    <link rel="apple-touch-icon" href="/static/img/icon-192.svg">
+
+    <!-- OpenGraph & Twitter Meta Tags with Dynamic Social OG Banner -->
+    <?php 
+    $currentHost = $_SERVER['HTTP_HOST'] ?? 'localhost:8000';
+    $ogImg = !empty($article['slug']) 
+             ? "http://{$currentHost}/og-image/{$article['slug']}" 
+             : "http://{$currentHost}/static/img/og-default.png";
+    ?>
     <meta property="og:title" content="<?= htmlspecialchars($page_title ?? 'EduGov News') ?>">
-    <meta property="og:description" content="<?= htmlspecialchars($meta_description ?? 'Official education news and updates.') ?>">
-    <meta property="og:type" content="website">
-    <meta property="og:url" content="<?= htmlspecialchars($canonical_url ?? 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>">
+    <meta property="og:description" content="<?= htmlspecialchars($meta_description ?? 'Official education news, exam updates, results, and verified government recruitment alerts.') ?>">
+    <meta property="og:type" content="<?= !empty($article) ? 'article' : 'website' ?>">
+    <meta property="og:url" content="<?= htmlspecialchars($canonical_url ?? 'http://' . $currentHost . $_SERVER['REQUEST_URI']) ?>">
+    <meta property="og:image" content="<?= htmlspecialchars($ogImg) ?>">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="<?= htmlspecialchars($site_settings['site_name'] ?? 'EduGov News') ?>">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="<?= htmlspecialchars($page_title ?? 'EduGov News') ?>">
+    <meta name="twitter:description" content="<?= htmlspecialchars($meta_description ?? 'Instant official educational notifications and recruitment alerts.') ?>">
+    <meta name="twitter:image" content="<?= htmlspecialchars($ogImg) ?>">
 
-    <!-- Google Fonts & Main CSS -->
+    <!-- Google Fonts & Main CSS Design System -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500;700;800&family=Plus+Jakarta+Sans:wght@500;600;700;800&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="/static/css/main.css?v=<?= time() ?>">
+
+    <!-- Schema.org Global WebSite & SearchAction Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@graph": [
+        {
+          "@type": "WebSite",
+          "name": <?= json_encode($site_settings['site_name'] ?? 'EduGov News') ?>,
+          "url": "http://<?= $_SERVER['HTTP_HOST'] ?>/",
+          "potentialAction": {
+            "@type": "SearchAction",
+            "target": {
+              "@type": "EntryPoint",
+              "urlTemplate": "http://<?= $_SERVER['HTTP_HOST'] ?>/search?q={search_term_string}"
+            },
+            "query-input": "required name=search_term_string"
+          }
+        },
+        {
+          "@type": "Organization",
+          "name": <?= json_encode($site_settings['site_name'] ?? 'EduGov News') ?>,
+          "url": "http://<?= $_SERVER['HTTP_HOST'] ?>/",
+          "description": "National Education & Recruitment News Portal"
+        }
+      ]
+    }
+    </script>
 </head>
 <body class="site-body">
+    <!-- Top Reading Progress Indicator -->
+    <div id="readingProgressBar" class="reading-progress-bar" role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0"></div>
+
     <!-- Top Verified Trust Header (Desktop only) -->
     <div class="top-trust-bar">
         <div class="site-container trust-bar-inner">
@@ -30,12 +88,16 @@
                 <span class="trust-meta">Automated Official Synchronization Active</span>
             </div>
             <div class="trust-right">
+                <button id="pwaInstallBtn" class="pwa-install-pill js-pwa-install" type="button" aria-label="Install EduGov App" style="display: none;">
+                    <span class="pwa-icon">📲</span>
+                    <span class="pwa-label">Install App</span>
+                </button>
                 <button class="theme-toggle-btn js-theme-toggle" aria-label="Toggle Dark/Light Mode">
                     <span class="theme-icon-slot">
                         <svg class="sun-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
                         <svg class="moon-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
                     </span>
-                    <span class="theme-label">Theme</span>
+                    <span class="theme-label">Eye Comfort</span>
                 </button>
                 <a href="/sitemap.xml" class="trust-link">Sitemap</a>
                 <a href="/rss.xml" class="trust-link">RSS Feed</a>
@@ -59,14 +121,14 @@
                 <a href="/" class="brand-logo" title="EduGov News Homepage">
                     <div class="brand-logo-wrap">
                         <div class="brand-emblem-icon">
-                            <svg width="28" height="28" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="32" height="32" rx="8" fill="url(#logo-grad)"/>
-                                <path d="M16 7L6 12L16 17L26 12L16 7Z" fill="#FFFFFF"/>
-                                <path d="M10 14.5V19.5C10 22.5 16 25 16 25C16 25 22 22.5 22 19.5V14.5L16 17.5L10 14.5Z" fill="#93C5FD" fill-opacity="0.9"/>
+                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <rect width="32" height="32" rx="9" fill="url(#logo-grad)"/>
+                                <path d="M16 6.5L5.5 12L16 17.5L26.5 12L16 6.5Z" fill="#FFFFFF"/>
+                                <path d="M9.5 14.5V19.5C9.5 22.8 16 25.5 16 25.5C16 25.5 22.5 22.8 22.5 19.5V14.5L16 18L9.5 14.5Z" fill="#93C5FD" fill-opacity="0.95"/>
                                 <circle cx="26" cy="16" r="2.5" fill="#EF4444"/>
                                 <defs>
                                     <linearGradient id="logo-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                                        <stop stop-color="#1E3A8A"/>
+                                        <stop stop-color="#0F243E"/>
                                         <stop offset="1" stop-color="#2563EB"/>
                                     </linearGradient>
                                 </defs>
@@ -85,7 +147,7 @@
             <!-- Header Quick Search Bar (Desktop) -->
             <div class="header-search-box">
                 <form action="/search" method="get" class="search-form">
-                    <input type="text" name="q" placeholder="Search exams, results, admit cards..." aria-label="Search notifications" required>
+                    <input type="text" name="q" placeholder="Search exams, results, admit cards, notifications..." aria-label="Search notifications" required>
                     <button type="submit" aria-label="Search">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8"></circle>
@@ -116,7 +178,7 @@
         <!-- 1. Desktop Traditional Navigation Bar -->
         <nav class="desktop-main-nav">
             <div class="site-container nav-items-row">
-                <a href="/" class="nav-item <?= ($current_category ?? '') === '' && $_SERVER['REQUEST_URI'] === '/' ? 'active' : '' ?>">🏠 Home</a>
+                <a href="/" class="nav-item <?= empty($current_category) && $_SERVER['REQUEST_URI'] === '/' ? 'active' : '' ?>">🏠 Home</a>
                 <a href="/results" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'results') ? 'active' : '' ?>">📋 Results</a>
                 <a href="/admit-card" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'admit-card') ? 'active' : '' ?>">🎫 Admit Card</a>
                 <a href="/recruitment" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'recruitment') ? 'active' : '' ?>">💼 Recruitment</a>
@@ -173,7 +235,7 @@
     <!-- Breaking News Marquee Ticker (Clickable Articles!) -->
     <div class="breaking-ticker-bar">
         <div class="site-container ticker-inner">
-            <span class="ticker-badge">⚡ BREAKING</span>
+            <span class="ticker-badge">⚡ LIVE NOTICES</span>
             <div class="ticker-marquee">
                 <div class="ticker-items">
                     <?php if (!empty($breaking_articles)): ?>
@@ -189,7 +251,7 @@
                             </a>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <span class="ticker-link">• National Education & Recruitment Ingestion Network Active</span>
+                        <span class="ticker-link">• National Education & Recruitment Ingestion Network Active — 24/7 Official Monitoring</span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -220,7 +282,6 @@
                         <polyline points="14 2 14 8 20 8"></polyline>
                         <line x1="16" y1="13" x2="8" y2="13"></line>
                         <line x1="16" y1="17" x2="8" y2="17"></line>
-                        <polyline points="10 9 9 9 8 9"></polyline>
                     </svg>
                 </span>
                 <span class="nav-text">Results</span>
@@ -282,13 +343,15 @@
             <div class="search-modal-quick-tags">
                 <span class="quick-tag-label">Popular Searches:</span>
                 <div class="quick-tag-pills">
-                    <a href="/search?q=SSC" class="search-tag-pill">SSC</a>
-                    <a href="/search?q=UPSC" class="search-tag-pill">UPSC</a>
-                    <a href="/search?q=Railway" class="search-tag-pill">Railway</a>
-                    <a href="/search?q=Admit+Card" class="search-tag-pill">Admit Card</a>
-                    <a href="/search?q=Results" class="search-tag-pill">Results</a>
-                    <a href="/search?q=Rajasthan" class="search-tag-pill">Rajasthan</a>
-                    <a href="/search?q=West+Bengal" class="search-tag-pill">West Bengal</a>
+                    <a href="/search?q=SSC" class="search-tag-pill">🏛️ SSC</a>
+                    <a href="/search?q=UPSC" class="search-tag-pill">🏛️ UPSC</a>
+                    <a href="/search?q=Railway" class="search-tag-pill">🚂 Railway (RRB)</a>
+                    <a href="/search?q=Admit+Card" class="search-tag-pill">🎫 Admit Card</a>
+                    <a href="/search?q=Results" class="search-tag-pill">📋 Results</a>
+                    <a href="/search?q=West+Bengal" class="search-tag-pill">📍 West Bengal</a>
+                    <a href="/search?q=Rajasthan" class="search-tag-pill">📍 Rajasthan</a>
+                    <a href="/search?q=Bihar" class="search-tag-pill">📍 Bihar</a>
+                    <a href="/search?q=Uttar+Pradesh" class="search-tag-pill">📍 UPPSC</a>
                 </div>
             </div>
         </div>
@@ -460,6 +523,16 @@
             <p style="font-size: 0.6875rem; color: #64748b;">Powered by High-Performance Native Plain PHP & MySQL Engine.</p>
         </div>
     </footer>
+
+    <!-- Floating Back to Top Button -->
+    <button id="backToTopBtn" class="back-to-top-btn" aria-label="Scroll back to top" title="Go to top">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M18 15l-6-6-6 6"/>
+        </svg>
+    </button>
+
+    <!-- Toast Notification Container -->
+    <div id="toastNotification" class="toast-notification" role="status" aria-live="polite"></div>
 
     <!-- Interactive Scripts -->
     <script src="/static/js/main.js?v=<?= time() ?>"></script>

@@ -11,10 +11,18 @@ class GeminiClient {
     private string $model;
     private float $temperature;
 
-    public function __construct(?string $apiKey = null, string $model = 'gemini-1.5-flash', float $temperature = 0.4) {
+    public function __construct(?string $apiKey = null, string $model = 'gemini-3.6-flash', float $temperature = 0.4) {
         $config = require __DIR__ . '/../../../config/config.php';
-        $this->apiKey = $apiKey ?: ($config['ai']['api_key'] ?? '');
-        $this->model = $model ?: ($config['ai']['model'] ?? 'gemini-1.5-flash');
+        
+        $dbKey = '';
+        try {
+            $settingModel = new \App\Models\SiteSetting();
+            $settings = $settingModel->getSettings();
+            $dbKey = trim($settings['gemini_api_key'] ?? '');
+        } catch (\Throwable $e) {}
+
+        $this->apiKey = $apiKey ?: ($dbKey ?: ($config['ai']['api_key'] ?? ''));
+        $this->model = $model ?: ($config['ai']['model'] ?? 'gemini-3.6-flash');
         $this->temperature = $temperature;
     }
 
@@ -41,7 +49,7 @@ class GeminiClient {
                 'temperature'     => $this->temperature,
                 'topP'            => 0.95,
                 'topK'            => 40,
-                'maxOutputTokens' => 2048,
+                'maxOutputTokens' => 6144,
             ]
         ];
 
@@ -53,9 +61,10 @@ class GeminiClient {
                 CURLOPT_POST           => true,
                 CURLOPT_POSTFIELDS     => $jsonData,
                 CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_TIMEOUT        => 25,
-                CURLOPT_CONNECTTIMEOUT => 10,
-                CURLOPT_SSL_VERIFYPEER => true,
+                CURLOPT_TIMEOUT        => 90,
+                CURLOPT_CONNECTTIMEOUT => 20,
+                CURLOPT_SSL_VERIFYPEER => false,
+                CURLOPT_SSL_VERIFYHOST => false,
                 CURLOPT_HTTPHEADER     => [
                     'Content-Type: application/json',
                     'Accept: application/json',

@@ -148,9 +148,32 @@ CREATE TABLE IF NOT EXISTS pipeline_logs (
     FOREIGN KEY (source_id) REFERENCES sources(id) ON DELETE SET NULL
 );
 
+-- 9. Login Attempts Table (Brute-force protection & Rate Limiting)
+CREATE TABLE IF NOT EXISTS login_attempts (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    ip_address VARCHAR(45) NOT NULL,
+    username VARCHAR(100),
+    attempted_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    is_successful INTEGER DEFAULT 0
+);
+
+-- 10. Audit Activity Logs Table (Security Trail & Admin Action Tracking)
+CREATE TABLE IF NOT EXISTS audit_logs (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    user_id INTEGER,
+    username VARCHAR(100),
+    action VARCHAR(100) NOT NULL,
+    details TEXT,
+    ip_address VARCHAR(45),
+    user_agent VARCHAR(255),
+    created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+);
+
 -- Indexes for performance
 CREATE INDEX IF NOT EXISTS idx_articles_slug ON articles(slug);
 CREATE INDEX IF NOT EXISTS idx_articles_status_pub ON articles(status, published_at);
 CREATE INDEX IF NOT EXISTS idx_articles_category ON articles(category_id);
 CREATE INDEX IF NOT EXISTS idx_articles_state ON articles(state_code);
 CREATE INDEX IF NOT EXISTS idx_source_items_hash ON source_items(source_hash);
+CREATE INDEX IF NOT EXISTS idx_login_attempts_ip ON login_attempts(ip_address, attempted_at);
+CREATE INDEX IF NOT EXISTS idx_audit_logs_created ON audit_logs(created_at);

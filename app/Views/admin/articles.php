@@ -66,6 +66,7 @@
 
 <!-- Bulk Action Form & Articles Table -->
 <form action="/admin/articles/bulk" method="post" id="bulkActionForm">
+    <input type="hidden" name="csrf_token" value="<?= \App\Core\Auth::csrfToken() ?>">
     <!-- Sticky / Top Bulk Action Bar -->
     <div id="bulkActionBar" style="background: #0f172a; color: #fff; padding: 0.75rem 1.25rem; border-radius: 8px; margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;">
         <div style="font-size: 0.875rem; font-weight: 600; display: flex; align-items: center; gap: 0.5rem;">

@@ -11,6 +11,7 @@
     <?php endif; ?>
 
     <form action="/admin/login" method="post">
+        <input type="hidden" name="csrf_token" value="<?= \App\Core\Auth::csrfToken() ?>">
         <div class="form-group" style="margin-bottom: 1rem;">
             <label for="username" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">Username</label>
             <input type="text" id="username" name="username" required autofocus style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.875rem;">

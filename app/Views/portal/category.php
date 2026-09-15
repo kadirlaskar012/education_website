@@ -200,3 +200,26 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 </script>
+
+<!-- Schema.org JSON-LD Structured Data for Category & Breadcrumbs -->
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {
+      "@type": "ListItem",
+      "position": 1,
+      "name": "Home",
+      "item": "http://<?= $_SERVER['HTTP_HOST'] ?>/"
+    },
+    {
+      "@type": "ListItem",
+      "position": 2,
+      "name": <?= json_encode($category['name']) ?>,
+      "item": "http://<?= $_SERVER['HTTP_HOST'] ?>/category/<?= htmlspecialchars($category['slug']) ?>"
+    }
+  ]
+}
+</script>
+

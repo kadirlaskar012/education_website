@@ -14,8 +14,49 @@
 </div>
 <?php endif; ?>
 
+<?php if (!empty($error)): ?>
+<div style="background-color: #fef2f2; color: #991b1b; padding: 0.75rem 1rem; border-radius: 4px; font-size: 0.8125rem; margin-bottom: 1.5rem; border: 1px solid #fecaca;">
+    <?= htmlspecialchars($error) ?>
+</div>
+<?php endif; ?>
+
+<!-- 1. Administrator Account & Password Management -->
+<div class="admin-card" style="margin-bottom: 1.5rem; border-left: 4px solid #10b981;">
+    <h3 style="font-size: 1rem; color: #0a192f; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem;">
+        🔐 Update Administrator Password
+    </h3>
+    <p style="font-size: 0.8125rem; color: #64748b; margin-bottom: 1.25rem;">
+        Change your login password. Passwords are automatically encrypted using secure Bcrypt hashing.
+    </p>
+
+    <form action="/admin/settings" method="post">
+        <input type="hidden" name="csrf_token" value="<?= \App\Core\Auth::csrfToken() ?>">
+        <input type="hidden" name="action_type" value="update_password">
+
+        <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 1rem; margin-bottom: 1.25rem;">
+            <div class="form-group">
+                <label for="current_password" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">Current Password</label>
+                <input type="password" id="current_password" name="current_password" required placeholder="••••••••" style="width: 100%; padding: 0.6rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.875rem;">
+            </div>
+            <div class="form-group">
+                <label for="new_password" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">New Password (min 8 chars)</label>
+                <input type="password" id="new_password" name="new_password" required minlength="8" placeholder="••••••••" style="width: 100%; padding: 0.6rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.875rem;">
+            </div>
+            <div class="form-group">
+                <label for="confirm_password" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">Confirm New Password</label>
+                <input type="password" id="confirm_password" name="confirm_password" required minlength="8" placeholder="••••••••" style="width: 100%; padding: 0.6rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.875rem;">
+            </div>
+        </div>
+
+        <button type="submit" class="admin-btn admin-btn-primary" style="background-color: #059669; padding: 0.6rem 1.25rem; font-size: 0.8125rem;">
+            🔑 Update Password Now
+        </button>
+    </form>
+</div>
+
 <div class="admin-card">
     <form action="/admin/settings" method="post">
+        <input type="hidden" name="csrf_token" value="<?= \App\Core\Auth::csrfToken() ?>">
         <h3 style="font-size: 1rem; color: #0a192f; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 1px solid #e2e8f0;">
             🤖 AI Human-Tone Rewriting Engine (Google Gemini API)
         </h3>

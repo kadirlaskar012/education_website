@@ -68,13 +68,54 @@ switch ($action) {
         }
         break;
 
+    case 'reset-password':
+        $username = $argv[2] ?? 'admin';
+        $newPassword = $argv[3] ?? null;
+
+        if (empty($newPassword)) {
+            $newPassword = substr(bin2hex(random_bytes(8)), 0, 12);
+        }
+
+        $db = Database::getConnection();
+        $stmt = $db->prepare("SELECT id, username FROM users WHERE username = :username LIMIT 1");
+        $stmt->execute([':username' => $username]);
+        $user = $stmt->fetch();
+
+        if (!$user) {
+            echo "❌ Error: User '{$username}' was not found in the database.\n";
+            exit(1);
+        }
+
+        $hash = password_hash($newPassword, PASSWORD_BCRYPT, ['cost' => 12]);
+        $update = $db->prepare("UPDATE users SET password_hash = :hash WHERE id = :id");
+        $update->execute([':hash' => $hash, ':id' => $user['id']]);
+
+        // Unlock account by clearing failed login attempts
+        try {
+            $db->prepare("DELETE FROM login_attempts WHERE username = :username")->execute([':username' => $username]);
+        } catch (\Throwable $e) {}
+
+        \App\Core\Auth::logAudit('PASSWORD_RESET_CLI', "Password for user '{$username}' reset via CLI.");
+
+        echo "====================================================\n";
+        echo "✅ ADMIN PASSWORD RESET SUCCESSFUL\n";
+        echo "====================================================\n";
+        echo "Username:     {$username}\n";
+        echo "New Password: {$newPassword}\n";
+        echo "Login URL:    http://127.0.0.1:8000/admin/login\n";
+        echo "Lockout:      Any active IP/Account lockout cleared\n";
+        echo "====================================================\n";
+        break;
+
     default:
         echo "EduGov CLI Usage:\n";
-        echo "  php cli.php seed              - Seed categories and sources\n";
-        echo "  php cli.php run-pipeline      - Fetch, AI rewrite, validate & publish\n";
-        echo "  php cli.php fetch-sources     - Step 1: Scrape active sources\n";
-        echo "  php cli.php process-articles  - Step 2: Extract & generate articles\n";
-        echo "  php cli.php publish-articles  - Step 3: Auto-publish validated articles\n";
-        echo "  php cli.php stats             - View article statistics\n";
+        echo "  php cli.php seed                          - Seed categories and sources\n";
+        echo "  php cli.php reset-password [user] [pass]  - Reset admin password instantly\n";
+        echo "  php cli.php run-pipeline                  - Fetch, AI rewrite, validate & publish\n";
+        echo "  php cli.php fetch-sources                 - Step 1: Scrape active sources\n";
+        echo "  php cli.php process-articles              - Step 2: Extract & generate articles\n";
+        echo "  php cli.php publish-articles              - Step 3: Auto-publish validated articles\n";
+        echo "  php cli.php stats                         - View article statistics\n";
         break;
 }
+

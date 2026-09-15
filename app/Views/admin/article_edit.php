@@ -16,6 +16,7 @@
 
 <div class="admin-card">
     <form action="/admin/articles/edit/<?= $article['id'] ?>" method="post">
+        <input type="hidden" name="csrf_token" value="<?= \App\Core\Auth::csrfToken() ?>">
         <div class="form-group" style="margin-bottom: 1rem;">
             <label for="title" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">Article Title</label>
             <input type="text" id="title" name="title" value="<?= htmlspecialchars($article['title']) ?>" required style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.875rem;">

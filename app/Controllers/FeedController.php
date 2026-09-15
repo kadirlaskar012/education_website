@@ -82,6 +82,54 @@ class FeedController extends Controller {
         exit;
     }
 
+    /**
+     * Google News XML Sitemap (Standards-Compliant for Google News & Discover indexing)
+     */
+    public function newsSitemap(): void {
+        header('Content-Type: application/xml; charset=utf-8');
+        $articleModel = new Article();
+        $articles = $articleModel->getGoogleNewsArticles(100);
+
+        $config = require __DIR__ . '/../../config/config.php';
+        $baseUrl = rtrim($config['app_url'], '/');
+        $siteName = 'EduGov News';
+
+        echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' . "\n";
+        echo '        xmlns:news="http://www.google.com/schemas/sitemap-news/0.9">' . "\n";
+
+        foreach ($articles as $art) {
+            $loc = htmlspecialchars($baseUrl . '/news/' . $art['slug']);
+            $pubDate = date('c', strtotime($art['published_at']));
+            $cleanTitle = htmlspecialchars($art['title'], ENT_XML1, 'UTF-8');
+
+            echo "  <url>\n";
+            echo "    <loc>{$loc}</loc>\n";
+            echo "    <news:news>\n";
+            echo "      <news:publication>\n";
+            echo "        <news:name>" . htmlspecialchars($siteName, ENT_XML1, 'UTF-8') . "</news:name>\n";
+            echo "        <news:language>en</news:language>\n";
+            echo "      </news:publication>\n";
+            echo "      <news:publication_date>{$pubDate}</news:publication_date>\n";
+            echo "      <news:title>{$cleanTitle}</news:title>\n";
+            echo "    </news:news>\n";
+            echo "  </url>\n";
+        }
+
+        echo '</urlset>';
+        exit;
+    }
+
+    public function indexNowKey(): void {
+        header('Content-Type: text/plain; charset=utf-8');
+        $config = require __DIR__ . '/../../config/config.php';
+        $baseUrl = rtrim($config['app_url'], '/');
+        $host = parse_url($baseUrl, PHP_URL_HOST) ?? 'localhost';
+        $apiKey = md5($host . '-edugov-indexnow-key');
+        echo $apiKey;
+        exit;
+    }
+
     public function robots(): void {
         header('Content-Type: text/plain; charset=utf-8');
         $config = require __DIR__ . '/../../config/config.php';
@@ -92,6 +140,7 @@ class FeedController extends Controller {
         echo "Disallow: /admin/\n";
         echo "Disallow: /search\n\n";
         echo "Sitemap: {$baseUrl}/sitemap.xml\n";
+        echo "Sitemap: {$baseUrl}/news-sitemap.xml\n";
         exit;
     }
 }

@@ -33,8 +33,10 @@ class Database {
                         PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
                         PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
                     ]);
-                    // Enable WAL mode & foreign keys for SQLite
+                    // Enable WAL mode, normal synchronous & busy timeout for non-blocking concurrent reads/writes
                     self::$instance->exec("PRAGMA journal_mode = WAL;");
+                    self::$instance->exec("PRAGMA synchronous = NORMAL;");
+                    self::$instance->exec("PRAGMA busy_timeout = 10000;");
                     self::$instance->exec("PRAGMA foreign_keys = ON;");
                 }
             } catch (PDOException $e) {

@@ -12,12 +12,14 @@ use App\Controllers\SearchController;
 use App\Controllers\FeedController;
 use App\Controllers\LegalController;
 use App\Controllers\AdminController;
+use App\Controllers\CronController;
 
 $router = new Router();
 
 // Portal Routes
 $router->get('/', [HomeController::class, 'index']);
 $router->get('/news/{slug}', [ArticleController::class, 'show']);
+$router->get('/og-image/{slug}', [ArticleController::class, 'ogImage']);
 $router->get('/category/{slug}', [CategoryController::class, 'show']);
 $router->get('/state/{slug}', [StateController::class, 'show']);
 $router->get('/search', [SearchController::class, 'index']);
@@ -41,9 +43,11 @@ $router->get('/answer-key', function() {
 
 // Feeds & SEO
 $router->get('/sitemap.xml', [FeedController::class, 'sitemap']);
+$router->get('/news-sitemap.xml', [FeedController::class, 'newsSitemap']);
 $router->get('/rss.xml', [FeedController::class, 'rss']);
 $router->get('/feed', [FeedController::class, 'rss']);
 $router->get('/robots.txt', [FeedController::class, 'robots']);
+$router->get('/indexnow.txt', [FeedController::class, 'indexNowKey']);
 
 // Legal Pages
 $router->get('/about', [LegalController::class, 'about']);
@@ -65,6 +69,18 @@ $router->post('/admin/articles/edit/{id}', [AdminController::class, 'editArticle
 $router->get('/admin/sources', [AdminController::class, 'sources']);
 $router->get('/admin/settings', [AdminController::class, 'settings']);
 $router->post('/admin/settings', [AdminController::class, 'settings']);
+$router->post('/admin/pipeline/start-all', [AdminController::class, 'startBackgroundAll']);
+$router->post('/admin/pipeline/start-source/{id}', [AdminController::class, 'startBackgroundSource']);
+$router->get('/admin/pipeline/status', [AdminController::class, 'getPipelineStatus']);
+$router->post('/admin/pipeline/stop', [AdminController::class, 'stopPipeline']);
 $router->post('/admin/pipeline/run', [AdminController::class, 'triggerScraper']);
+$router->post('/admin/pipeline/run-source/{id}', [AdminController::class, 'triggerSource']);
+$router->post('/admin/articles/reset-all', [AdminController::class, 'resetAllArticles']);
+
+// Automated Cron Webhook (CLI, cPanel Cron, or Cron-Job.org)
+$router->get('/api/cron/run', [CronController::class, 'run']);
+$router->post('/api/cron/run', [CronController::class, 'run']);
+$router->get('/cron/run', [CronController::class, 'run']);
+$router->post('/cron/run', [CronController::class, 'run']);
 
 return $router;

@@ -73,6 +73,23 @@ class Article {
         return $stmt->fetchAll();
     }
 
+    /**
+     * Get recent published articles for Google News Sitemap (last 48 hours or latest updates)
+     */
+    public function getGoogleNewsArticles(int $limit = 100): array {
+        $stmt = $this->db->prepare("
+            SELECT a.*, c.name as category_name, c.slug as category_slug
+            FROM articles a
+            JOIN categories c ON a.category_id = c.id
+            WHERE a.status = 'published'
+            ORDER BY a.published_at DESC
+            LIMIT :limit
+        ");
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
     public function getByCategory(int $categoryId, int $limit = 15, int $offset = 0, ?string $stateCode = null): array {
         $sql = "
             SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
@@ -219,6 +236,51 @@ class Article {
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmt->execute();
         return $stmt->fetchAll();
+    }
+
+    public function getRelatedBySource(string $authorityName, int $excludeId, int $limit = 3): array {
+        if (empty($authorityName)) return [];
+        $stmt = $this->db->prepare("
+            SELECT id, title, slug, published_at, template_type
+            FROM articles
+            WHERE status = 'published' AND official_source_name = :authority AND id != :exclude_id
+            ORDER BY published_at DESC
+            LIMIT :limit
+        ");
+        $stmt->bindValue(':authority', $authorityName, \PDO::PARAM_STR);
+        $stmt->bindValue(':exclude_id', $excludeId, \PDO::PARAM_INT);
+        $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll();
+    }
+
+    public function getAdjacentArticles(int $currentId): array {
+        // Previous (older)
+        $prevStmt = $this->db->prepare("
+            SELECT id, title, slug, published_at
+            FROM articles
+            WHERE status = 'published' AND id < :id
+            ORDER BY id DESC
+            LIMIT 1
+        ");
+        $prevStmt->execute([':id' => $currentId]);
+        $prev = $prevStmt->fetch() ?: null;
+
+        // Next (newer)
+        $nextStmt = $this->db->prepare("
+            SELECT id, title, slug, published_at
+            FROM articles
+            WHERE status = 'published' AND id > :id
+            ORDER BY id ASC
+            LIMIT 1
+        ");
+        $nextStmt->execute([':id' => $currentId]);
+        $next = $nextStmt->fetch() ?: null;
+
+        return [
+            'prev' => $prev,
+            'next' => $next,
+        ];
     }
 
     public function getFilteredAdminArticles(array $filters = [], int $limit = 100): array {

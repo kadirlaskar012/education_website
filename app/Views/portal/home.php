@@ -1,4 +1,4 @@
-<!-- Top 10 Latest Added Notices Text Hero Section (No Carding, Clean Text-Based & Clickable) -->
+<!-- Top 10 Latest Added Notices Hero Board (Clean Text-Based & High-Performance) -->
 <?php if (!empty($top10_notices)): ?>
 <section class="hero-notices-board">
     <div class="hero-notices-header">
@@ -15,10 +15,14 @@
         <?php 
         $rank = 1;
         foreach ($top10_notices as $notice): 
-            $rankPadded = str_pad((string)$rank++, 2, '0', STR_PAD_LEFT);
+            $rankPadded = str_pad((string)$rank, 2, '0', STR_PAD_LEFT);
+            $rankClass = ($rank === 1) ? 'rank-1' : (($rank === 2) ? 'rank-2' : (($rank === 3) ? 'rank-3' : ''));
+            $rank++;
         ?>
         <div class="hero-notice-row">
-            <div class="notice-num">#<?= $rankPadded ?></div>
+            <div class="notice-num-wrap">
+                <span class="notice-num <?= $rankClass ?>">#<?= $rankPadded ?></span>
+            </div>
             <div class="notice-details">
                 <div class="notice-meta-tags">
                     <span class="cat-badge-text"><?= htmlspecialchars($notice['category_name']) ?></span>
@@ -53,14 +57,14 @@
             <span>🔔 Never Miss an Exam or Job Notice!</span>
         </div>
         <p class="social-alert-sub">
-            Join 100,000+ students receiving instant verified official notifications directly on phone.
+            Join 100,000+ candidates receiving instant verified official notifications directly on phone.
         </p>
     </div>
     <div class="social-alert-buttons">
-        <a href="https://telegram.me" target="_blank" rel="noopener noreferrer" class="link-btn social-tg-btn">
+        <a href="https://telegram.me" target="_blank" rel="noopener noreferrer" class="social-tg-btn">
             ✈️ Join Telegram
         </a>
-        <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" class="link-btn social-wa-btn">
+        <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" class="social-wa-btn">
             💬 Join WhatsApp
         </a>
     </div>
@@ -85,34 +89,56 @@
     </div>
 </section>
 
+<!-- Interactive Live Smart Filter Hub -->
+<?php require __DIR__ . '/../partials/smart_filter_hub.php'; ?>
+
+<!-- Top Home Feed Responsive AdSense Placement Slot -->
+<div class="adsense-slot-wrapper adsense-slot-feed" aria-label="Sponsored Advertisement">
+    <div class="ad-disclosure-bar"><span class="ad-label">ADVERTISEMENT</span></div>
+    <div class="ad-banner-placeholder">
+        <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="3344556677" data-ad-format="auto" data-full-width-responsive="true"></ins>
+        <div class="ad-demo-preview">
+            <span class="ad-demo-icon">📢</span>
+            <span class="ad-demo-text">Homepage Top Feed Leaderboard Ad Placement</span>
+        </div>
+    </div>
+</div>
+
 <!-- Homepage Main Category-Wise Feed with Right Sidebar -->
 <div class="feed-layout-grid">
     <!-- Main Categorized Columns -->
     <main class="feed-main-col">
 
-        <!-- 1. 📋 Results Section -->
+        <!-- 1. 📋 Results Section (Cardless Data Stream) -->
         <?php if (!empty($results_articles)): ?>
-        <section class="category-block-card">
-            <div class="block-header block-header-blue">
-                <h2 class="block-title">
+        <section class="stream-block-container">
+            <div class="stream-block-header stream-header-blue">
+                <h2 class="stream-block-title">
                     <span>📋</span> Latest Results & Merit Lists
                 </h2>
-                <a href="/results" class="view-all-link">View All »</a>
+                <a href="/results" class="stream-view-all">View All Results »</a>
             </div>
-            <div class="category-items-grid">
+            <div class="stream-notices-feed">
                 <?php foreach ($results_articles as $art): ?>
-                <article class="compact-card">
-                    <div>
-                        <span class="official-verified-badge">✓ <?= htmlspecialchars($art['official_source_name'] ?? 'Official') ?></span>
-                        <h3 class="compact-card-title">
+                <article class="stream-notice-row">
+                    <div class="stream-content-col">
+                        <div class="stream-meta-row">
+                            <span class="dept-pill"><?= htmlspecialchars($art['official_source_name'] ?? 'Result') ?></span>
+                            <time class="stream-time-text" datetime="<?= $art['published_at'] ?>">
+                                📅 <?= date('M j, Y', strtotime($art['published_at'])) ?>
+                            </time>
+                            <span class="official-verified-badge">✓ Verified</span>
+                        </div>
+                        <h3 class="stream-headline">
                             <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
                                 <?= htmlspecialchars($art['title']) ?>
                             </a>
                         </h3>
                     </div>
-                    <div class="compact-card-footer">
-                        <span>📅 <?= date('M j, Y', strtotime($art['published_at'])) ?></span>
-                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="card-action-link">Check Result »</a>
+                    <div class="stream-action-col">
+                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="stream-action-pill">
+                            Check Result →
+                        </a>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -120,29 +146,36 @@
         </section>
         <?php endif; ?>
 
-        <!-- 2. 🎫 Admit Cards Section -->
+        <!-- 2. 🎫 Admit Cards Section (Cardless Data Stream) -->
         <?php if (!empty($admit_articles)): ?>
-        <section class="category-block-card">
-            <div class="block-header block-header-cyan">
-                <h2 class="block-title">
+        <section class="stream-block-container">
+            <div class="stream-block-header stream-header-cyan">
+                <h2 class="stream-block-title">
                     <span>🎫</span> Admit Cards & Hall Tickets
                 </h2>
-                <a href="/admit-card" class="view-all-link">View All »</a>
+                <a href="/admit-card" class="stream-view-all">View All Admit Cards »</a>
             </div>
-            <div class="category-items-grid">
+            <div class="stream-notices-feed">
                 <?php foreach ($admit_articles as $art): ?>
-                <article class="compact-card">
-                    <div>
-                        <span class="official-verified-badge">✓ <?= htmlspecialchars($art['official_source_name'] ?? 'Official') ?></span>
-                        <h3 class="compact-card-title">
+                <article class="stream-notice-row">
+                    <div class="stream-content-col">
+                        <div class="stream-meta-row">
+                            <span class="dept-pill"><?= htmlspecialchars($art['official_source_name'] ?? 'Admit Card') ?></span>
+                            <time class="stream-time-text" datetime="<?= $art['published_at'] ?>">
+                                📅 <?= date('M j, Y', strtotime($art['published_at'])) ?>
+                            </time>
+                            <span class="official-verified-badge">✓ Verified</span>
+                        </div>
+                        <h3 class="stream-headline">
                             <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
                                 <?= htmlspecialchars($art['title']) ?>
                             </a>
                         </h3>
                     </div>
-                    <div class="compact-card-footer">
-                        <span>📅 <?= date('M j, Y', strtotime($art['published_at'])) ?></span>
-                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="card-action-link">Download Slip »</a>
+                    <div class="stream-action-col">
+                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="stream-action-pill">
+                            Download Slip →
+                        </a>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -150,29 +183,36 @@
         </section>
         <?php endif; ?>
 
-        <!-- 3. 💼 Recruitment Section -->
+        <!-- 3. 💼 Recruitment Section (Cardless Data Stream) -->
         <?php if (!empty($recruitment_articles)): ?>
-        <section class="category-block-card">
-            <div class="block-header block-header-green">
-                <h2 class="block-title">
+        <section class="stream-block-container">
+            <div class="stream-block-header stream-header-green">
+                <h2 class="stream-block-title">
                     <span>💼</span> Government & Banking Recruitment
                 </h2>
-                <a href="/recruitment" class="view-all-link">View All »</a>
+                <a href="/recruitment" class="stream-view-all">View All Jobs »</a>
             </div>
-            <div class="category-items-grid">
+            <div class="stream-notices-feed">
                 <?php foreach ($recruitment_articles as $art): ?>
-                <article class="compact-card">
-                    <div>
-                        <span class="official-verified-badge">✓ <?= htmlspecialchars($art['official_source_name'] ?? 'Official') ?></span>
-                        <h3 class="compact-card-title">
+                <article class="stream-notice-row">
+                    <div class="stream-content-col">
+                        <div class="stream-meta-row">
+                            <span class="dept-pill dept-pill-green"><?= htmlspecialchars($art['official_source_name'] ?? 'Recruitment') ?></span>
+                            <time class="stream-time-text" datetime="<?= $art['published_at'] ?>">
+                                📅 <?= date('M j, Y', strtotime($art['published_at'])) ?>
+                            </time>
+                            <span class="official-verified-badge">✓ Verified</span>
+                        </div>
+                        <h3 class="stream-headline">
                             <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
                                 <?= htmlspecialchars($art['title']) ?>
                             </a>
                         </h3>
                     </div>
-                    <div class="compact-card-footer">
-                        <span>📅 <?= date('M j, Y', strtotime($art['published_at'])) ?></span>
-                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="card-action-link">Apply Online »</a>
+                    <div class="stream-action-col">
+                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="stream-action-pill">
+                            Apply Online →
+                        </a>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -180,29 +220,36 @@
         </section>
         <?php endif; ?>
 
-        <!-- 4. 📝 Exam Dates Section -->
+        <!-- 4. 📝 Exam Dates Section (Cardless Data Stream) -->
         <?php if (!empty($exam_articles)): ?>
-        <section class="category-block-card">
-            <div class="block-header block-header-amber">
-                <h2 class="block-title">
+        <section class="stream-block-container">
+            <div class="stream-block-header stream-header-amber">
+                <h2 class="stream-block-title">
                     <span>📝</span> Exam Schedules & Answer Keys
                 </h2>
-                <a href="/exam" class="view-all-link">View All »</a>
+                <a href="/exam" class="stream-view-all">View All Schedules »</a>
             </div>
-            <div class="category-items-grid">
+            <div class="stream-notices-feed">
                 <?php foreach ($exam_articles as $art): ?>
-                <article class="compact-card">
-                    <div>
-                        <span class="official-verified-badge">✓ <?= htmlspecialchars($art['official_source_name'] ?? 'Official') ?></span>
-                        <h3 class="compact-card-title">
+                <article class="stream-notice-row">
+                    <div class="stream-content-col">
+                        <div class="stream-meta-row">
+                            <span class="dept-pill dept-pill-amber"><?= htmlspecialchars($art['official_source_name'] ?? 'Exam') ?></span>
+                            <time class="stream-time-text" datetime="<?= $art['published_at'] ?>">
+                                📅 <?= date('M j, Y', strtotime($art['published_at'])) ?>
+                            </time>
+                            <span class="official-verified-badge">✓ Verified</span>
+                        </div>
+                        <h3 class="stream-headline">
                             <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
                                 <?= htmlspecialchars($art['title']) ?>
                             </a>
                         </h3>
                     </div>
-                    <div class="compact-card-footer">
-                        <span>📅 <?= date('M j, Y', strtotime($art['published_at'])) ?></span>
-                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="card-action-link">View Dates »</a>
+                    <div class="stream-action-col">
+                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="stream-action-pill">
+                            View Dates →
+                        </a>
                     </div>
                 </article>
                 <?php endforeach; ?>
