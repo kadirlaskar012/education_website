@@ -589,4 +589,97 @@ document.addEventListener('DOMContentLoaded', function () {
             });
         }
     }
+
+    // ---------------------------------------------------------
+    // 11. Smart Web Speech AI Audio Reader Player
+    // ---------------------------------------------------------
+    const audioPlayBtns = document.querySelectorAll('.js-audio-play');
+    if (audioPlayBtns.length > 0 && 'speechSynthesis' in window) {
+        let isPaused = false;
+
+        audioPlayBtns.forEach(btn => {
+            const playerCard = btn.closest('.audio-article-player');
+            const playIcon = btn.querySelector('.play-icon') || btn;
+
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+
+                if (window.speechSynthesis.speaking) {
+                    if (isPaused) {
+                        window.speechSynthesis.resume();
+                        isPaused = false;
+                        playIcon.innerText = '⏸';
+                        if (playerCard) playerCard.classList.add('is-playing');
+                        showToast('▶ Audio resumed');
+                    } else {
+                        window.speechSynthesis.pause();
+                        isPaused = true;
+                        playIcon.innerText = '▶';
+                        if (playerCard) playerCard.classList.remove('is-playing');
+                        showToast('⏸ Audio paused');
+                    }
+                    return;
+                }
+
+                // Gather text to read
+                const headlineEl = document.querySelector('.article-main-title') || document.querySelector('h1');
+                const summaryEl = document.querySelector('.article-meta-lead') || document.querySelector('.source-info-text');
+                const articleBodyEl = document.querySelector('.article-main-body') || document.getElementById('article-body');
+
+                let textToRead = '';
+                if (headlineEl) textToRead += headlineEl.innerText + '. ';
+                if (summaryEl) textToRead += summaryEl.innerText + '. ';
+
+                if (articleBodyEl) {
+                    const paragraphs = Array.from(articleBodyEl.querySelectorAll('p')).slice(0, 3);
+                    paragraphs.forEach(p => {
+                        const clean = p.innerText.trim();
+                        if (clean.length > 20) textToRead += clean + ' ';
+                    });
+                }
+
+                if (!textToRead.trim()) {
+                    showToast('No audio content available to read.');
+                    return;
+                }
+
+                window.speechSynthesis.cancel();
+                const utterance = new SpeechSynthesisUtterance(textToRead);
+
+                const htmlLang = document.documentElement.lang || 'bn';
+                if (htmlLang.startsWith('bn')) {
+                    utterance.lang = 'bn-IN';
+                } else if (htmlLang.startsWith('hi')) {
+                    utterance.lang = 'hi-IN';
+                } else {
+                    utterance.lang = 'en-IN';
+                }
+
+                utterance.rate = 1.0;
+                utterance.pitch = 1.0;
+
+                utterance.onstart = function () {
+                    isPaused = false;
+                    playIcon.innerText = '⏸';
+                    if (playerCard) playerCard.classList.add('is-playing');
+                    showToast('🎧 Playing official audio summary...');
+                };
+
+                utterance.onend = function () {
+                    isPaused = false;
+                    playIcon.innerText = '▶';
+                    if (playerCard) playerCard.classList.remove('is-playing');
+                    showToast('✓ Audio summary complete');
+                };
+
+                utterance.onerror = function () {
+                    isPaused = false;
+                    playIcon.innerText = '▶';
+                    if (playerCard) playerCard.classList.remove('is-playing');
+                };
+
+                window.speechSynthesis.speak(utterance);
+            });
+        });
+    }
 });

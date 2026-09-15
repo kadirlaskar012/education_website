@@ -11,7 +11,7 @@ class GeminiClient {
     private string $model;
     private float $temperature;
 
-    public function __construct(?string $apiKey = null, string $model = 'gemini-3.6-flash', float $temperature = 0.4) {
+    public function __construct(?string $apiKey = null, string $model = 'gemini-3.5-flash-lite', float $temperature = 0.4) {
         $config = require __DIR__ . '/../../../config/config.php';
         
         $dbKey = '';
@@ -22,7 +22,7 @@ class GeminiClient {
         } catch (\Throwable $e) {}
 
         $this->apiKey = $apiKey ?: ($dbKey ?: ($config['ai']['api_key'] ?? ''));
-        $this->model = $model ?: ($config['ai']['model'] ?? 'gemini-3.6-flash');
+        $this->model = $model ?: ($config['ai']['model'] ?? 'gemini-3.5-flash-lite');
         $this->temperature = $temperature;
     }
 
@@ -30,12 +30,12 @@ class GeminiClient {
         return !empty(trim($this->apiKey));
     }
 
-    public function generate(string $prompt, int $maxRetries = 1): ?string {
+    public function generate(string $prompt, int $maxRetries = 2): ?string {
         if (!$this->isConfigured()) {
             return null;
         }
 
-        $endpoint = "https://generativelanguage.googleapis.com/v1beta/models/{$this->model}:generateContent?key=" . urlencode($this->apiKey);
+        $modelsToTry = array_unique([$this->model, 'gemini-3.5-flash-lite', 'gemini-3.1-flash-lite']);
 
         $payload = [
             'contents' => [
@@ -55,13 +55,15 @@ class GeminiClient {
 
         $jsonData = json_encode($payload);
 
-        for ($attempt = 1; $attempt <= $maxRetries; $attempt++) {
+        foreach ($modelsToTry as $currentModel) {
+            $endpoint = "https://generativelanguage.googleapis.com/v1beta/models/{$currentModel}:generateContent?key=" . urlencode($this->apiKey);
+
             $ch = curl_init($endpoint);
             curl_setopt_array($ch, [
                 CURLOPT_POST           => true,
                 CURLOPT_POSTFIELDS     => $jsonData,
                 CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_TIMEOUT        => 12,
+                CURLOPT_TIMEOUT        => 15,
                 CURLOPT_CONNECTTIMEOUT => 5,
                 CURLOPT_SSL_VERIFYPEER => false,
                 CURLOPT_SSL_VERIFYHOST => false,
@@ -73,7 +75,6 @@ class GeminiClient {
 
             $response = curl_exec($ch);
             $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-            $curlError = curl_error($ch);
             curl_close($ch);
 
             if ($httpCode === 200 && !empty($response)) {
@@ -82,15 +83,6 @@ class GeminiClient {
                 if (!empty($candidateText)) {
                     return trim($candidateText);
                 }
-            }
-
-            // If rate limited (429) or quota exhausted, fail immediately to allow fast local synthesis
-            if ($httpCode === 429 || $httpCode === 403 || $httpCode === 400 || $httpCode === 404) {
-                break;
-            }
-
-            if ($attempt < $maxRetries) {
-                usleep(400000);
             }
         }
 

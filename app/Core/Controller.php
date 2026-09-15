@@ -17,6 +17,11 @@ abstract class Controller {
         exit;
     }
 
+    protected function redirect(string $url): void {
+        header('Location: ' . $url);
+        exit;
+    }
+
     public function notFound(): void {
         http_response_code(404);
         $this->render('portal/404', [

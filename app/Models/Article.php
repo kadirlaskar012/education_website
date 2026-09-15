@@ -216,7 +216,15 @@ class Article {
             SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
             FROM articles a
             JOIN categories c ON a.category_id = c.id
-            WHERE a.status = 'published' AND (a.title LIKE :q OR a.official_source_name LIKE :q OR a.summary LIKE :q)
+            WHERE a.status = 'published' AND (
+                a.title LIKE :q 
+                OR a.official_source_name LIKE :q 
+                OR a.summary LIKE :q
+                OR a.content_html LIKE :q
+                OR a.state_name LIKE :q
+                OR a.structured_data LIKE :q
+                OR c.name LIKE :q
+            )
             ORDER BY a.published_at DESC
             LIMIT :limit OFFSET :offset
         ");
@@ -230,8 +238,17 @@ class Article {
     public function countSearch(string $query): int {
         $stmt = $this->db->prepare("
             SELECT COUNT(*)
-            FROM articles
-            WHERE status = 'published' AND (title LIKE :q OR official_source_name LIKE :q OR summary LIKE :q)
+            FROM articles a
+            JOIN categories c ON a.category_id = c.id
+            WHERE a.status = 'published' AND (
+                a.title LIKE :q 
+                OR a.official_source_name LIKE :q 
+                OR a.summary LIKE :q
+                OR a.content_html LIKE :q
+                OR a.state_name LIKE :q
+                OR a.structured_data LIKE :q
+                OR c.name LIKE :q
+            )
         ");
         $stmt->bindValue(':q', '%' . $query . '%', \PDO::PARAM_STR);
         $stmt->execute();
