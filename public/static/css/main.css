@@ -3,35 +3,34 @@
    High-Performance, Ultra-Clean UI/UX for Education, Exam & Recruitment Portal
    ========================================================================== */
 
-:root {
+:root,
+html[data-theme-style="sapphire-gold"] {
     /* Typography Stacks */
     --font-main: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-body: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     --font-mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
 
-    /* "GovTrust Modern Royal" Core Color Palette (Light Mode) */
-    --color-bg: #f8fafc;
+    /* Theme 1: Oxford Sapphire & Golden Amber (Royal Merit Edition) */
+    --color-bg: #fafbfc;
     --color-surface: #ffffff;
     --color-card-bg: #ffffff;
-    --color-card-hover: #f8fafc;
+    --color-card-hover: #f1f5f9;
     
-    /* Primary Brand Colors */
-    --color-navy-950: #0a192f;
-    --color-navy-900: #0f243e;
-    --color-navy-800: #1e3a8a;
-    --color-navy-700: #1d4ed8;
-    --color-navy-600: #2563eb;
+    --color-navy-950: #0b192c;
+    --color-navy-900: #1e3e62;
+    --color-navy-800: #0066ff;
+    --color-navy-700: #2563eb;
+    --color-navy-600: #3b82f6;
     --color-navy-100: #dbeafe;
     --color-navy-50: #eff6ff;
 
-    --color-primary: #1e3a8a;
-    --color-primary-light: #2563eb;
-    --color-primary-hover: #1d4ed8;
-    --color-accent: #0284c7;
+    --color-primary: #0066ff;
+    --color-primary-light: #3b82f6;
+    --color-primary-hover: #0052cc;
+    --color-accent: #f59e0b;
 
-    /* Semantic Status Colors */
-    --color-success: #059669;
-    --color-success-light: #10b981;
+    --color-success: #10b981;
+    --color-success-light: #34d399;
     --color-success-bg: #ecfdf5;
     --color-success-border: #a7f3d0;
 
@@ -45,19 +44,97 @@
     --color-danger-bg: #fef2f2;
     --color-danger-border: #fecaca;
 
-    --color-info: #0284c7;
-    --color-info-bg: #f0f9ff;
-    --color-info-border: #bae6fd;
+    --color-text-main: #0f172a;
+    --color-text-muted: #475569;
+    --color-text-light: #94a3b8;
+    --color-border: #e2e8f0;
+    --color-border-subtle: #f1f5f9;
+    --site-max-width: 1200px;
+}
 
-    /* Text & Neutral Colors */
+/* Theme 2: Emerald Forest & Soft Ivory (Growth & Focus Edition) */
+html[data-theme-style="emerald-forest"] {
+    --color-bg: #f8fafc;
+    --color-surface: #ffffff;
+    --color-card-bg: #ffffff;
+    --color-card-hover: #f0fdf4;
+    
+    --color-navy-950: #064e3b;
+    --color-navy-900: #065f46;
+    --color-navy-800: #047857;
+    --color-navy-700: #059669;
+    --color-navy-600: #10b981;
+    --color-navy-100: #d1fae5;
+    --color-navy-50: #ecfdf5;
+
+    --color-primary: #059669;
+    --color-primary-light: #10b981;
+    --color-primary-hover: #047857;
+    --color-accent: #d97706;
+
+    --color-success: #059669;
+    --color-success-light: #34d399;
+    --color-success-bg: #ecfdf5;
+    --color-success-border: #a7f3d0;
+
+    --color-warning: #d97706;
+    --color-warning-light: #f59e0b;
+    --color-warning-bg: #fffbeb;
+    --color-warning-border: #fde68a;
+
+    --color-danger: #e11d48;
+    --color-danger-light: #f43f5e;
+    --color-danger-bg: #fff1f2;
+    --color-danger-border: #fecdd3;
+
+    --color-text-main: #111827;
+    --color-text-muted: #4b5563;
+    --color-text-light: #9ca3af;
+    --color-border: #e5e7eb;
+    --color-border-subtle: #f3f4f6;
+}
+
+/* Theme 3: Cyber Indigo & Sunset Tangerine (Ultra-Modern Edition) */
+html[data-theme-style="cyber-indigo"] {
+    --color-bg: #ffffff;
+    --color-surface: #ffffff;
+    --color-card-bg: #ffffff;
+    --color-card-hover: #faf5ff;
+    
+    --color-navy-950: #0f172a;
+    --color-navy-900: #1e1b4b;
+    --color-navy-800: #3730a3;
+    --color-navy-700: #4f46e5;
+    --color-navy-600: #6366f1;
+    --color-navy-100: #ede9fe;
+    --color-navy-50: #f5f3ff;
+
+    --color-primary: #4f46e5;
+    --color-primary-light: #6366f1;
+    --color-primary-hover: #4338ca;
+    --color-accent: #ff5722;
+
+    --color-success: #10b981;
+    --color-success-light: #34d399;
+    --color-success-bg: #ecfdf5;
+    --color-success-border: #a7f3d0;
+
+    --color-warning: #f97316;
+    --color-warning-light: #fb923c;
+    --color-warning-bg: #fff7ed;
+    --color-warning-border: #ffedd5;
+
+    --color-danger: #ef4444;
+    --color-danger-light: #f87171;
+    --color-danger-bg: #fef2f2;
+    --color-danger-border: #fecaca;
+
     --color-text-main: #0f172a;
     --color-text-muted: #64748b;
     --color-text-light: #94a3b8;
     --color-border: #e2e8f0;
-    --color-border-subtle: #f1f5f9;
-
-    /* Layout & Dimensions */
-    --site-max-width: 1200px;
+    --color-border-subtle: #f8fafc;
+}
     --header-height: 70px;
     --bottom-nav-height: 64px;
 
@@ -4308,6 +4385,385 @@ html {
 [data-theme="dark"] .nav-title {
     color: #f1f5f9;
 }
+
+/* ==========================================================================
+   LIVE THEME & UI SHOWCASE COMPONENTS
+   ========================================================================== */
+
+.theme-showcase-control-bar {
+    background: #0f172a;
+    border-bottom: 2px solid #2563eb;
+    padding: 1rem 0;
+    position: sticky;
+    top: 0;
+    z-index: 1000;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
+}
+
+.showcase-control-inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.showcase-title-col {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.showcase-badge {
+    background: #2563eb;
+    color: #ffffff;
+    font-size: 0.6875rem;
+    font-weight: 800;
+    padding: 0.3rem 0.6rem;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+}
+
+.showcase-heading {
+    color: #f8fafc;
+    font-size: 0.9375rem;
+}
+
+.theme-switcher-pills {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    flex-wrap: wrap;
+}
+
+.theme-pill-btn {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 1rem;
+    background: #1e293b;
+    border: 1px solid #334155;
+    border-radius: 8px;
+    color: #cbd5e1;
+    cursor: pointer;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.theme-pill-btn:hover {
+    background: #334155;
+    color: #ffffff;
+    transform: translateY(-1px);
+}
+
+.theme-pill-btn.active {
+    background: #ffffff;
+    color: #0f172a;
+    border-color: #ffffff;
+    box-shadow: 0 0 16px rgba(255, 255, 255, 0.35);
+    font-weight: 700;
+}
+
+.color-dot {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    display: inline-block;
+}
+
+.pill-title {
+    font-size: 0.8125rem;
+}
+
+.pill-tag {
+    font-size: 0.6875rem;
+    padding: 0.15rem 0.45rem;
+    background: rgba(0, 0, 0, 0.2);
+    border-radius: 4px;
+    color: #94a3b8;
+}
+
+.theme-pill-btn.active .pill-tag {
+    background: #e2e8f0;
+    color: #0f172a;
+}
+
+/* Theme Description Banner */
+.theme-description-banner {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    padding: 1rem 1.25rem;
+    background: var(--color-surface, #ffffff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-left: 4px solid var(--color-primary, #0066ff);
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.theme-desc-icon {
+    font-size: 1.75rem;
+}
+
+/* UI Concept 1: Quick Factsheet Hero Widget */
+.quick-factsheet-widget {
+    margin: 1.5rem 0;
+    background: var(--color-surface, #ffffff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
+}
+
+.factsheet-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.85rem 1.25rem;
+    background: var(--color-navy-50, #eff6ff);
+    border-bottom: 1px solid var(--color-border, #e2e8f0);
+}
+
+.factsheet-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+    color: var(--color-navy-950, #0a192f);
+}
+
+.factsheet-badge {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    padding: 0.25rem 0.6rem;
+    background: var(--color-primary, #0066ff);
+    color: #ffffff;
+    border-radius: 4px;
+    text-transform: uppercase;
+}
+
+.factsheet-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    gap: 1px;
+    background: var(--color-border, #e2e8f0);
+}
+
+.factsheet-card {
+    background: var(--color-surface, #ffffff);
+    padding: 1rem 1.15rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+}
+
+.f-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted, #64748b);
+    font-weight: 600;
+}
+
+.f-value {
+    font-size: 1.05rem;
+    font-weight: 800;
+    color: var(--color-text-main, #0f172a);
+}
+
+.f-sub {
+    font-size: 0.6875rem;
+    color: var(--color-text-light, #94a3b8);
+}
+
+/* UI Concept 2: Visual Event Timeline */
+.visual-event-timeline-box {
+    margin: 1.5rem 0;
+    padding: 1.25rem;
+    background: var(--color-surface, #ffffff);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+}
+
+.timeline-title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.9375rem;
+    margin-bottom: 1.25rem;
+    color: var(--color-navy-950, #0a192f);
+}
+
+.timeline-steps-track {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 1rem;
+    position: relative;
+}
+
+.timeline-step {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    position: relative;
+}
+
+.step-circle {
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.75rem;
+    font-weight: 800;
+    margin-bottom: 0.5rem;
+}
+
+.timeline-step.completed .step-circle {
+    background: var(--color-success, #10b981);
+    color: #ffffff;
+}
+
+.timeline-step.active .step-circle {
+    background: var(--color-primary, #0066ff);
+    color: #ffffff;
+    box-shadow: 0 0 0 4px var(--color-navy-100, #dbeafe);
+}
+
+.timeline-step.upcoming .step-circle {
+    background: #e2e8f0;
+    color: #64748b;
+}
+
+.step-date {
+    font-size: 0.6875rem;
+    font-weight: 700;
+    color: var(--color-primary, #0066ff);
+    text-transform: uppercase;
+}
+
+.step-title {
+    font-size: 0.8125rem;
+    color: var(--color-text-main, #0f172a);
+    line-height: 1.3;
+}
+
+/* UI Concept 3: Audio Article Player */
+.audio-article-player {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.75rem 1rem;
+    background: linear-gradient(135deg, var(--color-navy-50, #eff6ff), var(--color-surface, #ffffff));
+    border: 1px solid var(--color-navy-100, #dbeafe);
+    border-radius: 10px;
+    margin: 1rem 0;
+}
+
+.audio-left {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.audio-play-btn {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--color-primary, #0066ff);
+    color: #ffffff;
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.875rem;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.audio-play-btn:hover {
+    transform: scale(1.08);
+}
+
+.audio-info {
+    display: flex;
+    flex-direction: column;
+}
+
+.audio-title {
+    font-size: 0.8125rem;
+    color: var(--color-navy-950, #0a192f);
+}
+
+.audio-meta {
+    font-size: 0.6875rem;
+    color: var(--color-text-muted, #64748b);
+}
+
+.audio-badge {
+    font-size: 0.625rem;
+    font-weight: 800;
+    padding: 0.2rem 0.5rem;
+    background: #ef4444;
+    color: #ffffff;
+    border-radius: 4px;
+    letter-spacing: 0.05em;
+}
+
+/* UI Concept 3: Sticky Mobile Smart Action Dock */
+.smart-action-dock {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(15, 23, 42, 0.92);
+    backdrop-filter: blur(12px);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 0.65rem 1rem;
+    z-index: 999;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.25);
+}
+
+.dock-inner {
+    max-width: 600px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 0.75rem;
+}
+
+.dock-btn {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4rem;
+    padding: 0.65rem 0.5rem;
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    font-weight: 700;
+    text-decoration: none;
+    transition: transform 0.15s ease;
+}
+
+.dock-btn:hover {
+    transform: translateY(-2px);
+}
+
+.dock-btn-apply {
+    background: var(--color-primary, #0066ff);
+    color: #ffffff;
+}
+
+.dock-btn-pdf {
+    background: #334155;
+    color: #ffffff;
+}
+
+.dock-btn-wa {
+    background: #22c55e;
+    color: #ffffff;
+}
+
 
 
 
