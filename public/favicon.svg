@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" width="48" height="48">
+  <defs>
+    <!-- Background Gradient -->
+    <linearGradient id="bgGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0a192f"/>
+      <stop offset="50%" stop-color="#1e40af"/>
+      <stop offset="100%" stop-color="#2563eb"/>
+    </linearGradient>
+
+    <!-- Golden Merit Badge Gradient -->
+    <linearGradient id="goldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fef08a"/>
+      <stop offset="50%" stop-color="#f59e0b"/>
+      <stop offset="100%" stop-color="#d97706"/>
+    </linearGradient>
+
+    <!-- Book Pages Glow Gradient -->
+    <linearGradient id="pageGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#ffffff"/>
+      <stop offset="100%" stop-color="#e0f2fe"/>
+    </linearGradient>
+
+    <!-- Alert / Announcement Flare -->
+    <linearGradient id="alertGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#ff4444"/>
+      <stop offset="100%" stop-color="#dc2626"/>
+    </linearGradient>
+
+    <!-- Drop Shadow for Depth -->
+    <filter id="shadow" x="-10%" y="-10%" width="130%" height="130%">
+      <feDropShadow dx="0" dy="1.5" stdDeviation="1.5" flood-opacity="0.3"/>
+    </filter>
+  </defs>
+
+  <!-- Base Rounded Shield Container -->
+  <rect width="48" height="48" rx="12" fill="url(#bgGrad)"/>
+  
+  <!-- Subtle Inner Border Highlight -->
+  <rect x="1" y="1" width="46" height="46" rx="11" fill="none" stroke="#60a5fa" stroke-width="1.2" stroke-opacity="0.4"/>
+
+  <!-- 1. Open Book of Education (Foundation) -->
+  <path d="M10 32 C14 30, 20 30, 24 33 C28 30, 34 30, 38 32 V38 C34 36, 28 36, 24 39 C20 36, 14 36, 10 38 Z" fill="url(#pageGrad)" filter="url(#shadow)"/>
+  <path d="M24 33.5 V39" stroke="#94a3b8" stroke-width="1" stroke-linecap="round"/>
+
+  <!-- 2. Academic Graduation Cap / Mortarboard -->
+  <polygon points="24,10 7,18 24,25 41,18" fill="#ffffff" filter="url(#shadow)"/>
+  <!-- Cap Bottom Underlayer / Skullcap -->
+  <path d="M14 21.5 V26 C14 29 24 31 24 31 C24 31 34 29 34 26 V21.5 L24 25.5 Z" fill="#93c5fd"/>
+
+  <!-- 3. Tassel Hanging from Cap with Gold Finish -->
+  <path d="M37 19.5 C37 23, 38 25, 39 27" fill="none" stroke="url(#goldGrad)" stroke-width="2" stroke-linecap="round"/>
+  <circle cx="39" cy="28" r="1.5" fill="url(#goldGrad)"/>
+
+  <!-- 4. Official Result & Merit Ribbon Badge (Top Right) -->
+  <circle cx="37" cy="11" r="5" fill="url(#goldGrad)" filter="url(#shadow)"/>
+  <!-- Verified Star / Checkmark inside Merit Badge -->
+  <path d="M35 11 L36.5 12.5 L39.5 9.5" fill="none" stroke="#0a192f" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- 5. Breaking Announcement Broadcast Pulse (Red Alert Beacon) -->
+  <circle cx="9" cy="11" r="3.5" fill="url(#alertGrad)"/>
+  <circle cx="9" cy="11" r="5" fill="none" stroke="#ef4444" stroke-width="1" stroke-opacity="0.6"/>
+</svg>

@@ -29,14 +29,16 @@
     <link rel="dns-prefetch" href="//fonts.googleapis.com">
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
 
-    <!-- Progressive Web App (PWA) Meta & Manifest -->
+    <!-- Progressive Web App (PWA) & Tab Favicons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+    <link rel="shortcut icon" href="/favicon.svg">
+    <link rel="apple-touch-icon" href="/static/img/icon-192.svg">
     <link rel="manifest" href="/manifest.json">
     <meta name="theme-color" content="#1d4ed8">
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
     <meta name="apple-mobile-web-app-title" content="EduGov">
-    <link rel="apple-touch-icon" href="/static/img/icon-192.svg">
 
     <!-- OpenGraph & Twitter Meta Tags with Dynamic Social OG Banner -->
     <?php 
@@ -137,24 +139,47 @@
                 <a href="/" class="brand-logo" title="EduGov News Homepage">
                     <div class="brand-logo-wrap">
                         <div class="brand-emblem-icon">
-                            <svg width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                <rect width="32" height="32" rx="9" fill="url(#logo-grad)"/>
-                                <path d="M16 6.5L5.5 12L16 17.5L26.5 12L16 6.5Z" fill="#FFFFFF"/>
-                                <path d="M9.5 14.5V19.5C9.5 22.8 16 25.5 16 25.5C16 25.5 22.5 22.8 22.5 19.5V14.5L16 18L9.5 14.5Z" fill="#93C5FD" fill-opacity="0.95"/>
-                                <circle cx="26" cy="16" r="2.5" fill="#EF4444"/>
+                            <svg width="38" height="38" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
                                 <defs>
-                                    <linearGradient id="logo-grad" x1="0" y1="0" x2="32" y2="32" gradientUnits="userSpaceOnUse">
-                                        <stop stop-color="#0F243E"/>
-                                        <stop offset="1" stop-color="#2563EB"/>
+                                    <linearGradient id="headerLogoBg" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#0a192f"/>
+                                        <stop offset="50%" stop-color="#1e40af"/>
+                                        <stop offset="100%" stop-color="#2563eb"/>
+                                    </linearGradient>
+                                    <linearGradient id="headerLogoGold" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#fef08a"/>
+                                        <stop offset="50%" stop-color="#f59e0b"/>
+                                        <stop offset="100%" stop-color="#d97706"/>
+                                    </linearGradient>
+                                    <linearGradient id="headerLogoAlert" x1="0%" y1="0%" x2="100%" y2="100%">
+                                        <stop offset="0%" stop-color="#ff4444"/>
+                                        <stop offset="100%" stop-color="#dc2626"/>
                                     </linearGradient>
                                 </defs>
+                                <!-- Shield Container -->
+                                <rect width="48" height="48" rx="12" fill="url(#headerLogoBg)"/>
+                                <rect x="1" y="1" width="46" height="46" rx="11" fill="none" stroke="#60a5fa" stroke-width="1.2" stroke-opacity="0.4"/>
+                                <!-- Open Book of Education -->
+                                <path d="M10 32 C14 30, 20 30, 24 33 C28 30, 34 30, 38 32 V38 C34 36, 28 36, 24 39 C20 36, 14 36, 10 38 Z" fill="#ffffff"/>
+                                <path d="M24 33.5 V39" stroke="#94a3b8" stroke-width="1" stroke-linecap="round"/>
+                                <!-- Graduation Cap / Mortarboard -->
+                                <polygon points="24,10 7,18 24,25 41,18" fill="#ffffff"/>
+                                <path d="M14 21.5 V26 C14 29 24 31 24 31 C24 31 34 29 34 26 V21.5 L24 25.5 Z" fill="#93c5fd"/>
+                                <!-- Gold Tassel -->
+                                <path d="M37 19.5 C37 23, 38 25, 39 27" fill="none" stroke="url(#headerLogoGold)" stroke-width="2" stroke-linecap="round"/>
+                                <circle cx="39" cy="28" r="1.5" fill="url(#headerLogoGold)"/>
+                                <!-- Result Badge & Star -->
+                                <circle cx="37" cy="11" r="5" fill="url(#headerLogoGold)"/>
+                                <path d="M35 11 L36.5 12.5 L39.5 9.5" fill="none" stroke="#0a192f" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+                                <!-- Announcement Alert Pulse -->
+                                <circle cx="9" cy="11" r="3.5" fill="url(#headerLogoAlert)"/>
                             </svg>
                         </div>
                         <div class="brand-text-stack">
                             <div class="brand-title">
                                 <span class="logo-accent">EduGov</span><span class="logo-sub">News<span class="logo-dot">.</span></span>
                             </div>
-                            <span class="logo-tagline"><span class="live-dot"></span> OFFICIAL PORTAL</span>
+                            <span class="logo-tagline"><span class="live-dot"></span> EXAM & RESULT NETWORK</span>
                         </div>
                     </div>
                 </a>
@@ -482,11 +507,22 @@
     <footer class="site-footer">
         <div class="site-container footer-content">
             <div class="footer-col brand-col">
-                <div class="brand-logo-wrap" style="margin-bottom: 0.75rem;">
+                <div class="brand-logo-wrap" style="margin-bottom: 0.75rem; display: flex; align-items: center; gap: 0.75rem;">
+                    <div class="brand-emblem-icon">
+                        <svg width="34" height="34" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <rect width="48" height="48" rx="12" fill="#1e40af"/>
+                            <path d="M10 32 C14 30, 20 30, 24 33 C28 30, 34 30, 38 32 V38 C34 36, 28 36, 24 39 C20 36, 14 36, 10 38 Z" fill="#ffffff"/>
+                            <polygon points="24,10 7,18 24,25 41,18" fill="#ffffff"/>
+                            <path d="M14 21.5 V26 C14 29 24 31 24 31 C24 31 34 29 34 26 V21.5 L24 25.5 Z" fill="#93c5fd"/>
+                            <circle cx="37" cy="11" r="5" fill="#f59e0b"/>
+                            <circle cx="9" cy="11" r="3.5" fill="#ef4444"/>
+                        </svg>
+                    </div>
                     <div class="brand-text-stack">
                         <div class="brand-title">
                             <span class="logo-accent" style="color: #60a5fa;">EduGov</span><span class="logo-sub" style="color: #ffffff;">News<span class="logo-dot">.</span></span>
                         </div>
+                        <span class="logo-tagline" style="color: #94a3b8; font-size: 0.6875rem;">OFFICIAL EDUCATION & EXAM PORTAL</span>
                     </div>
                 </div>
                 <p class="footer-desc">
