@@ -1,5 +1,12 @@
 <IfModule mod_rewrite.c>
     RewriteEngine On
+
+    # Block access to hidden files and sensitive directories
+    RewriteRule (^|/)\.(?!well-known) - [F]
+    RewriteRule ^(database|config|storage|cron)/ - [F,L,NC]
+    RewriteRule \.(sql|sqlite|env|log)$ - [F,L,NC]
+
+    # Rewrite all traffic to public directory
     RewriteRule ^$ public/index.php [L]
     RewriteRule ^((?!public/).*)$ public/$1 [L,NC]
 </IfModule>

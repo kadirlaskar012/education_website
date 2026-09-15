@@ -16,6 +16,7 @@ static/
 .DS_Store
 Thumbs.db
 
-# IDE
+# IDE & Archives
 .idea/
 .vscode/
+*.zip
