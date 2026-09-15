@@ -1,3 +1,10 @@
+<!-- ==========================================================================
+     EDUGOV NEWS — ULTRA-PREMIUM ARTICLE EDITORIAL ARCHITECTURE
+     Features: Quick Factsheet Widget, AI Audio Bar, Visual Event Timeline,
+     Interactive TOC, AdSense Slots, In-Text Autolinks, ALSO READ Box,
+     Sticky Mobile Action Dock, and Rich Structured Data (Schema.org)
+     ========================================================================== -->
+
 <!-- Breadcrumb Navigation -->
 <nav class="breadcrumb-nav" aria-label="Breadcrumb">
     <a href="/">Home</a>
@@ -11,28 +18,33 @@
 $wordCount = str_word_count(strip_tags($article['content_html'] ?? ''));
 $readingTime = max(1, (int)ceil($wordCount / 200));
 ?>
-<article class="article-container">
-    <header class="article-header">
-        <h1 class="article-title-h1"><?= htmlspecialchars($article['title']) ?></h1>
 
-        <div class="article-meta-bar">
+<article class="article-container">
+    <!-- Editorial Article Header -->
+    <header class="article-header">
+        <div class="article-badges-cluster">
             <span class="cat-badge"><?= htmlspecialchars($article['category_name']) ?></span>
             <?php if (!empty($article['official_source_name'])): ?>
             <span class="official-verified-badge">
-                ✓ Verified Official: <?= htmlspecialchars($article['source_domain'] ?? $article['official_source_name']) ?>
+                ✓ Verified Source: <?= htmlspecialchars($article['source_domain'] ?? $article['official_source_name']) ?>
             </span>
             <?php endif; ?>
-            <span class="meta-pill">📅 <?= date('M j, Y — g:i A', strtotime($article['published_at'])) ?></span>
-            <span class="meta-pill reading-time-pill">⏱️ <?= $readingTime ?> min read (<?= number_format($wordCount) ?> words)</span>
-            <?php if ($article['version_number'] > 1): ?>
-            <span class="meta-pill version-pill">(Updated v<?= (int)$article['version_number'] ?>)</span>
-            <?php endif; ?>
-            <span class="meta-pill">👁️ <?= (int)$article['views_count'] ?> views</span>
         </div>
 
-        <!-- Social Share & Print Bar -->
+        <h1 class="article-title-h1"><?= htmlspecialchars($article['title']) ?></h1>
+
+        <div class="article-meta-bar">
+            <span class="meta-pill">📅 Published: <?= date('M j, Y — g:i A', strtotime($article['published_at'])) ?></span>
+            <span class="meta-pill reading-time-pill">⏱️ <?= $readingTime ?> min read (<?= number_format($wordCount) ?> words)</span>
+            <?php if ($article['version_number'] > 1): ?>
+            <span class="meta-pill version-pill">⚡ Updated v<?= (int)$article['version_number'] ?></span>
+            <?php endif; ?>
+            <span class="meta-pill">👁️ <?= number_format((int)$article['views_count']) ?> views</span>
+        </div>
+
+        <!-- Social Share & Action Bar -->
         <div class="article-share-bar">
-            <span class="share-label">Share:</span>
+            <span class="share-label">Share Alert:</span>
             <a href="https://api.whatsapp.com/send?text=<?= urlencode($article['title'] . ' - ' . 'http://' . $_SERVER['HTTP_HOST'] . '/news/' . $article['slug']) ?>" target="_blank" rel="noopener noreferrer" class="link-btn share-btn-wa">
                 💬 WhatsApp
             </a>
@@ -43,18 +55,67 @@ $readingTime = max(1, (int)ceil($wordCount / 200));
                 📋 Copy Link
             </button>
             <button onclick="window.print()" class="link-btn share-btn-action" type="button">
-                🖨️ Print
+                🖨️ Print Notice
             </button>
+        </div>
+
+        <!-- AI Audio Reader Bar -->
+        <div class="audio-article-player">
+            <div class="audio-left">
+                <button type="button" class="audio-play-btn js-audio-play" aria-label="Listen to Audio Summary">
+                    <span class="play-icon">▶</span>
+                </button>
+                <div class="audio-info">
+                    <strong class="audio-title">🎧 Listen to this Official Update (Audio Narration)</strong>
+                    <span class="audio-meta"><?= $readingTime ?> min listen • Clear Bengali Voice Summary</span>
+                </div>
+            </div>
+            <div class="audio-right">
+                <span class="audio-badge">AI AUDIO</span>
+            </div>
         </div>
     </header>
 
-    <!-- Source Trust Callout Box (Crystal Clear in Light & Dark Mode) -->
+    <!-- 1. Quick Highlights Factsheet Hero Widget -->
+    <div class="quick-factsheet-widget">
+        <div class="factsheet-header">
+            <div class="factsheet-title">
+                <span class="factsheet-icon">⚡</span>
+                <strong>Key Highlights & Official Summary Factsheet</strong>
+            </div>
+            <span class="factsheet-badge">Verified Overview</span>
+        </div>
+        <div class="factsheet-grid">
+            <div class="factsheet-card">
+                <span class="f-label">🏛️ Conducting Authority</span>
+                <strong class="f-value" style="color: var(--color-primary);"><?= htmlspecialchars($article['official_source_name'] ?? 'Government Authority') ?></strong>
+                <span class="f-sub">Public Announcement</span>
+            </div>
+            <div class="factsheet-card">
+                <span class="f-label">📂 Notification Type</span>
+                <strong class="f-value"><?= htmlspecialchars($article['category_name']) ?></strong>
+                <span class="f-sub">Direct Official Release</span>
+            </div>
+            <div class="factsheet-card">
+                <span class="f-label">📅 Release Date</span>
+                <strong class="f-value" style="color: var(--color-danger);"><?= date('M j, Y', strtotime($article['published_at'])) ?></strong>
+                <span class="f-sub">Published Timestamps</span>
+            </div>
+            <div class="factsheet-card">
+                <span class="f-label">🌐 Official Portal Link</span>
+                <strong class="f-value" style="color: var(--color-primary);"><?= htmlspecialchars($article['source_domain'] ?? 'Official Portal') ?></strong>
+                <span class="f-sub">Direct Verification</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Official Source Verification Card -->
     <div class="source-verification-box" id="overview">
         <div class="source-icon">🏛️</div>
         <div class="source-info">
             <strong class="source-info-heading">Official Government Source Verification</strong>
             <p class="source-info-text">
-                This article is automatically synchronized and verified from the official notification released by <strong><?= htmlspecialchars($article['official_source_name'] ?? 'Government Authority') ?></strong>.
+                This announcement is automatically synchronized and verified from the public notification issued by <strong><?= htmlspecialchars($article['official_source_name'] ?? 'Government Authority') ?></strong>.
             </p>
             <?php if (!empty($article['official_source_url'])): ?>
             <div class="source-link-row">
@@ -71,19 +132,19 @@ $readingTime = max(1, (int)ceil($wordCount / 200));
         </div>
     </div>
 
-    <!-- Top AdSense Responsive Slot (Above Table of Contents) -->
+    <!-- Top AdSense Responsive Slot (Above TOC) -->
     <div class="adsense-slot-wrapper adsense-slot-top" aria-label="Sponsored Advertisement">
         <div class="ad-disclosure-bar"><span class="ad-label">ADVERTISEMENT</span></div>
         <div class="ad-banner-placeholder">
             <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="1122334455" data-ad-format="auto" data-full-width-responsive="true"></ins>
             <div class="ad-demo-preview">
                 <span class="ad-demo-icon">📢</span>
-                <span class="ad-demo-text">Top Responsive Ad Placement (High CTR)</span>
+                <span class="ad-demo-text">Top Responsive In-Article Ad Placement (High CTR)</span>
             </div>
         </div>
     </div>
 
-    <!-- Hierarchical Table of Contents (Auto-populated with Parent-Child H2 & H3) -->
+    <!-- Hierarchical Table of Contents (Parent-Child H2 & H3 with 155px Header Clearance) -->
     <div class="article-toc-box" id="articleTocBox">
         <div class="toc-header" id="tocHeaderToggle">
             <div class="toc-header-left">
@@ -130,145 +191,79 @@ $readingTime = max(1, (int)ceil($wordCount / 200));
     </div>
     <?php endif; ?>
 
-    <!-- Structured Grounded Content Body (with injected tables and contextual links) -->
-    <div class="article-main-body" id="article-body">
+    <!-- Main Rich Article Body Content (With Contextual Autolinks & ALSO READ Box) -->
+    <div class="article-body-content" id="articleBodyContent">
         <?= $article['content_html'] ?>
     </div>
 
-    <!-- Bottom AdSense In-Article Slot (Before FAQs) -->
-    <div class="adsense-slot-wrapper adsense-slot-bottom" aria-label="Sponsored Advertisement">
+    <!-- Mid-Content AdSense Responsive Placement -->
+    <div class="adsense-slot-wrapper adsense-slot-mid" aria-label="Sponsored Advertisement">
         <div class="ad-disclosure-bar"><span class="ad-label">ADVERTISEMENT</span></div>
         <div class="ad-banner-placeholder">
-            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="9988776655" data-ad-format="auto" data-full-width-responsive="true"></ins>
+            <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="6677889900" data-ad-format="auto" data-full-width-responsive="true"></ins>
             <div class="ad-demo-preview">
                 <span class="ad-demo-icon">📢</span>
-                <span class="ad-demo-text">In-Article Native Ad Placement</span>
+                <span class="ad-demo-text">Mid-Article High Viewability In-Feed Ad Unit</span>
             </div>
         </div>
     </div>
 
-    <!-- Dynamic FAQs Section (Google SERP FAQ Accordion) -->
-    <?php
-    $authorityName = $article['official_source_name'] ?? 'Official Authority';
-    $publishDateText = date('F j, Y', strtotime($article['published_at']));
-    $faqsList = [
-        [
-            'question' => "What is the official release date and issuing authority for {$article['title']}?",
-            'answer'   => "This notification was officially published by {$authorityName} on {$publishDateText}. All facts and eligibility criteria are verified from the government release.",
-        ],
-        [
-            'question' => "Where can candidates download the official notification PDF?",
-            'answer'   => !empty($article['official_pdf_url']) 
-                          ? "Candidates can directly download the official PDF document via the download button provided in this article."
-                          : "The official PDF link is hosted directly on the authorized portal of {$authorityName}.",
-        ],
-        [
-            'question' => "How can candidates apply or check their result/admit card status?",
-            'answer'   => "Visit the verified portal (" . ($article['official_source_url'] ?? "official portal") . "), navigate to the candidate portal section, and follow the step-by-step verification process outlined in this guide.",
-        ],
-        [
-            'question' => "Is this update applicable across all states in India?",
-            'answer'   => (!empty($article['state_name']) && $article['state_name'] !== 'All India / Central')
-                          ? "This notification specifically applies to {$article['state_name']} candidates as per state government rules."
-                          : "Yes, this notification applies to eligible candidates across all Indian states as per Central Government norms.",
-        ],
-    ];
-    ?>
-    <section class="article-faqs-section" id="faqs">
-        <h3 class="faqs-main-heading">
-            ❓ Frequently Asked Questions (FAQs)
-        </h3>
-        <div class="faqs-accordion-list">
-            <?php foreach ($faqsList as $idx => $faq): ?>
-            <details class="faq-item" <?= $idx === 0 ? 'open' : '' ?>>
-                <summary class="faq-question">
-                    <span><?= htmlspecialchars($faq['question']) ?></span>
-                    <span class="faq-icon">▾</span>
-                </summary>
-                <div class="faq-answer">
-                    <p><?= htmlspecialchars($faq['answer']) ?></p>
-                </div>
-            </details>
-            <?php endforeach; ?>
-        </div>
-    </section>
-
-    <!-- Dynamic Smart Topic Tags -->
-    <?php
-    $tags = [
-        $article['category_name'],
-        $article['official_source_name'] ?? 'Government of India',
-        (!empty($article['state_name']) && $article['state_name'] !== 'All India / Central') ? $article['state_name'] : 'All India',
-    ];
-    if (preg_match('/(10th|12th|Graduate|Degree|Matric|Diploma|ITI)/i', $article['title'], $qm)) {
-        $tags[] = $qm[1] . ' Pass';
-    }
-    ?>
-    <div class="article-tags-wrap">
-        <span class="tags-label">🏷️ Topics:</span>
-        <?php foreach (array_unique($tags) as $t): ?>
-        <a href="/search?q=<?= urlencode($t) ?>" class="article-tag-pill">#<?= htmlspecialchars(str_replace(' ', '_', $t)) ?></a>
-        <?php endforeach; ?>
+    <!-- Dynamic Topic & Qualification Tags Clustering -->
+    <div class="article-tags-wrap" style="margin-top: 2rem;">
+        <span class="tags-heading">🏷️ Topic Matrix:</span>
+        <a href="/category/<?= htmlspecialchars($article['category_slug']) ?>" class="tag-pill">#<?= htmlspecialchars($article['category_name']) ?></a>
+        <?php if (!empty($article['state_code']) && $article['state_code'] !== 'ALL'): ?>
+        <a href="/state/<?= htmlspecialchars(strtolower($article['state_code'])) ?>" class="tag-pill">#<?= htmlspecialchars($article['state_code']) ?>-Govt</a>
+        <?php else: ?>
+        <a href="/state/central-govt" class="tag-pill">#Central-Govt</a>
+        <?php endif; ?>
+        <?php if (!empty($article['official_source_name'])): ?>
+        <a href="/search?q=<?= urlencode($article['official_source_name']) ?>" class="tag-pill">#<?= htmlspecialchars(preg_replace('/[^a-zA-Z0-9]/', '', $article['official_source_name'])) ?></a>
+        <?php endif; ?>
+        <a href="/results" class="tag-pill">#Exam-Results</a>
+        <a href="/admit-card" class="tag-pill">#Admit-Card</a>
     </div>
 
-    <!-- Previous & Next Article Navigation Bar -->
+    <!-- Previous & Next Article Navigation -->
     <?php if (!empty($prev_article) || !empty($next_article)): ?>
-    <nav class="adjacent-articles-nav" aria-label="Adjacent Articles">
+    <nav class="adjacent-articles-nav" aria-label="Adjacent Articles Navigation">
         <?php if (!empty($prev_article)): ?>
         <a href="/news/<?= htmlspecialchars($prev_article['slug']) ?>" class="adjacent-nav-card prev-card">
-            <span class="nav-direction">← Previous Update</span>
-            <span class="nav-title"><?= htmlspecialchars(mb_substr($prev_article['title'], 0, 65)) ?>...</span>
+            <span class="nav-direction">← PREVIOUS POST</span>
+            <strong class="nav-title"><?= htmlspecialchars(mb_substr($prev_article['title'], 0, 65)) ?>...</strong>
         </a>
         <?php else: ?>
-        <div class="adjacent-nav-card empty-card"></div>
+        <div class="adjacent-nav-placeholder"></div>
         <?php endif; ?>
 
         <?php if (!empty($next_article)): ?>
         <a href="/news/<?= htmlspecialchars($next_article['slug']) ?>" class="adjacent-nav-card next-card">
-            <span class="nav-direction">Next Update →</span>
-            <span class="nav-title"><?= htmlspecialchars(mb_substr($next_article['title'], 0, 65)) ?>...</span>
+            <span class="nav-direction">NEXT POST →</span>
+            <strong class="nav-title"><?= htmlspecialchars(mb_substr($next_article['title'], 0, 65)) ?>...</strong>
         </a>
         <?php endif; ?>
     </nav>
     <?php endif; ?>
 </article>
 
-<!-- Mobile Sticky Bottom Action Dock -->
-<?php if (!empty($article['official_pdf_url']) || !empty($article['official_source_url'])): ?>
-<div class="mobile-action-dock" id="mobileActionDock">
-    <div class="mobile-dock-inner">
-        <?php if (!empty($article['official_pdf_url'])): ?>
-        <a href="<?= htmlspecialchars($article['official_pdf_url']) ?>" target="_blank" rel="noopener noreferrer nofollow" class="mobile-dock-btn dock-btn-pdf">
-            📥 Official PDF
-        </a>
-        <?php endif; ?>
-        <?php if (!empty($article['official_source_url'])): ?>
-        <a href="<?= htmlspecialchars($article['official_source_url']) ?>" target="_blank" rel="noopener noreferrer nofollow" class="mobile-dock-btn dock-btn-apply">
-            🌐 Visit Portal ↗
-        </a>
-        <?php endif; ?>
-        <a href="https://api.whatsapp.com/send?text=<?= urlencode($article['title'] . ' - ' . 'http://' . $_SERVER['HTTP_HOST'] . '/news/' . $article['slug']) ?>" target="_blank" rel="noopener noreferrer" class="mobile-dock-btn dock-btn-share" title="Share on WhatsApp">
-            💬
-        </a>
-        <button type="button" class="mobile-dock-btn dock-btn-share js-copy-link" data-url="http://<?= $_SERVER['HTTP_HOST'] ?>/news/<?= htmlspecialchars($article['slug']) ?>" title="Copy link">
-            📋
-        </button>
-    </div>
-</div>
-<?php endif; ?>
-
-<!-- Related Updates from Same Authority / Department -->
+<!-- Related Updates from the Same Official Authority Grid -->
 <?php if (!empty($related_source_articles)): ?>
-<section class="related-posts-section" style="margin-top: 2rem;">
-    <h3 class="related-section-heading">
-        🏛️ More Updates from <?= htmlspecialchars($article['official_source_name'] ?? 'This Authority') ?>
-    </h3>
+<section class="related-authority-section">
+    <div class="related-section-header">
+        <div class="related-header-left">
+            <span class="sec-icon">🏛️</span>
+            <h3 class="related-section-title">
+                More Updates from <?= htmlspecialchars($article['official_source_name'] ?? 'this Authority') ?>
+            </h3>
+        </div>
+        <a href="/search?q=<?= urlencode($article['official_source_name'] ?? '') ?>" class="view-all-board-link">All <?= htmlspecialchars($article['official_source_name'] ?? '') ?> Notices →</a>
+    </div>
+
     <div class="related-cards-grid">
         <?php foreach ($related_source_articles as $rel): ?>
         <a href="/news/<?= htmlspecialchars($rel['slug']) ?>" class="related-post-card">
-            <h4 class="related-card-title">
-                <?= htmlspecialchars($rel['title']) ?>
-            </h4>
+            <span class="related-card-badge"><?= htmlspecialchars($rel['category_name']) ?></span>
+            <h4 class="related-card-title"><?= htmlspecialchars($rel['title']) ?></h4>
             <div class="related-card-meta">
                 <time datetime="<?= $rel['published_at'] ?>">📅 <?= date('M j, Y', strtotime($rel['published_at'])) ?></time>
                 <span class="related-card-arrow">Read Notice →</span>
@@ -279,27 +274,27 @@ $readingTime = max(1, (int)ceil($wordCount / 200));
 </section>
 <?php endif; ?>
 
-<!-- Related Category Updates Section -->
-<?php if (!empty($related_articles)): ?>
-<section class="related-posts-section" style="margin-top: 1.5rem;">
-    <h3 class="related-section-heading">
-        📌 Related <?= htmlspecialchars($article['category_name']) ?> Updates
-    </h3>
-    <div class="related-cards-grid">
-        <?php foreach ($related_articles as $rel): ?>
-        <a href="/news/<?= htmlspecialchars($rel['slug']) ?>" class="related-post-card">
-            <h4 class="related-card-title">
-                <?= htmlspecialchars($rel['title']) ?>
-            </h4>
-            <div class="related-card-meta">
-                <time datetime="<?= $rel['published_at'] ?>">📅 <?= date('M j, Y', strtotime($rel['published_at'])) ?></time>
-                <span class="related-card-arrow">Read Notice →</span>
-            </div>
+<!-- Sticky Mobile Smart Action Dock -->
+<div class="smart-action-dock">
+    <div class="dock-inner">
+        <?php if (!empty($article['official_source_url'])): ?>
+        <a href="<?= htmlspecialchars($article['official_source_url']) ?>" target="_blank" rel="noopener noreferrer nofollow" class="dock-btn dock-btn-apply">
+            <span class="dock-icon">🔗</span>
+            <span class="dock-text">Apply Online</span>
         </a>
-        <?php endforeach; ?>
+        <?php endif; ?>
+        <?php if (!empty($article['official_pdf_url'])): ?>
+        <a href="<?= htmlspecialchars($article['official_pdf_url']) ?>" target="_blank" rel="noopener noreferrer nofollow" class="dock-btn dock-btn-pdf">
+            <span class="dock-icon">📥</span>
+            <span class="dock-text">Download PDF</span>
+        </a>
+        <?php endif; ?>
+        <a href="https://api.whatsapp.com/send?text=<?= urlencode($article['title'] . ' - ' . 'http://' . $_SERVER['HTTP_HOST'] . '/news/' . $article['slug']) ?>" target="_blank" rel="noopener noreferrer" class="dock-btn dock-btn-wa">
+            <span class="dock-icon">💬</span>
+            <span class="dock-text">WhatsApp</span>
+        </a>
     </div>
-</section>
-<?php endif; ?>
+</div>
 
 <!-- Schema.org JSON-LD Structured Data Engine (Google News, JobPosting, FAQPage & Breadcrumbs) -->
 <?php
@@ -395,23 +390,6 @@ if ($isJobAlert) {
         "url" => $articleUrl,
     ];
 }
-
-// 4. Google FAQPage Schema
-$faqEntities = [];
-foreach ($faqsList as $faqItem) {
-    $faqEntities[] = [
-        "@type" => "Question",
-        "name" => $faqItem['question'],
-        "acceptedAnswer" => [
-            "@type" => "Answer",
-            "text" => $faqItem['answer'],
-        ],
-    ];
-}
-$schemaGraph[] = [
-    "@type" => "FAQPage",
-    "mainEntity" => $faqEntities,
-];
 ?>
 <script type="application/ld+json">
 <?= json_encode([
@@ -419,6 +397,3 @@ $schemaGraph[] = [
     "@graph"   => $schemaGraph
 ], JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE | JSON_PRETTY_PRINT) ?>
 </script>
-
-
-

@@ -1,95 +1,186 @@
-<!-- Top 10 Latest Added Notices Hero Board (Clean Text-Based & High-Performance) -->
-<?php if (!empty($top10_notices)): ?>
-<section class="hero-notices-board">
-    <div class="hero-notices-header">
-        <div class="notices-header-left">
-            <span class="live-pulse-icon">🔴</span>
-            <h1 class="hero-notices-title">Latest Official Notices (Top 10 Updates)</h1>
-        </div>
-        <div class="notices-header-badge">
-            ⚡ Real-Time Government Feed
-        </div>
-    </div>
+<!-- ==========================================================================
+     EDUGOV NEWS — ULTRA-PREMIUM HOMEPAGE ARCHITECTURE
+     Features: Hero Featured Showcase, Live Top 10 Stream, Smart Filter Hub,
+     State Quick Matrix, Categorized News Feed & Interactive Community Banners
+     ========================================================================== -->
 
-    <div class="hero-notices-list">
+<!-- Top Hero Section: Featured Breaking Notice + Live Top 10 Ticker Stream -->
+<section class="premium-hero-section">
+    <div class="hero-grid-container">
+        <!-- 1. Featured Top Story (65% width) -->
         <?php 
-        $rank = 1;
-        foreach ($top10_notices as $notice): 
-            $rankPadded = str_pad((string)$rank, 2, '0', STR_PAD_LEFT);
-            $rankClass = ($rank === 1) ? 'rank-1' : (($rank === 2) ? 'rank-2' : (($rank === 3) ? 'rank-3' : ''));
-            $rank++;
+        $featuredStory = $top10_notices[0] ?? null;
+        if ($featuredStory): 
+            $featWordCount = str_word_count(strip_tags($featuredStory['excerpt'] ?? ''));
+            $featReadTime = max(1, (int)ceil($featWordCount / 200));
         ?>
-        <div class="hero-notice-row">
-            <div class="notice-num-wrap">
-                <span class="notice-num <?= $rankClass ?>">#<?= $rankPadded ?></span>
-            </div>
-            <div class="notice-details">
-                <div class="notice-meta-tags">
-                    <span class="cat-badge-text"><?= htmlspecialchars($notice['category_name']) ?></span>
-                    <?php if (!empty($notice['official_source_name'])): ?>
-                    <span class="authority-badge-text">🏛️ <?= htmlspecialchars($notice['official_source_name']) ?></span>
+        <div class="hero-featured-card">
+            <div class="featured-card-top">
+                <div class="badge-cluster">
+                    <span class="pulse-live-badge"><span class="pulsing-dot"></span> TOP ANNOUNCEMENT</span>
+                    <span class="cat-pill"><?= htmlspecialchars($featuredStory['category_name']) ?></span>
+                    <?php if (!empty($featuredStory['official_source_name'])): ?>
+                    <span class="source-pill">🏛️ <?= htmlspecialchars($featuredStory['official_source_name']) ?></span>
                     <?php endif; ?>
-                    <time class="notice-time-text" datetime="<?= $notice['published_at'] ?>">
-                        📅 <?= date('M j, Y — g:i A', strtotime($notice['published_at'])) ?>
-                    </time>
                 </div>
-                <h2 class="notice-text-headline">
-                    <a href="/news/<?= htmlspecialchars($notice['slug']) ?>">
-                        <?= htmlspecialchars($notice['title']) ?>
-                    </a>
-                </h2>
+                <time class="featured-time" datetime="<?= $featuredStory['published_at'] ?>">
+                    📅 <?= date('M j, Y • g:i A', strtotime($featuredStory['published_at'])) ?>
+                </time>
             </div>
-            <div class="notice-action-col">
-                <a href="/news/<?= htmlspecialchars($notice['slug']) ?>" class="btn-notice-read">
-                    Read Notice →
+
+            <h1 class="featured-headline">
+                <a href="/news/<?= htmlspecialchars($featuredStory['slug']) ?>">
+                    <?= htmlspecialchars($featuredStory['title']) ?>
+                </a>
+            </h1>
+
+            <p class="featured-excerpt">
+                <?= htmlspecialchars(mb_substr($featuredStory['excerpt'] ?? strip_tags($featuredStory['content_html'] ?? ''), 0, 195)) ?>...
+            </p>
+
+            <div class="featured-footer">
+                <div class="featured-tags-row">
+                    <span class="ft-tag">🎓 All Eligible</span>
+                    <span class="ft-tag">⚡ Direct Apply Active</span>
+                </div>
+                <a href="/news/<?= htmlspecialchars($featuredStory['slug']) ?>" class="btn-hero-action">
+                    Read Full Notification <span class="arrow-icon">→</span>
                 </a>
             </div>
         </div>
-        <?php endforeach; ?>
-    </div>
-</section>
-<?php endif; ?>
+        <?php endif; ?>
 
-<!-- Instant WhatsApp & Telegram Alert Banner -->
-<div class="social-alert-banner">
-    <div class="social-alert-text">
-        <div class="social-alert-heading">
-            <span>🔔 Never Miss an Exam or Job Notice!</span>
+        <!-- 2. Live Top 10 Updates Stream (35% width) -->
+        <div class="hero-stream-card">
+            <div class="stream-card-header">
+                <div class="stream-title-wrap">
+                    <span class="stream-icon">⚡</span>
+                    <h2 class="stream-title">Trending Live Notices</h2>
+                </div>
+                <span class="stream-live-tag">LIVE UPDATES</span>
+            </div>
+
+            <div class="stream-items-scroll">
+                <?php 
+                $rank = 1;
+                foreach (array_slice($top10_notices, 1, 6) as $notice): 
+                    $rankPadded = str_pad((string)$rank, 2, '0', STR_PAD_LEFT);
+                    $rankClass = ($rank <= 3) ? 'top-rank' : '';
+                    $rank++;
+                ?>
+                <a href="/news/<?= htmlspecialchars($notice['slug']) ?>" class="stream-notice-row">
+                    <div class="rank-pill <?= $rankClass ?>">#<?= $rankPadded ?></div>
+                    <div class="stream-notice-info">
+                        <div class="stream-meta">
+                            <span class="stream-cat"><?= htmlspecialchars($notice['category_name']) ?></span>
+                            <span class="stream-dot">•</span>
+                            <span class="stream-time"><?= date('M j', strtotime($notice['published_at'])) ?></span>
+                        </div>
+                        <h3 class="stream-headline"><?= htmlspecialchars($notice['title']) ?></h3>
+                    </div>
+                </a>
+                <?php endforeach; ?>
+            </div>
+
+            <div class="stream-card-footer">
+                <a href="/recruitment" class="stream-view-more">Browse All Active Government Notices »</a>
+            </div>
         </div>
-        <p class="social-alert-sub">
-            Join 100,000+ candidates receiving instant verified official notifications directly on phone.
-        </p>
-    </div>
-    <div class="social-alert-buttons">
-        <a href="https://telegram.me" target="_blank" rel="noopener noreferrer" class="social-tg-btn">
-            ✈️ Join Telegram
-        </a>
-        <a href="https://whatsapp.com" target="_blank" rel="noopener noreferrer" class="social-wa-btn">
-            💬 Join WhatsApp
-        </a>
-    </div>
-</div>
-
-<!-- State-Wise Quick Filter Matrix -->
-<section id="state-matrix" class="state-filter-section">
-    <div class="section-header-bar">
-        <h2 class="section-bar-title">
-            🗺️ State & Central Government Jobs Filter
-        </h2>
-    </div>
-    <div class="state-matrix-grid">
-        <a href="/state/central-govt" class="state-card-btn">🏛️ Central Govt</a>
-        <a href="/state/west-bengal" class="state-card-btn">🌊 West Bengal</a>
-        <a href="/state/uttar-pradesh" class="state-card-btn">🌾 Uttar Pradesh</a>
-        <a href="/state/bihar" class="state-card-btn">🚩 Bihar</a>
-        <a href="/state/rajasthan" class="state-card-btn">🏰 Rajasthan</a>
-        <a href="/state/madhya-pradesh" class="state-card-btn">🌲 Madhya Pradesh</a>
-        <a href="/state/maharashtra" class="state-card-btn">🏙️ Maharashtra</a>
-        <a href="/state/all-india" class="state-card-btn">🇮🇳 All India</a>
     </div>
 </section>
 
-<!-- Interactive Live Smart Filter Hub -->
+<!-- Community Alert Bar (WhatsApp & Telegram High-CTR Channels) -->
+<section class="social-community-bar">
+    <div class="community-bar-inner">
+        <div class="community-info">
+            <span class="community-icon">🔔</span>
+            <div>
+                <strong class="community-title">Get Instant Exam & Job Alerts on Mobile!</strong>
+                <p class="community-sub">Join 100,000+ candidates receiving verified official notifications in 1 click.</p>
+            </div>
+        </div>
+        <div class="community-actions">
+            <a href="https://t.me/edugov_news_bot" target="_blank" rel="noopener noreferrer" class="btn-community btn-tg">
+                ✈️ Join Telegram Channel
+            </a>
+            <a href="https://api.whatsapp.com/send?text=Join+EduGov+News+Portal" target="_blank" rel="noopener noreferrer" class="btn-community btn-wa">
+                💬 Join WhatsApp Group
+            </a>
+        </div>
+    </div>
+</section>
+
+<!-- State & Central Portals Quick Matrix -->
+<section class="state-matrix-section">
+    <div class="section-top-row">
+        <div class="section-title-wrap">
+            <span class="sec-icon">🗺️</span>
+            <h2 class="sec-title">State-Wise & Central Portals</h2>
+        </div>
+        <span class="sec-subtitle">Direct access to state public service commissions</span>
+    </div>
+
+    <div class="state-pills-grid">
+        <a href="/state/central-govt" class="state-tile">
+            <span class="st-icon">🏛️</span>
+            <div class="st-details">
+                <strong class="st-name">Central Govt</strong>
+                <span class="st-sub">SSC, UPSC, Railway, IBPS</span>
+            </div>
+        </a>
+        <a href="/state/west-bengal" class="state-tile">
+            <span class="st-icon">🌊</span>
+            <div class="st-details">
+                <strong class="st-name">West Bengal</strong>
+                <span class="st-sub">WBPSC, WBP Police, Primary</span>
+            </div>
+        </a>
+        <a href="/state/uttar-pradesh" class="state-tile">
+            <span class="st-icon">🌾</span>
+            <div class="st-details">
+                <strong class="st-name">Uttar Pradesh</strong>
+                <span class="st-sub">UPPSC, UPSSSC, Police</span>
+            </div>
+        </a>
+        <a href="/state/bihar" class="state-tile">
+            <span class="st-icon">🚩</span>
+            <div class="st-details">
+                <strong class="st-name">Bihar</strong>
+                <span class="st-sub">BPSC, BSSC, Police CSBC</span>
+            </div>
+        </a>
+        <a href="/state/rajasthan" class="state-tile">
+            <span class="st-icon">🏰</span>
+            <div class="st-details">
+                <strong class="st-name">Rajasthan</strong>
+                <span class="st-sub">RPSC, RSMSSB, Police</span>
+            </div>
+        </a>
+        <a href="/state/madhya-pradesh" class="state-tile">
+            <span class="st-icon">🌲</span>
+            <div class="st-details">
+                <strong class="st-name">Madhya Pradesh</strong>
+                <span class="st-sub">MPPSC, MPPEB Vyapam</span>
+            </div>
+        </a>
+        <a href="/state/maharashtra" class="state-tile">
+            <span class="st-icon">🏙️</span>
+            <div class="st-details">
+                <strong class="st-name">Maharashtra</strong>
+                <span class="st-sub">MPSC, MahaTransco, Police</span>
+            </div>
+        </a>
+        <a href="/state/all-india" class="state-tile highlight-tile">
+            <span class="st-icon">🇮🇳</span>
+            <div class="st-details">
+                <strong class="st-name">All India Hub</strong>
+                <span class="st-sub">Nationwide Notifications</span>
+            </div>
+        </a>
+    </div>
+</section>
+
+<!-- Interactive Live Smart Multi-Axis Filter Hub -->
 <?php require __DIR__ . '/../partials/smart_filter_hub.php'; ?>
 
 <!-- Top Home Feed Responsive AdSense Placement Slot -->
@@ -99,46 +190,53 @@
         <ins class="adsbygoogle" style="display:block" data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" data-ad-slot="3344556677" data-ad-format="auto" data-full-width-responsive="true"></ins>
         <div class="ad-demo-preview">
             <span class="ad-demo-icon">📢</span>
-            <span class="ad-demo-text">Homepage Top Feed Leaderboard Ad Placement</span>
+            <span class="ad-demo-text">Homepage High-CTR Responsive Ad Placement</span>
         </div>
     </div>
 </div>
 
-<!-- Homepage Main Category-Wise Feed with Right Sidebar -->
+<!-- Homepage Main Categorized Feeds with Right Sidebar -->
 <div class="feed-layout-grid">
-    <!-- Main Categorized Columns -->
+    <!-- Main Stream Column -->
     <main class="feed-main-col">
 
-        <!-- 1. 📋 Results Section (Cardless Data Stream) -->
+        <!-- 1. 📋 Results Section -->
         <?php if (!empty($results_articles)): ?>
         <section class="stream-block-container">
-            <div class="stream-block-header stream-header-blue">
-                <h2 class="stream-block-title">
-                    <span>📋</span> Latest Results & Merit Lists
-                </h2>
-                <a href="/results" class="stream-view-all">View All Results »</a>
+            <div class="stream-block-header header-results">
+                <div class="header-left-title">
+                    <span class="header-icon">📋</span>
+                    <h2 class="stream-block-title">Results & Merit Lists</h2>
+                </div>
+                <a href="/results" class="stream-view-all">View All Results →</a>
             </div>
-            <div class="stream-notices-feed">
+
+            <div class="news-cards-flow">
                 <?php foreach ($results_articles as $art): ?>
-                <article class="stream-notice-row">
-                    <div class="stream-content-col">
-                        <div class="stream-meta-row">
-                            <span class="dept-pill"><?= htmlspecialchars($art['official_source_name'] ?? 'Result') ?></span>
-                            <time class="stream-time-text" datetime="<?= $art['published_at'] ?>">
-                                📅 <?= date('M j, Y', strtotime($art['published_at'])) ?>
-                            </time>
-                            <span class="official-verified-badge">✓ Verified</span>
-                        </div>
-                        <h3 class="stream-headline">
-                            <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
-                                <?= htmlspecialchars($art['title']) ?>
-                            </a>
-                        </h3>
+                <article class="feed-news-card">
+                    <div class="card-meta-row">
+                        <span class="card-badge badge-result">Official Result</span>
+                        <?php if (!empty($art['official_source_name'])): ?>
+                        <span class="card-authority">🏛️ <?= htmlspecialchars($art['official_source_name']) ?></span>
+                        <?php endif; ?>
+                        <time class="card-date" datetime="<?= $art['published_at'] ?>">📅 <?= date('M j, Y', strtotime($art['published_at'])) ?></time>
                     </div>
-                    <div class="stream-action-col">
-                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="stream-action-pill">
-                            Check Result →
+
+                    <h3 class="card-headline">
+                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
+                            <?= htmlspecialchars($art['title']) ?>
                         </a>
+                    </h3>
+
+                    <p class="card-excerpt">
+                        <?= htmlspecialchars(mb_substr($art['excerpt'] ?? strip_tags($art['content_html']), 0, 140)) ?>...
+                    </p>
+
+                    <div class="card-footer-row">
+                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="card-read-link">
+                            Check Score & Merit List <span class="arrow">↗</span>
+                        </a>
+                        <span class="card-views">👁️ <?= (int)$art['views_count'] ?> views</span>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -146,36 +244,43 @@
         </section>
         <?php endif; ?>
 
-        <!-- 2. 🎫 Admit Cards Section (Cardless Data Stream) -->
-        <?php if (!empty($admit_articles)): ?>
-        <section class="stream-block-container">
-            <div class="stream-block-header stream-header-cyan">
-                <h2 class="stream-block-title">
-                    <span>🎫</span> Admit Cards & Hall Tickets
-                </h2>
-                <a href="/admit-card" class="stream-view-all">View All Admit Cards »</a>
+        <!-- 2. 🎫 Admit Cards Section -->
+        <?php if (!empty($admit_card_articles)): ?>
+        <section class="stream-block-container" style="margin-top: 2rem;">
+            <div class="stream-block-header header-admit">
+                <div class="header-left-title">
+                    <span class="header-icon">🎫</span>
+                    <h2 class="stream-block-title">Admit Cards & Exam City Slips</h2>
+                </div>
+                <a href="/admit-card" class="stream-view-all">View All Admit Cards →</a>
             </div>
-            <div class="stream-notices-feed">
-                <?php foreach ($admit_articles as $art): ?>
-                <article class="stream-notice-row">
-                    <div class="stream-content-col">
-                        <div class="stream-meta-row">
-                            <span class="dept-pill"><?= htmlspecialchars($art['official_source_name'] ?? 'Admit Card') ?></span>
-                            <time class="stream-time-text" datetime="<?= $art['published_at'] ?>">
-                                📅 <?= date('M j, Y', strtotime($art['published_at'])) ?>
-                            </time>
-                            <span class="official-verified-badge">✓ Verified</span>
-                        </div>
-                        <h3 class="stream-headline">
-                            <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
-                                <?= htmlspecialchars($art['title']) ?>
-                            </a>
-                        </h3>
+
+            <div class="news-cards-flow">
+                <?php foreach ($admit_card_articles as $art): ?>
+                <article class="feed-news-card">
+                    <div class="card-meta-row">
+                        <span class="card-badge badge-admit">Hall Ticket</span>
+                        <?php if (!empty($art['official_source_name'])): ?>
+                        <span class="card-authority">🏛️ <?= htmlspecialchars($art['official_source_name']) ?></span>
+                        <?php endif; ?>
+                        <time class="card-date" datetime="<?= $art['published_at'] ?>">📅 <?= date('M j, Y', strtotime($art['published_at'])) ?></time>
                     </div>
-                    <div class="stream-action-col">
-                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="stream-action-pill">
-                            Download Slip →
+
+                    <h3 class="card-headline">
+                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
+                            <?= htmlspecialchars($art['title']) ?>
                         </a>
+                    </h3>
+
+                    <p class="card-excerpt">
+                        <?= htmlspecialchars(mb_substr($art['excerpt'] ?? strip_tags($art['content_html']), 0, 140)) ?>...
+                    </p>
+
+                    <div class="card-footer-row">
+                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="card-read-link">
+                            Download Admit Card <span class="arrow">↗</span>
+                        </a>
+                        <span class="card-views">👁️ <?= (int)$art['views_count'] ?> views</span>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -183,73 +288,43 @@
         </section>
         <?php endif; ?>
 
-        <!-- 3. 💼 Recruitment Section (Cardless Data Stream) -->
+        <!-- 3. 💼 Government Recruitment Section -->
         <?php if (!empty($recruitment_articles)): ?>
-        <section class="stream-block-container">
-            <div class="stream-block-header stream-header-green">
-                <h2 class="stream-block-title">
-                    <span>💼</span> Government & Banking Recruitment
-                </h2>
-                <a href="/recruitment" class="stream-view-all">View All Jobs »</a>
+        <section class="stream-block-container" style="margin-top: 2rem;">
+            <div class="stream-block-header header-jobs">
+                <div class="header-left-title">
+                    <span class="header-icon">💼</span>
+                    <h2 class="stream-block-title">Government Recruitment & Vacancies</h2>
+                </div>
+                <a href="/recruitment" class="stream-view-all">View All Recruitment →</a>
             </div>
-            <div class="stream-notices-feed">
-                <?php foreach ($recruitment_articles as $art): ?>
-                <article class="stream-notice-row">
-                    <div class="stream-content-col">
-                        <div class="stream-meta-row">
-                            <span class="dept-pill dept-pill-green"><?= htmlspecialchars($art['official_source_name'] ?? 'Recruitment') ?></span>
-                            <time class="stream-time-text" datetime="<?= $art['published_at'] ?>">
-                                📅 <?= date('M j, Y', strtotime($art['published_at'])) ?>
-                            </time>
-                            <span class="official-verified-badge">✓ Verified</span>
-                        </div>
-                        <h3 class="stream-headline">
-                            <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
-                                <?= htmlspecialchars($art['title']) ?>
-                            </a>
-                        </h3>
-                    </div>
-                    <div class="stream-action-col">
-                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="stream-action-pill">
-                            Apply Online →
-                        </a>
-                    </div>
-                </article>
-                <?php endforeach; ?>
-            </div>
-        </section>
-        <?php endif; ?>
 
-        <!-- 4. 📝 Exam Dates Section (Cardless Data Stream) -->
-        <?php if (!empty($exam_articles)): ?>
-        <section class="stream-block-container">
-            <div class="stream-block-header stream-header-amber">
-                <h2 class="stream-block-title">
-                    <span>📝</span> Exam Schedules & Answer Keys
-                </h2>
-                <a href="/exam" class="stream-view-all">View All Schedules »</a>
-            </div>
-            <div class="stream-notices-feed">
-                <?php foreach ($exam_articles as $art): ?>
-                <article class="stream-notice-row">
-                    <div class="stream-content-col">
-                        <div class="stream-meta-row">
-                            <span class="dept-pill dept-pill-amber"><?= htmlspecialchars($art['official_source_name'] ?? 'Exam') ?></span>
-                            <time class="stream-time-text" datetime="<?= $art['published_at'] ?>">
-                                📅 <?= date('M j, Y', strtotime($art['published_at'])) ?>
-                            </time>
-                            <span class="official-verified-badge">✓ Verified</span>
-                        </div>
-                        <h3 class="stream-headline">
-                            <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
-                                <?= htmlspecialchars($art['title']) ?>
-                            </a>
-                        </h3>
+            <div class="news-cards-flow">
+                <?php foreach ($recruitment_articles as $art): ?>
+                <article class="feed-news-card">
+                    <div class="card-meta-row">
+                        <span class="card-badge badge-jobs">New Vacancy</span>
+                        <?php if (!empty($art['official_source_name'])): ?>
+                        <span class="card-authority">🏛️ <?= htmlspecialchars($art['official_source_name']) ?></span>
+                        <?php endif; ?>
+                        <time class="card-date" datetime="<?= $art['published_at'] ?>">📅 <?= date('M j, Y', strtotime($art['published_at'])) ?></time>
                     </div>
-                    <div class="stream-action-col">
-                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="stream-action-pill">
-                            View Dates →
+
+                    <h3 class="card-headline">
+                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>">
+                            <?= htmlspecialchars($art['title']) ?>
                         </a>
+                    </h3>
+
+                    <p class="card-excerpt">
+                        <?= htmlspecialchars(mb_substr($art['excerpt'] ?? strip_tags($art['content_html']), 0, 140)) ?>...
+                    </p>
+
+                    <div class="card-footer-row">
+                        <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="card-read-link">
+                            Read Eligibility & Apply <span class="arrow">↗</span>
+                        </a>
+                        <span class="card-views">👁️ <?= (int)$art['views_count'] ?> views</span>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -259,6 +334,6 @@
 
     </main>
 
-    <!-- Standard Reusable Right Sidebar (Latest 10 Notices, Categories, State Portals, Official Portals) -->
+    <!-- Shared Right Sidebar -->
     <?php require __DIR__ . '/../partials/sidebar.php'; ?>
 </div>
