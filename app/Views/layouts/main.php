@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en" data-theme="light">
+<html lang="<?= htmlspecialchars($current_locale ?? 'en') ?>" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
-    <title><?= htmlspecialchars($page_title ?? 'EduGov News — Official Education & Jobs Portal') ?></title>
+    <title><?= htmlspecialchars($page_title ?? (__('site_name') . ' — ' . __('site_tagline'))) ?></title>
     <meta name="description" content="<?= htmlspecialchars($meta_description ?? 'Instant & verified official educational notifications, exam dates, admit cards, results, and government job vacancy alerts.') ?>">
     <meta name="robots" content="index, follow, max-image-preview:large, max-snippet:-1, max-video-preview:-1">
     <meta name="googlebot" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1">
@@ -106,6 +106,16 @@
                 <span class="trust-meta">Automated Official Synchronization Active</span>
             </div>
             <div class="trust-right">
+                <!-- Language Switcher Pill -->
+                <div class="header-lang-pills" style="display: inline-flex; align-items: center; gap: 4px; background: rgba(255,255,255,0.12); padding: 2px 8px; border-radius: 20px; font-size: 0.75rem; border: 1px solid rgba(255,255,255,0.15);">
+                    <span style="opacity: 0.8;">🌐</span>
+                    <a href="/set-language/en" style="color: <?= ($current_locale ?? 'en') === 'en' ? '#fde047; font-weight: 800;' : '#e2e8f0;' ?> text-decoration: none; padding: 2px 4px;">English</a>
+                    <span style="opacity: 0.4;">|</span>
+                    <a href="/set-language/bn" style="color: <?= ($current_locale ?? 'en') === 'bn' ? '#fde047; font-weight: 800;' : '#e2e8f0;' ?> text-decoration: none; padding: 2px 4px;">বাংলা</a>
+                    <span style="opacity: 0.4;">|</span>
+                    <a href="/set-language/hi" style="color: <?= ($current_locale ?? 'en') === 'hi' ? '#fde047; font-weight: 800;' : '#e2e8f0;' ?> text-decoration: none; padding: 2px 4px;">हिंदी</a>
+                </div>
+
                 <button id="pwaInstallBtn" class="pwa-install-pill js-pwa-install" type="button" aria-label="Install EduGov App" style="display: none;">
                     <span class="pwa-icon">📲</span>
                     <span class="pwa-label">Install App</span>
@@ -188,7 +198,7 @@
             <!-- Header Quick Search Bar (Desktop) -->
             <div class="header-search-box">
                 <form action="/search" method="get" class="search-form">
-                    <input type="text" name="q" placeholder="Search exams, results, admit cards, notifications..." aria-label="Search notifications" required>
+                    <input type="text" name="q" placeholder="<?= htmlspecialchars(__('search_placeholder')) ?>" aria-label="Search notifications" required>
                     <button type="submit" aria-label="Search">
                         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                             <circle cx="11" cy="11" r="8"></circle>
@@ -200,6 +210,13 @@
 
             <!-- Header Right Actions -->
             <div class="header-right-actions">
+                <!-- Mobile / Tablet Language Selector -->
+                <div class="mobile-lang-switch-wrap" style="display: flex; align-items: center;">
+                    <a href="/set-language/<?= ($current_locale ?? 'en') === 'bn' ? 'en' : 'bn' ?>" class="mobile-icon-btn" title="Switch Language" style="font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.5rem; width: auto; height: 32px; border-radius: 6px; border: 1px solid var(--border-color, #cbd5e1); color: var(--primary, #2563eb); text-decoration: none;">
+                        <?= ($current_locale ?? 'en') === 'bn' ? '🇬🇧 EN' : '🇧🇩 বাংলা' ?>
+                    </a>
+                </div>
+
                 <button class="mobile-icon-btn js-theme-toggle" aria-label="Toggle Theme">
                     <span class="theme-icon-slot">
                         <svg class="sun-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
@@ -212,24 +229,24 @@
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
                 </button>
-                <a href="/recruitment" class="btn-gov-jobs">🏛️ Latest Jobs</a>
+                <a href="/recruitment" class="btn-gov-jobs">🏛️ <?= htmlspecialchars(__('nav_recruitment')) ?></a>
             </div>
         </div>
 
         <!-- 1. Desktop Traditional Navigation Bar -->
         <nav class="desktop-main-nav">
             <div class="site-container nav-items-row">
-                <a href="/" class="nav-item <?= empty($current_category) && $_SERVER['REQUEST_URI'] === '/' ? 'active' : '' ?>">🏠 Home</a>
-                <a href="/results" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'results') ? 'active' : '' ?>">📋 Results</a>
-                <a href="/admit-card" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'admit-card') ? 'active' : '' ?>">🎫 Admit Card</a>
-                <a href="/recruitment" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'recruitment') ? 'active' : '' ?>">💼 Recruitment</a>
-                <a href="/exam" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'exam') ? 'active' : '' ?>">📝 Exam Dates</a>
-                <a href="/answer-key" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'answer-key') ? 'active' : '' ?>">🔑 Answer Key</a>
-                <a href="/category/scholarship" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'scholarship') ? 'active' : '' ?>">🏆 Scholarship</a>
+                <a href="/" class="nav-item <?= empty($current_category) && $_SERVER['REQUEST_URI'] === '/' ? 'active' : '' ?>">🏠 <?= htmlspecialchars(__('nav_home')) ?></a>
+                <a href="/results" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'results') ? 'active' : '' ?>">📋 <?= htmlspecialchars(__('nav_results')) ?></a>
+                <a href="/admit-card" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'admit-card') ? 'active' : '' ?>">🎫 <?= htmlspecialchars(__('nav_admit_card')) ?></a>
+                <a href="/recruitment" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'recruitment') ? 'active' : '' ?>">💼 <?= htmlspecialchars(__('nav_recruitment')) ?></a>
+                <a href="/exam" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'exam') ? 'active' : '' ?>">📝 <?= htmlspecialchars(__('nav_exam_dates')) ?></a>
+                <a href="/answer-key" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'answer-key') ? 'active' : '' ?>">🔑 <?= htmlspecialchars(__('nav_answer_key')) ?></a>
+                <a href="/category/scholarship" class="nav-item <?= str_contains($_SERVER['REQUEST_URI'], 'scholarship') ? 'active' : '' ?>">🏆 <?= htmlspecialchars(__('nav_scholarship')) ?></a>
                 
                 <!-- Desktop Dropdown -->
                 <div class="nav-dropdown">
-                    <button class="nav-dropdown-btn" id="moreCategoriesBtn">More Categories ▾</button>
+                    <button class="nav-dropdown-btn" id="moreCategoriesBtn"><?= htmlspecialchars(__('nav_categories')) ?> ▾</button>
                     <div class="nav-dropdown-menu">
                         <a href="/category/admission">🎓 Admission & Counseling</a>
                         <a href="/category/application-form">📑 Application Forms</a>

@@ -63,6 +63,11 @@ class View {
             $settingModel = new \App\Models\SiteSetting();
             $siteSettings = $settingModel->getSettings();
 
+            // Initialize I18n
+            \App\Core\I18n::init();
+            $currentLocale = \App\Core\I18n::getLocale();
+            $availableLanguages = \App\Core\I18n::getLanguages();
+
             $context = [
                 'nav_categories'         => $allCategories,
                 'primary_categories'     => $primaryCategories,
@@ -71,19 +76,24 @@ class View {
                 'trending_articles'      => $trendingArticles,
                 'sidebar_latest_notices' => $sidebarLatestNotices,
                 'site_settings'          => $siteSettings,
+                'current_locale'         => $currentLocale,
+                'available_languages'    => $availableLanguages,
                 'current_time'           => new \DateTime(),
                 'current_year'           => date('Y'),
             ];
         } catch (\Exception $e) {
+            \App\Core\I18n::init();
             $context = [
-                'nav_categories'     => [],
-                'primary_categories' => [],
-                'more_categories'    => [],
-                'breaking_articles'  => [],
-                'trending_articles'  => [],
-                'site_settings'      => null,
-                'current_time'       => new \DateTime(),
-                'current_year'       => date('Y'),
+                'nav_categories'      => [],
+                'primary_categories'  => [],
+                'more_categories'     => [],
+                'breaking_articles'   => [],
+                'trending_articles'   => [],
+                'site_settings'       => null,
+                'current_locale'      => \App\Core\I18n::getLocale(),
+                'available_languages' => \App\Core\I18n::getLanguages(),
+                'current_time'        => new \DateTime(),
+                'current_year'        => date('Y'),
             ];
         }
 

@@ -415,7 +415,23 @@ class AdminController extends Controller {
         ]);
     }
 
-    public function testSocialBroadcast(): void {
+    public function translatorStudio(): void {
+        Auth::requireAuth();
+        $articleModel = new Article();
+        $recentArticles = $articleModel->getLatestArticles(20);
+
+        $settingModel = new SiteSetting();
+        $settings = $settingModel->getSettings();
+
+        $this->render('admin/translator', [
+            'page_title'      => 'AI Translation & Fact-Checker Studio — Admin',
+            'recent_articles' => $recentArticles,
+            'settings'        => $settings,
+            'user'            => Auth::user(),
+        ], 'admin');
+    }
+
+    public function testTranslation(): void {
         Auth::requireAuth();
         $csrfToken = $_POST['csrf_token'] ?? null;
         if (!Auth::verifyCsrf($csrfToken)) {
@@ -423,22 +439,22 @@ class AdminController extends Controller {
             return;
         }
 
-        $testArticle = [
-            'title'                => 'RRB NTPC 2026 Official Notification Released — 11,558 Vacancies',
-            'slug'                 => 'rrb-ntpc-2026-recruitment-notification-apply-online',
-            'official_source_name' => 'Railway Recruitment Boards (RRB)',
-            'category_name'        => 'Recruitment',
-            'excerpt'              => 'Railway Recruitment Board has officially released the Centralized Employment Notice for NTPC Graduate and Undergraduate posts.',
-            'published_at'         => date('Y-m-d H:i:s'),
-        ];
+        $noticeText = trim($_POST['notice_text'] ?? '');
+        $targetLang = trim($_POST['target_lang'] ?? 'bn');
 
-        $results = \App\Services\SocialPublisher::broadcast($testArticle);
-        Auth::logAudit('TEST_SOCIAL_BROADCAST', "Administrator triggered a test social broadcast.");
+        if (empty($noticeText)) {
+            $this->json(['success' => false, 'message' => 'Please provide notice text to translate.'], 400);
+            return;
+        }
+
+        $translationService = new \App\Services\TranslationService();
+        $result = $translationService->translateNotice($noticeText, $targetLang);
+
+        Auth::logAudit('TRANSLATION_TEST', "Tested {$targetLang} translation for notice (" . mb_substr($noticeText, 0, 40) . "...)");
 
         $this->json([
-            'success' => true,
-            'message' => 'Test broadcast dispatched to configured channels!',
-            'results' => $results,
+            'success' => $result['success'],
+            'data'    => $result,
         ]);
     }
 }

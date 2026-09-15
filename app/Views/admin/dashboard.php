@@ -4,6 +4,8 @@
         <p style="font-size: 0.8125rem; color: #64748b;">Real-time automated scraper status, Gemini 3.6 Flash generator & article inventory</p>
     </div>
     <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+        <a href="/admin/articles" class="admin-btn admin-btn-secondary">📰 Articles</a>
+        <a href="/admin/translator" class="admin-btn admin-btn-secondary" style="background: #e0f2fe; color: #0369a1; border-color: #bae6fd;">🌐 AI Translator</a>
         <a href="/admin/sources" class="admin-btn admin-btn-secondary">⚙️ Manage Sources</a>
         <a href="/admin/settings" class="admin-btn admin-btn-secondary">⚙️ AI & Settings</a>
         <button id="runPipelineBtn" class="admin-btn admin-btn-primary" onclick="startSequentialPipeline()">

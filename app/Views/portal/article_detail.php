@@ -42,6 +42,19 @@ $readingTime = max(1, (int)ceil($wordCount / 200));
             <span class="meta-pill">👁️ <?= number_format((int)$article['views_count']) ?> views</span>
         </div>
 
+        <!-- Multi-Language Reader Bar -->
+        <div class="article-lang-switch-box" style="margin: 0.9rem 0; padding: 0.6rem 1rem; background: linear-gradient(135deg, #f0fdf4 0%, #e0f2fe 100%); border: 1px solid #bae6fd; border-radius: 8px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.5rem; font-size: 0.85rem; font-weight: 700; color: #0369a1;">
+                <span style="font-size: 1.1rem;">🌐</span>
+                <span><?= htmlspecialchars(__('read_in_language')) ?></span>
+            </div>
+            <div class="lang-pills-row" style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
+                <a href="/set-language/en" style="padding: 0.25rem 0.7rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px; text-decoration: none; <?= ($current_locale ?? 'en') === 'en' ? 'background: #0284c7; color: #fff;' : 'background: #ffffff; color: #334155; border: 1px solid #cbd5e1;' ?>">🇬🇧 English</a>
+                <a href="/set-language/bn" style="padding: 0.25rem 0.7rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px; text-decoration: none; <?= ($current_locale ?? 'en') === 'bn' ? 'background: #0284c7; color: #fff;' : 'background: #ffffff; color: #334155; border: 1px solid #cbd5e1;' ?>">🇧🇩 বাংলা</a>
+                <a href="/set-language/hi" style="padding: 0.25rem 0.7rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px; text-decoration: none; <?= ($current_locale ?? 'en') === 'hi' ? 'background: #0284c7; color: #fff;' : 'background: #ffffff; color: #334155; border: 1px solid #cbd5e1;' ?>">🇮🇳 हिंदी</a>
+            </div>
+        </div>
+
         <!-- Social Share & Action Bar -->
         <div class="article-share-bar">
             <span class="share-label">Share Alert:</span>

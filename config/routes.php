@@ -78,6 +78,20 @@ $router->post('/admin/pipeline/run-source/{id}', [AdminController::class, 'trigg
 $router->post('/admin/articles/reset-all', [AdminController::class, 'resetAllArticles']);
 $router->post('/admin/social/test', [AdminController::class, 'testSocialBroadcast']);
 
+// Admin Translator & Fact-Checker Studio
+$router->get('/admin/translator', [AdminController::class, 'translatorStudio']);
+$router->post('/admin/translator/test', [AdminController::class, 'testTranslation']);
+
+// Multi-Language Switcher
+$router->get('/set-language/{lang}', function($lang) {
+    \App\Core\I18n::setLocale($lang);
+    $referer = $_SERVER['HTTP_REFERER'] ?? '/';
+    // Remove old ?lang= from referer to avoid loop
+    $referer = preg_replace('/([?&])lang=[a-z]{2}/i', '', $referer);
+    header('Location: ' . $referer);
+    exit;
+});
+
 // Automated Cron Webhook (CLI, cPanel Cron, or Cron-Job.org)
 $router->get('/api/cron/run', [CronController::class, 'run']);
 $router->post('/api/cron/run', [CronController::class, 'run']);
