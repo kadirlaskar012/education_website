@@ -22,7 +22,31 @@ class Article {
             LIMIT 1
         ");
         $art = $stmt->fetch();
-        return $art ?: ($this->getLatestPublished(1)[0] ?? null);
+        return $art ? self::localize($art) : ($this->getLatestPublished(1)[0] ?? null);
+    }
+
+    public static function localize(array $article, ?string $locale = null): array {
+        $locale = $locale ?: \App\Core\I18n::getLocale();
+        if ($locale === 'en' || empty($article['structured_data'])) {
+            return $article;
+        }
+
+        $struct = is_array($article['structured_data']) 
+            ? $article['structured_data'] 
+            : json_decode($article['structured_data'] ?? '{}', true);
+
+        if (!empty($struct['translations'][$locale])) {
+            $trans = $struct['translations'][$locale];
+            if (!empty($trans['title'])) $article['title'] = $trans['title'];
+            if (!empty($trans['summary'])) $article['summary'] = $trans['summary'];
+            if (!empty($trans['summary'])) $article['excerpt'] = $trans['summary'];
+        }
+
+        return $article;
+    }
+
+    public static function localizeList(array $articles, ?string $locale = null): array {
+        return array_map(fn($a) => self::localize($a, $locale), $articles);
     }
 
     public function getBreakingArticles(int $limit = 8): array {
@@ -36,7 +60,7 @@ class Article {
         ");
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return self::localizeList($stmt->fetchAll());
     }
 
     public function getTrendingArticles(int $limit = 5): array {
@@ -50,7 +74,7 @@ class Article {
         ");
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return self::localizeList($stmt->fetchAll());
     }
 
     public function incrementViews(int $id): void {
@@ -70,7 +94,7 @@ class Article {
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return self::localizeList($stmt->fetchAll());
     }
 
     /**
@@ -155,7 +179,7 @@ class Article {
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return self::localizeList($stmt->fetchAll());
     }
 
     public function countSearch(string $query): int {
@@ -174,14 +198,14 @@ class Article {
             SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
             FROM articles a
             JOIN categories c ON a.category_id = c.id
-            WHERE a.status = 'published' AND c.slug = :slug
+            WHERE c.slug = :slug AND a.status = 'published'
             ORDER BY a.published_at DESC
             LIMIT :limit
         ");
         $stmt->bindValue(':slug', $slug, \PDO::PARAM_STR);
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return self::localizeList($stmt->fetchAll());
     }
 
     public function getByStateCode(string $stateCode, int $limit = 20): array {
