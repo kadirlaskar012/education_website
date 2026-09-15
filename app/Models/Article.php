@@ -27,19 +27,56 @@ class Article {
 
     public static function localize(array $article, ?string $locale = null): array {
         $locale = $locale ?: \App\Core\I18n::getLocale();
-        if ($locale === 'en' || empty($article['structured_data'])) {
+        if ($locale === 'en' || empty($article)) {
             return $article;
         }
 
-        $struct = is_array($article['structured_data']) 
+        $struct = is_array($article['structured_data'] ?? null) 
             ? $article['structured_data'] 
-            : json_decode($article['structured_data'] ?? '{}', true);
+            : (json_decode($article['structured_data'] ?? '{}', true) ?: []);
 
-        if (!empty($struct['translations'][$locale])) {
+        // 1. If translation is already saved in DB
+        if (!empty($struct['translations'][$locale]['title'])) {
             $trans = $struct['translations'][$locale];
             if (!empty($trans['title'])) $article['title'] = $trans['title'];
-            if (!empty($trans['summary'])) $article['summary'] = $trans['summary'];
-            if (!empty($trans['summary'])) $article['excerpt'] = $trans['summary'];
+            if (!empty($trans['summary'])) {
+                $article['summary'] = $trans['summary'];
+                $article['excerpt'] = $trans['summary'];
+            }
+            return $article;
+        }
+
+        // 2. On-the-fly Indic synthesis fallback for instant 100% localization
+        try {
+            $transService = new \App\Services\TranslationService();
+            $rawText = ($article['title'] ?? '') . "\n" . ($article['summary'] ?? $article['excerpt'] ?? '');
+            $synth = $transService->synthesizeIndicNotice($rawText, $locale);
+            
+            $article['title'] = $synth['title'];
+            if (!empty($synth['summary'])) {
+                $article['summary'] = $synth['summary'];
+                $article['excerpt'] = $synth['summary'];
+            }
+            
+            // Cache in structured_data for this article
+            $struct['translations'][$locale] = [
+                'title'   => $synth['title'],
+                'summary' => $synth['summary'],
+                'content' => $synth['content'] ?? '',
+                'score'   => 85,
+            ];
+            
+            // Auto-persist cache to database if article has valid ID
+            if (!empty($article['id'])) {
+                $db = \Database::getConnection();
+                $stmt = $db->prepare("UPDATE articles SET structured_data = :data WHERE id = :id");
+                $stmt->execute([
+                    ':data' => json_encode($struct, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+                    ':id'   => (int)$article['id']
+                ]);
+            }
+        } catch (\Throwable $e) {
+            // gracefully continue
         }
 
         return $article;
@@ -47,6 +84,14 @@ class Article {
 
     public static function localizeList(array $articles, ?string $locale = null): array {
         return array_map(fn($a) => self::localize($a, $locale), $articles);
+    }
+
+    public function saveStructuredData(int $id, array $data): void {
+        $stmt = $this->db->prepare("UPDATE articles SET structured_data = :data WHERE id = :id");
+        $stmt->execute([
+            ':data' => json_encode($data, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+            ':id'   => $id
+        ]);
     }
 
     public function getBreakingArticles(int $limit = 8): array {
@@ -134,7 +179,7 @@ class Article {
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmt->bindValue(':offset', $offset, \PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return self::localizeList($stmt->fetchAll());
     }
 
     public function countByCategory(int $categoryId, ?string $stateCode = null): int {
@@ -227,7 +272,7 @@ class Article {
         }
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return self::localizeList($stmt->fetchAll());
     }
 
     public function findBySlug(string $slug): ?array {
@@ -249,7 +294,7 @@ class Article {
 
     public function getRelated(int $categoryId, int $excludeId, int $limit = 4): array {
         $stmt = $this->db->prepare("
-            SELECT id, title, slug, published_at, template_type
+            SELECT id, title, slug, published_at, template_type, structured_data
             FROM articles
             WHERE status = 'published' AND category_id = :cat_id AND id != :exclude_id
             ORDER BY published_at DESC
@@ -259,13 +304,13 @@ class Article {
         $stmt->bindValue(':exclude_id', $excludeId, \PDO::PARAM_INT);
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return self::localizeList($stmt->fetchAll());
     }
 
     public function getRelatedBySource(string $authorityName, int $excludeId, int $limit = 3): array {
         if (empty($authorityName)) return [];
         $stmt = $this->db->prepare("
-            SELECT id, title, slug, published_at, template_type
+            SELECT id, title, slug, published_at, template_type, structured_data
             FROM articles
             WHERE status = 'published' AND official_source_name = :authority AND id != :exclude_id
             ORDER BY published_at DESC
@@ -275,13 +320,13 @@ class Article {
         $stmt->bindValue(':exclude_id', $excludeId, \PDO::PARAM_INT);
         $stmt->bindValue(':limit', $limit, \PDO::PARAM_INT);
         $stmt->execute();
-        return $stmt->fetchAll();
+        return self::localizeList($stmt->fetchAll());
     }
 
     public function getAdjacentArticles(int $currentId): array {
         // Previous (older)
         $prevStmt = $this->db->prepare("
-            SELECT id, title, slug, published_at
+            SELECT id, title, slug, published_at, structured_data
             FROM articles
             WHERE status = 'published' AND id < :id
             ORDER BY id DESC
@@ -292,7 +337,7 @@ class Article {
 
         // Next (newer)
         $nextStmt = $this->db->prepare("
-            SELECT id, title, slug, published_at
+            SELECT id, title, slug, published_at, structured_data
             FROM articles
             WHERE status = 'published' AND id > :id
             ORDER BY id ASC
@@ -302,8 +347,8 @@ class Article {
         $next = $nextStmt->fetch() ?: null;
 
         return [
-            'prev' => $prev,
-            'next' => $next,
+            'prev' => $prev ? self::localize($prev) : null,
+            'next' => $next ? self::localize($next) : null,
         ];
     }
 

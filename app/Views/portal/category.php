@@ -14,7 +14,7 @@ if (!empty($selected_state) && !empty($available_states)) {
 ?>
 <!-- Breadcrumb Navigation -->
 <nav class="breadcrumb-nav" aria-label="Breadcrumb">
-    <a href="/">Home</a>
+    <a href="/"><?= htmlspecialchars(__('nav_home')) ?></a>
     <span class="separator">/</span>
     <span><?= htmlspecialchars($category['name']) ?></span>
 </nav>
@@ -27,7 +27,7 @@ if (!empty($selected_state) && !empty($available_states)) {
             <span><?= htmlspecialchars($category['name']) ?></span>
         </h1>
         <span class="cat-header-count">
-            <?= (int)$total_items ?> Updates
+            <?= (int)$total_items ?> <?= htmlspecialchars(__('latest_updates')) ?>
         </span>
     </div>
     <?php if (!empty($category['description'])): ?>
@@ -43,14 +43,14 @@ if (!empty($selected_state) && !empty($available_states)) {
             <!-- Toggle Button to Open/Close State Choice Box -->
             <button type="button" class="btn-state-dropdown-trigger" id="stateDropdownToggle" aria-expanded="false">
                 <span class="trigger-icon">🗺️</span>
-                <span class="trigger-text"><?= $currentStateObj ? 'Change State / Region' : 'Select State / Region' ?></span>
+                <span class="trigger-text"><?= $currentStateObj ? htmlspecialchars(__('change_state')) : htmlspecialchars(__('select_state')) ?></span>
                 <span class="trigger-caret" id="stateTriggerCaret">▾</span>
             </button>
 
             <!-- Selected State Active Badge & Clear Option -->
             <?php if ($currentStateObj): ?>
             <div class="selected-state-active-badge">
-                <span class="badge-prefix">Active Filter:</span>
+                <span class="badge-prefix"><?= htmlspecialchars(__('active_filter')) ?></span>
                 <span class="badge-state-name">📍 <?= htmlspecialchars($currentStateObj['state_name']) ?> <span class="badge-count">(<?= (int)$currentStateObj['count'] ?>)</span></span>
                 <a href="/category/<?= htmlspecialchars($category['slug']) ?>" class="btn-clear-state-filter" title="Clear State Filter">
                     ✕ Clear
@@ -58,7 +58,7 @@ if (!empty($selected_state) && !empty($available_states)) {
             </div>
             <?php else: ?>
             <div class="selected-state-default-badge">
-                <span>Showing: All Regions (<?= (int)$total_items ?> Updates)</span>
+                <span><?= htmlspecialchars(__('showing_all_regions')) ?> (<?= (int)$total_items ?>)</span>
             </div>
             <?php endif; ?>
         </div>
@@ -67,13 +67,13 @@ if (!empty($selected_state) && !empty($available_states)) {
         <div class="state-options-collapse" id="stateOptionsCollapse" style="display: none;">
             <div class="state-options-panel">
                 <div class="state-options-header">
-                    <span class="options-title">📌 Select State / Region:</span>
+                    <span class="options-title"><?= htmlspecialchars(__('select_state_region')) ?></span>
                     <button type="button" class="btn-close-state-panel" id="closeStatePanelBtn" aria-label="Close state selection">✕</button>
                 </div>
                 <div class="state-options-grid">
                     <a href="/category/<?= htmlspecialchars($category['slug']) ?>" 
                        class="state-option-item <?= empty($selected_state) ? 'active' : '' ?>">
-                        <span class="opt-name">🏛️ All Regions</span>
+                        <span class="opt-name">🏛️ <?= htmlspecialchars(__('all_regions')) ?></span>
                         <span class="opt-count"><?= (int)$total_items ?></span>
                     </a>
                     <?php foreach ($available_states as $st): ?>
@@ -122,9 +122,9 @@ if (!empty($selected_state) && !empty($available_states)) {
 
                     <div class="card-footer">
                         <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="read-more-btn">
-                            Read Full Notice & Direct Links »
+                            <?= htmlspecialchars(__('read_more')) ?> »
                         </a>
-                        <span class="badge-verified-small">✓ Verified</span>
+                        <span class="badge-verified-small">✓ <?= htmlspecialchars(__('verified_badge')) ?></span>
                     </div>
                 </article>
                 <?php endforeach; ?>

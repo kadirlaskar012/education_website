@@ -17,7 +17,7 @@
         <div class="hero-featured-card">
             <div class="featured-card-top">
                 <div class="badge-cluster">
-                    <span class="pulse-live-badge"><span class="pulsing-dot"></span> TOP ANNOUNCEMENT</span>
+                    <span class="pulse-live-badge"><span class="pulsing-dot"></span> <?= htmlspecialchars(__('top_announcement')) ?></span>
                     <span class="cat-pill"><?= htmlspecialchars($featuredStory['category_name']) ?></span>
                     <?php if (!empty($featuredStory['official_source_name'])): ?>
                     <span class="source-pill">🏛️ <?= htmlspecialchars($featuredStory['official_source_name']) ?></span>
@@ -40,11 +40,11 @@
 
             <div class="featured-footer">
                 <div class="featured-tags-row">
-                    <span class="ft-tag">🎓 All Eligible</span>
-                    <span class="ft-tag">⚡ Direct Apply Active</span>
+                    <span class="ft-tag"><?= htmlspecialchars(__('all_eligible')) ?></span>
+                    <span class="ft-tag"><?= htmlspecialchars(__('direct_apply_active')) ?></span>
                 </div>
                 <a href="/news/<?= htmlspecialchars($featuredStory['slug']) ?>" class="btn-hero-action">
-                    Read Full Notification <span class="arrow-icon">→</span>
+                    <?= htmlspecialchars(__('read_full_notification')) ?> <span class="arrow-icon">→</span>
                 </a>
             </div>
         </div>
@@ -55,9 +55,9 @@
             <div class="stream-card-header">
                 <div class="stream-title-wrap">
                     <span class="stream-icon">⚡</span>
-                    <h2 class="stream-title">Trending Live Notices</h2>
+                    <h2 class="stream-title"><?= htmlspecialchars(__('trending_live_notices')) ?></h2>
                 </div>
-                <span class="stream-live-tag">LIVE UPDATES</span>
+                <span class="stream-live-tag"><?= htmlspecialchars(__('live_updates')) ?></span>
             </div>
 
             <div class="stream-items-scroll">
@@ -83,7 +83,7 @@
             </div>
 
             <div class="stream-card-footer">
-                <a href="/recruitment" class="stream-view-more">Browse All Active Government Notices »</a>
+                <a href="/recruitment" class="stream-view-more"><?= htmlspecialchars(__('browse_all_notices')) ?></a>
             </div>
         </div>
     </div>
@@ -95,16 +95,16 @@
         <div class="community-info">
             <span class="community-icon">🔔</span>
             <div>
-                <strong class="community-title">Get Instant Exam & Job Alerts on Mobile!</strong>
-                <p class="community-sub">Join 100,000+ candidates receiving verified official notifications in 1 click.</p>
+                <strong class="community-title"><?= htmlspecialchars(__('community_bar_title')) ?></strong>
+                <p class="community-sub"><?= htmlspecialchars(__('community_bar_sub')) ?></p>
             </div>
         </div>
         <div class="community-actions">
             <a href="https://t.me/edugov_news_bot" target="_blank" rel="noopener noreferrer" class="btn-community btn-tg">
-                ✈️ Join Telegram Channel
+                <?= htmlspecialchars(__('join_telegram')) ?>
             </a>
             <a href="https://api.whatsapp.com/send?text=Join+EduGov+News+Portal" target="_blank" rel="noopener noreferrer" class="btn-community btn-wa">
-                💬 Join WhatsApp Group
+                <?= htmlspecialchars(__('join_whatsapp')) ?>
             </a>
         </div>
     </div>
@@ -115,9 +115,9 @@
     <div class="section-top-row">
         <div class="section-title-wrap">
             <span class="sec-icon">🗺️</span>
-            <h2 class="sec-title">State-Wise & Central Portals</h2>
+            <h2 class="sec-title"><?= htmlspecialchars(__('state_matrix_title')) ?></h2>
         </div>
-        <span class="sec-subtitle">Direct access to state public service commissions</span>
+        <span class="sec-subtitle"><?= htmlspecialchars(__('state_matrix_sub')) ?></span>
     </div>
 
     <div class="state-pills-grid">
@@ -206,16 +206,16 @@
             <div class="stream-block-header header-results">
                 <div class="header-left-title">
                     <span class="header-icon">📋</span>
-                    <h2 class="stream-block-title">Results & Merit Lists</h2>
+                    <h2 class="stream-block-title"><?= htmlspecialchars(__('results_section_title')) ?></h2>
                 </div>
-                <a href="/results" class="stream-view-all">View All Results →</a>
+                <a href="/results" class="stream-view-all"><?= htmlspecialchars(__('view_all_results')) ?></a>
             </div>
 
             <div class="news-cards-flow">
                 <?php foreach ($results_articles as $art): ?>
                 <article class="feed-news-card">
                     <div class="card-meta-row">
-                        <span class="card-badge badge-result">Official Result</span>
+                        <span class="card-badge badge-result"><?= htmlspecialchars($art['category_name']) ?></span>
                         <?php if (!empty($art['official_source_name'])): ?>
                         <span class="card-authority">🏛️ <?= htmlspecialchars($art['official_source_name']) ?></span>
                         <?php endif; ?>
@@ -234,9 +234,9 @@
 
                     <div class="card-footer-row">
                         <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="card-read-link">
-                            Check Score & Merit List <span class="arrow">↗</span>
+                            <?= htmlspecialchars(__('check_score_merit')) ?> <span class="arrow">↗</span>
                         </a>
-                        <span class="card-views">👁️ <?= (int)$art['views_count'] ?> views</span>
+                        <span class="card-views">👁️ <?= (int)$art['views_count'] ?> <?= htmlspecialchars(__('views_count')) ?></span>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -250,16 +250,16 @@
             <div class="stream-block-header header-admit">
                 <div class="header-left-title">
                     <span class="header-icon">🎫</span>
-                    <h2 class="stream-block-title">Admit Cards & Exam City Slips</h2>
+                    <h2 class="stream-block-title"><?= htmlspecialchars(__('admit_cards_section_title')) ?></h2>
                 </div>
-                <a href="/admit-card" class="stream-view-all">View All Admit Cards →</a>
+                <a href="/admit-card" class="stream-view-all"><?= htmlspecialchars(__('view_all_admits')) ?></a>
             </div>
 
             <div class="news-cards-flow">
                 <?php foreach ($admit_card_articles as $art): ?>
                 <article class="feed-news-card">
                     <div class="card-meta-row">
-                        <span class="card-badge badge-admit">Hall Ticket</span>
+                        <span class="card-badge badge-admit"><?= htmlspecialchars($art['category_name']) ?></span>
                         <?php if (!empty($art['official_source_name'])): ?>
                         <span class="card-authority">🏛️ <?= htmlspecialchars($art['official_source_name']) ?></span>
                         <?php endif; ?>
@@ -278,9 +278,9 @@
 
                     <div class="card-footer-row">
                         <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="card-read-link">
-                            Download Admit Card <span class="arrow">↗</span>
+                            <?= htmlspecialchars(__('download_admit_btn')) ?> <span class="arrow">↗</span>
                         </a>
-                        <span class="card-views">👁️ <?= (int)$art['views_count'] ?> views</span>
+                        <span class="card-views">👁️ <?= (int)$art['views_count'] ?> <?= htmlspecialchars(__('views_count')) ?></span>
                     </div>
                 </article>
                 <?php endforeach; ?>
@@ -294,16 +294,16 @@
             <div class="stream-block-header header-jobs">
                 <div class="header-left-title">
                     <span class="header-icon">💼</span>
-                    <h2 class="stream-block-title">Government Recruitment & Vacancies</h2>
+                    <h2 class="stream-block-title"><?= htmlspecialchars(__('jobs_section_title')) ?></h2>
                 </div>
-                <a href="/recruitment" class="stream-view-all">View All Recruitment →</a>
+                <a href="/recruitment" class="stream-view-all"><?= htmlspecialchars(__('view_all_jobs')) ?></a>
             </div>
 
             <div class="news-cards-flow">
                 <?php foreach ($recruitment_articles as $art): ?>
                 <article class="feed-news-card">
                     <div class="card-meta-row">
-                        <span class="card-badge badge-jobs">New Vacancy</span>
+                        <span class="card-badge badge-jobs"><?= htmlspecialchars($art['category_name']) ?></span>
                         <?php if (!empty($art['official_source_name'])): ?>
                         <span class="card-authority">🏛️ <?= htmlspecialchars($art['official_source_name']) ?></span>
                         <?php endif; ?>
@@ -322,9 +322,9 @@
 
                     <div class="card-footer-row">
                         <a href="/news/<?= htmlspecialchars($art['slug']) ?>" class="card-read-link">
-                            Read Eligibility & Apply <span class="arrow">↗</span>
+                            <?= htmlspecialchars(__('read_eligibility_apply')) ?> <span class="arrow">↗</span>
                         </a>
-                        <span class="card-views">👁️ <?= (int)$art['views_count'] ?> views</span>
+                        <span class="card-views">👁️ <?= (int)$art['views_count'] ?> <?= htmlspecialchars(__('views_count')) ?></span>
                     </div>
                 </article>
                 <?php endforeach; ?>

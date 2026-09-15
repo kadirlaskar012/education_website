@@ -211,10 +211,10 @@
             <!-- Header Right Actions -->
             <div class="header-right-actions">
                 <!-- Mobile / Tablet Language Selector -->
-                <div class="mobile-lang-switch-wrap" style="display: flex; align-items: center;">
-                    <a href="/set-language/<?= ($current_locale ?? 'en') === 'bn' ? 'en' : 'bn' ?>" class="mobile-icon-btn" title="Switch Language" style="font-size: 0.75rem; font-weight: 800; padding: 0.3rem 0.5rem; width: auto; height: 32px; border-radius: 6px; border: 1px solid var(--border-color, #cbd5e1); color: var(--primary, #2563eb); text-decoration: none;">
-                        <?= ($current_locale ?? 'en') === 'bn' ? '🇬🇧 EN' : '🇧🇩 বাংলা' ?>
-                    </a>
+                <div class="mobile-lang-switch-wrap" style="display: flex; align-items: center; gap: 3px;">
+                    <a href="/set-language/en" style="font-size: 0.7rem; font-weight: 800; padding: 2px 5px; border-radius: 4px; border: 1px solid #cbd5e1; text-decoration: none; color: <?= ($current_locale ?? 'en') === 'en' ? '#2563eb; background: #eff6ff; font-weight: 900;' : '#64748b; background: #fff;' ?>">EN</a>
+                    <a href="/set-language/bn" style="font-size: 0.7rem; font-weight: 800; padding: 2px 5px; border-radius: 4px; border: 1px solid #cbd5e1; text-decoration: none; color: <?= ($current_locale ?? 'en') === 'bn' ? '#2563eb; background: #eff6ff; font-weight: 900;' : '#64748b; background: #fff;' ?>">বাংলা</a>
+                    <a href="/set-language/hi" style="font-size: 0.7rem; font-weight: 800; padding: 2px 5px; border-radius: 4px; border: 1px solid #cbd5e1; text-decoration: none; color: <?= ($current_locale ?? 'en') === 'hi' ? '#2563eb; background: #eff6ff; font-weight: 900;' : '#64748b; background: #fff;' ?>">हिंदी</a>
                 </div>
 
                 <button class="mobile-icon-btn js-theme-toggle" aria-label="Toggle Theme">
@@ -248,12 +248,9 @@
                 <div class="nav-dropdown">
                     <button class="nav-dropdown-btn" id="moreCategoriesBtn"><?= htmlspecialchars(__('nav_categories')) ?> ▾</button>
                     <div class="nav-dropdown-menu">
-                        <a href="/category/admission">🎓 Admission & Counseling</a>
-                        <a href="/category/application-form">📑 Application Forms</a>
-                        <a href="/category/board-exams">🏫 Board Exams (CBSE/ICSE)</a>
-                        <a href="/category/entrance-exams">🎯 Entrance Exams (JEE/NEET)</a>
-                        <a href="/category/government-jobs">🏛️ All Government Jobs</a>
-                        <a href="/category/important-updates">⚡ Important Updates</a>
+                        <a href="/category/admission">🎓 <?= htmlspecialchars(\App\Core\I18n::getLocale() === 'bn' ? 'ভর্তি ও কাউন্সেলিং' : (\App\Core\I18n::getLocale() === 'hi' ? 'प्रवेश एवं काउंसलिंग' : 'Admission & Counseling')) ?></a>
+                        <a href="/category/board-exams">🏫 <?= htmlspecialchars(\App\Core\I18n::getLocale() === 'bn' ? 'বোর্ড পরীক্ষা' : (\App\Core\I18n::getLocale() === 'hi' ? 'बोर्ड परीक्षाएं' : 'Board Exams (CBSE/ICSE)')) ?></a>
+                        <a href="/category/scholarship">🏆 <?= htmlspecialchars(__('nav_scholarship')) ?></a>
                     </div>
                 </div>
             </div>
@@ -263,28 +260,25 @@
         <div class="mobile-smart-tabs-bar">
             <div class="smart-tabs-scroll-track" id="categoryScrollTrack">
                 <a href="/" class="smart-tab-pill <?= ($_SERVER['REQUEST_URI'] === '/') ? 'active' : '' ?>">
-                    <span>🏠</span> All
+                    <span>🏠</span> <?= htmlspecialchars(__('qual_all')) ?>
                 </a>
                 <a href="/results" class="smart-tab-pill <?= str_contains($_SERVER['REQUEST_URI'], 'results') ? 'active' : '' ?>">
-                    <span>📋</span> Results
+                    <span>📋</span> <?= htmlspecialchars(__('nav_results')) ?>
                 </a>
                 <a href="/admit-card" class="smart-tab-pill <?= str_contains($_SERVER['REQUEST_URI'], 'admit-card') ? 'active' : '' ?>">
-                    <span>🎫</span> Admit Cards
+                    <span>🎫</span> <?= htmlspecialchars(__('nav_admit_card')) ?>
                 </a>
                 <a href="/recruitment" class="smart-tab-pill <?= str_contains($_SERVER['REQUEST_URI'], 'recruitment') ? 'active' : '' ?>">
-                    <span>💼</span> Recruitment
+                    <span>💼</span> <?= htmlspecialchars(__('nav_recruitment')) ?>
                 </a>
                 <a href="/exam" class="smart-tab-pill <?= str_contains($_SERVER['REQUEST_URI'], 'exam') ? 'active' : '' ?>">
-                    <span>📝</span> Exams
+                    <span>📝</span> <?= htmlspecialchars(__('nav_exam_dates')) ?>
                 </a>
                 <a href="/answer-key" class="smart-tab-pill <?= str_contains($_SERVER['REQUEST_URI'], 'answer-key') ? 'active' : '' ?>">
-                    <span>🔑</span> Answer Key
+                    <span>🔑</span> <?= htmlspecialchars(__('nav_answer_key')) ?>
                 </a>
                 <a href="/category/scholarship" class="smart-tab-pill <?= str_contains($_SERVER['REQUEST_URI'], 'scholarship') ? 'active' : '' ?>">
-                    <span>🏆</span> Scholarships
-                </a>
-                <a href="/category/entrance-exams" class="smart-tab-pill <?= str_contains($_SERVER['REQUEST_URI'], 'entrance-exams') ? 'active' : '' ?>">
-                    <span>🎯</span> JEE / NEET
+                    <span>🏆</span> <?= htmlspecialchars(__('nav_scholarship')) ?>
                 </a>
             </div>
         </div>
@@ -293,7 +287,7 @@
     <!-- Breaking News Marquee Ticker (Clickable Articles!) -->
     <div class="breaking-ticker-bar">
         <div class="site-container ticker-inner">
-            <span class="ticker-badge">⚡ LIVE NOTICES</span>
+            <span class="ticker-badge">⚡ <?= htmlspecialchars(__('breaking_label')) ?></span>
             <div class="ticker-marquee">
                 <div class="ticker-items">
                     <?php if (!empty($breaking_articles)): ?>
@@ -309,7 +303,7 @@
                             </a>
                         <?php endforeach; ?>
                     <?php else: ?>
-                        <span class="ticker-link">• National Education & Recruitment Ingestion Network Active — 24/7 Official Monitoring</span>
+                        <span class="ticker-link">• <?= htmlspecialchars(__('latest_updates')) ?> — 24/7 Official Monitoring</span>
                     <?php endif; ?>
                 </div>
             </div>
@@ -331,7 +325,7 @@
                         <polyline points="9 22 9 12 15 12 15 22"></polyline>
                     </svg>
                 </span>
-                <span class="nav-text">Home</span>
+                <span class="nav-text"><?= htmlspecialchars(__('nav_home')) ?></span>
             </a>
             <a href="/results" class="bottom-nav-item nav-item-results <?= str_contains($_SERVER['REQUEST_URI'], 'results') ? 'active' : '' ?>">
                 <span class="nav-icon icon-results">
@@ -342,7 +336,7 @@
                         <line x1="16" y1="17" x2="8" y2="17"></line>
                     </svg>
                 </span>
-                <span class="nav-text">Results</span>
+                <span class="nav-text"><?= htmlspecialchars(__('nav_results')) ?></span>
             </a>
             <a href="/admit-card" class="bottom-nav-item nav-item-admit <?= str_contains($_SERVER['REQUEST_URI'], 'admit-card') ? 'active' : '' ?>">
                 <span class="nav-icon icon-admit">
@@ -353,7 +347,7 @@
                         <circle cx="10" cy="15" r="1.5" fill="#0284c7"></circle>
                     </svg>
                 </span>
-                <span class="nav-text">Admit Card</span>
+                <span class="nav-text"><?= htmlspecialchars(__('nav_admit_card')) ?></span>
             </a>
             <a href="/recruitment" class="bottom-nav-item nav-item-jobs <?= str_contains($_SERVER['REQUEST_URI'], 'recruitment') ? 'active' : '' ?>">
                 <span class="nav-icon icon-jobs">
@@ -362,7 +356,7 @@
                         <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"></path>
                     </svg>
                 </span>
-                <span class="nav-text">Jobs</span>
+                <span class="nav-text"><?= htmlspecialchars(__('nav_recruitment')) ?></span>
             </a>
             <button type="button" class="bottom-nav-item nav-item-explore" id="bottomMenuTrigger" aria-label="Open Full Category Explorer">
                 <span class="nav-icon icon-explore">
@@ -373,7 +367,7 @@
                         <rect x="3" y="14" width="7" height="7" rx="1.5" fill="#ede9fe"></rect>
                     </svg>
                 </span>
-                <span class="nav-text">Explore</span>
+                <span class="nav-text"><?= htmlspecialchars(__('nav_categories')) ?></span>
             </button>
         </div>
     </nav>
@@ -453,63 +447,52 @@
 
         <div class="drawer-body-content">
             <!-- Primary Hubs (2x2 Big Touch Cards) -->
-            <div class="drawer-section-title">⚡ PRIMARY HUBS</div>
+            <div class="drawer-section-title">⚡ <?= htmlspecialchars(__('quick_categories')) ?></div>
             <div class="drawer-hubs-grid">
                 <a href="/results" class="drawer-hub-card">
                     <div class="hub-icon">📋</div>
-                    <div class="hub-label">Results</div>
-                    <div class="hub-sub">Merit lists & cutoffs</div>
+                    <div class="hub-label"><?= htmlspecialchars(__('nav_results')) ?></div>
+                    <div class="hub-sub"><?= htmlspecialchars(__('results_section_title')) ?></div>
                 </a>
                 <a href="/admit-card" class="drawer-hub-card">
                     <div class="hub-icon">🎫</div>
-                    <div class="hub-label">Admit Card</div>
-                    <div class="hub-sub">Hall tickets & slips</div>
+                    <div class="hub-label"><?= htmlspecialchars(__('nav_admit_card')) ?></div>
+                    <div class="hub-sub"><?= htmlspecialchars(__('admit_cards_section_title')) ?></div>
                 </a>
                 <a href="/recruitment" class="drawer-hub-card">
                     <div class="hub-icon">💼</div>
-                    <div class="hub-label">Recruitment</div>
-                    <div class="hub-sub">10,000+ Govt vacancies</div>
+                    <div class="hub-label"><?= htmlspecialchars(__('nav_recruitment')) ?></div>
+                    <div class="hub-sub"><?= htmlspecialchars(__('jobs_section_title')) ?></div>
                 </a>
                 <a href="/exam" class="drawer-hub-card">
                     <div class="hub-icon">📝</div>
-                    <div class="hub-label">Exam Dates</div>
-                    <div class="hub-sub">Schedules & calendars</div>
+                    <div class="hub-label"><?= htmlspecialchars(__('nav_exam_dates')) ?></div>
+                    <div class="hub-sub"><?= htmlspecialchars(__('nav_exam_dates')) ?></div>
                 </a>
             </div>
 
             <!-- State Matrix in Drawer -->
-            <div class="drawer-section-title">🗺️ STATE-WISE RECRUITMENT</div>
+            <div class="drawer-section-title">🗺️ <?= htmlspecialchars(__('state_matrix_title')) ?></div>
             <div class="drawer-chip-cluster">
-                <a href="/state/central-govt" class="chip-item">🏛️ Central Govt</a>
-                <a href="/state/west-bengal" class="chip-item">🌊 West Bengal</a>
-                <a href="/state/uttar-pradesh" class="chip-item">🌾 Uttar Pradesh</a>
-                <a href="/state/bihar" class="chip-item">🚩 Bihar</a>
-                <a href="/state/rajasthan" class="chip-item">🏰 Rajasthan</a>
-                <a href="/state/madhya-pradesh" class="chip-item">🌲 Madhya Pradesh</a>
-                <a href="/state/maharashtra" class="chip-item">🏙️ Maharashtra</a>
+                <a href="/state/central-govt" class="chip-item">🏛️ <?= htmlspecialchars(\App\Core\I18n::getLocale() === 'bn' ? 'কেন্দ্রীয় সরকার' : (\App\Core\I18n::getLocale() === 'hi' ? 'केंद्रीय सरकार' : 'Central Govt')) ?></a>
+                <a href="/state/west-bengal" class="chip-item">🌊 <?= htmlspecialchars(\App\Core\I18n::getLocale() === 'bn' ? 'পশ্চিমবঙ্গ' : (\App\Core\I18n::getLocale() === 'hi' ? 'पश्चिम बंगाल' : 'West Bengal')) ?></a>
+                <a href="/state/uttar-pradesh" class="chip-item">🌾 <?= htmlspecialchars(\App\Core\I18n::getLocale() === 'bn' ? 'উত্তরপ্রদেশ' : (\App\Core\I18n::getLocale() === 'hi' ? 'उत्तर प्रदेश' : 'Uttar Pradesh')) ?></a>
+                <a href="/state/bihar" class="chip-item">🚩 <?= htmlspecialchars(\App\Core\I18n::getLocale() === 'bn' ? 'বিহার' : (\App\Core\I18n::getLocale() === 'hi' ? 'बिहार' : 'Bihar')) ?></a>
+                <a href="/state/rajasthan" class="chip-item">🏰 <?= htmlspecialchars(\App\Core\I18n::getLocale() === 'bn' ? 'রাজস্থান' : (\App\Core\I18n::getLocale() === 'hi' ? 'राजस्थान' : 'Rajasthan')) ?></a>
+                <a href="/state/madhya-pradesh" class="chip-item">🌲 <?= htmlspecialchars(\App\Core\I18n::getLocale() === 'bn' ? 'মধ্যপ্রদেশ' : (\App\Core\I18n::getLocale() === 'hi' ? 'मध्य प्रदेश' : 'Madhya Pradesh')) ?></a>
+                <a href="/state/maharashtra" class="chip-item">🏙️ <?= htmlspecialchars(\App\Core\I18n::getLocale() === 'bn' ? 'মহারাষ্ট্র' : (\App\Core\I18n::getLocale() === 'hi' ? 'महाराष्ट्र' : 'Maharashtra')) ?></a>
             </div>
 
             <!-- Recruitment & Opportunities -->
-            <div class="drawer-section-title">🏛️ RECRUITMENT & OPPORTUNITIES</div>
+            <div class="drawer-section-title">🏛️ <?= htmlspecialchars(__('jobs_section_title')) ?></div>
             <div class="drawer-chip-cluster">
-                <a href="/recruitment" class="chip-item">💼 All Recruitment</a>
-                <a href="/category/government-jobs" class="chip-item">🏛️ Government Jobs</a>
-                <a href="/category/application-form" class="chip-item">📑 Application Forms</a>
-                <a href="/category/scholarship" class="chip-item">🏆 Scholarships</a>
-            </div>
-
-            <!-- Exams & Admissions -->
-            <div class="drawer-section-title">🎯 EXAMS & ADMISSIONS</div>
-            <div class="drawer-chip-cluster">
-                <a href="/exam" class="chip-item">📝 Exam Calendar</a>
-                <a href="/answer-key" class="chip-item">🔑 Answer Keys</a>
-                <a href="/category/entrance-exams" class="chip-item">🎯 JEE / NEET / CUET</a>
-                <a href="/category/board-exams" class="chip-item">🏫 CBSE & ICSE Boards</a>
-                <a href="/category/admission" class="chip-item">🎓 Admission & Counseling</a>
+                <a href="/recruitment" class="chip-item">💼 <?= htmlspecialchars(__('nav_recruitment')) ?></a>
+                <a href="/answer-key" class="chip-item">🔑 <?= htmlspecialchars(__('nav_answer_key')) ?></a>
+                <a href="/category/scholarship" class="chip-item">🏆 <?= htmlspecialchars(__('nav_scholarship')) ?></a>
             </div>
 
             <!-- Policies & Legal -->
-            <div class="drawer-section-title">🛡️ ABOUT & POLICIES</div>
+            <div class="drawer-section-title">🛡️ <?= htmlspecialchars(__('footer_disclaimer')) ?></div>
             <div class="drawer-chip-cluster">
                 <a href="/about" class="chip-item">ℹ️ About Us</a>
                 <a href="/disclaimer" class="chip-item">⚖️ Disclaimer</a>

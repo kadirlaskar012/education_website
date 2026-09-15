@@ -84,9 +84,15 @@ class GeminiClient {
                 }
             }
 
+            // If rate limited (429), wait 2 seconds before retry
+            if ($httpCode === 429 && $attempt < $maxRetries) {
+                sleep(2);
+                continue;
+            }
+
             // Exponential backoff before retry
             if ($attempt < $maxRetries) {
-                usleep(500000 * $attempt); // 0.5s, 1.0s
+                usleep(800000 * $attempt);
             }
         }
 

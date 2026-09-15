@@ -27,23 +27,43 @@ class ArticleController extends Controller {
         $relatedArticles = $articleModel->getRelatedArticles((int)$article['category_id'], (int)$article['id'], 4);
         $relatedSourceArticles = $articleModel->getRelatedBySource($article['official_source_name'] ?? '', (int)$article['id'], 3);
         $adjacent = $articleModel->getAdjacentArticles((int)$article['id']);
-        $structuredData = json_decode($article['structured_data'] ?? '{}', true);
+        $structuredData = json_decode($article['structured_data'] ?? '{}', true) ?: [];
 
-        // 3. Multi-Language Content Selection
+        // 3. Multi-Language Content Selection (With On-Demand Auto-Translate & Caching)
         $activeLocale = \App\Core\I18n::getLocale();
-        if ($activeLocale !== 'en' && !empty($structuredData['translations'][$activeLocale])) {
-            $trans = $structuredData['translations'][$activeLocale];
-            if (!empty($trans['title'])) $article['title'] = $trans['title'];
-            if (!empty($trans['summary'])) $article['summary'] = $trans['summary'];
-            if (!empty($trans['content'])) {
-                // Parse markdown to HTML if formatted in markdown
-                $contentHtml = htmlspecialchars($trans['content']);
-                $contentHtml = preg_replace('/### (.*?)\n/', '<h3 class="article-h3">$1</h3>', $contentHtml);
-                $contentHtml = preg_replace('/## (.*?)\n/', '<h2 class="article-h2">$1</h2>', $contentHtml);
-                $contentHtml = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $contentHtml);
-                $contentHtml = preg_replace('/^\* (.*?)$/m', '<li>$1</li>', $contentHtml);
-                $contentHtml = nl2br($contentHtml);
-                $article['content_html'] = '<div class="translated-editorial-content">' . $contentHtml . '</div>';
+        if ($activeLocale !== 'en') {
+            if (empty($structuredData['translations'][$activeLocale])) {
+                // Translate on-the-fly and save to DB
+                try {
+                    $transService = new \App\Services\TranslationService();
+                    $rawContent = $article['title'] . "\n\n" . strip_tags($article['content_html'] ?? $article['summary']);
+                    $transResult = $transService->translateNotice($rawContent, $activeLocale);
+                    if ($transResult['success']) {
+                        $structuredData['translations'][$activeLocale] = [
+                            'title'   => $transResult['title'],
+                            'summary' => $transResult['summary'],
+                            'content' => $transResult['content'],
+                            'score'   => $transResult['quality_score'],
+                        ];
+                        $articleModel->saveStructuredData((int)$article['id'], $structuredData);
+                    }
+                } catch (\Throwable $e) {}
+            }
+
+            if (!empty($structuredData['translations'][$activeLocale])) {
+                $trans = $structuredData['translations'][$activeLocale];
+                if (!empty($trans['title'])) $article['title'] = $trans['title'];
+                if (!empty($trans['summary'])) $article['summary'] = $trans['summary'];
+                if (!empty($trans['content'])) {
+                    // Parse markdown to HTML
+                    $contentHtml = htmlspecialchars($trans['content']);
+                    $contentHtml = preg_replace('/### (.*?)\n/', '<h3 class="article-h3">$1</h3>', $contentHtml);
+                    $contentHtml = preg_replace('/## (.*?)\n/', '<h2 class="article-h2">$1</h2>', $contentHtml);
+                    $contentHtml = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $contentHtml);
+                    $contentHtml = preg_replace('/^\* (.*?)$/m', '<li>$1</li>', $contentHtml);
+                    $contentHtml = nl2br($contentHtml);
+                    $article['content_html'] = '<div class="translated-editorial-content">' . $contentHtml . '</div>';
+                }
             }
         }
 

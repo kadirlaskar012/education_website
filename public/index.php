@@ -24,6 +24,9 @@ spl_autoload_register(function (string $class) {
 
 require_once __DIR__ . '/../config/database.php';
 
+// Initialize I18n Localization Engine early
+\App\Core\I18n::init();
+
 // Auto-seed SQLite database if running for the first time
 try {
     $db = Database::getConnection();

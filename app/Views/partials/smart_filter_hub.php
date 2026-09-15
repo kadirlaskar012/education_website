@@ -3,12 +3,12 @@
     <div class="filter-hub-header">
         <div class="filter-hub-title-wrap">
             <span class="filter-hub-icon">⚡</span>
-            <h2 class="filter-hub-heading">Instant Smart Notice Filter</h2>
+            <h2 class="filter-hub-heading"><?= htmlspecialchars(__('smart_filter_title')) ?></h2>
         </div>
         <div class="filter-status-wrap">
-            <span class="filter-match-count" id="filterMatchCount">Showing All Updates</span>
+            <span class="filter-match-count" id="filterMatchCount"><?= htmlspecialchars(__('showing_all_updates')) ?></span>
             <button class="btn-filter-reset" id="btnFilterReset" type="button" style="display: none;">
-                ✕ Clear Filter
+                <?= htmlspecialchars(__('clear_filter')) ?>
             </button>
         </div>
     </div>
@@ -17,40 +17,40 @@
     <div class="filter-matrix-wrap">
         <!-- 1. Qualification Level -->
         <div class="filter-row">
-            <span class="filter-row-label">🎓 Qualification:</span>
+            <span class="filter-row-label"><?= htmlspecialchars(__('qualification_label')) ?></span>
             <div class="filter-pills-track">
-                <button class="smart-filter-pill active" type="button" data-group="qual" data-val="all">All</button>
-                <button class="smart-filter-pill" type="button" data-group="qual" data-val="10th">10th / Matric</button>
-                <button class="smart-filter-pill" type="button" data-group="qual" data-val="12th">12th / HS</button>
-                <button class="smart-filter-pill" type="button" data-group="qual" data-val="graduate">Graduate / Degree</button>
-                <button class="smart-filter-pill" type="button" data-group="qual" data-val="diploma">Diploma / ITI</button>
-                <button class="smart-filter-pill" type="button" data-group="qual" data-val="pg">Post Graduate</button>
+                <button class="smart-filter-pill active" type="button" data-group="qual" data-val="all"><?= htmlspecialchars(__('qual_all')) ?></button>
+                <button class="smart-filter-pill" type="button" data-group="qual" data-val="10th"><?= htmlspecialchars(__('qual_10th')) ?></button>
+                <button class="smart-filter-pill" type="button" data-group="qual" data-val="12th"><?= htmlspecialchars(__('qual_12th')) ?></button>
+                <button class="smart-filter-pill" type="button" data-group="qual" data-val="graduate"><?= htmlspecialchars(__('qual_graduate')) ?></button>
+                <button class="smart-filter-pill" type="button" data-group="qual" data-val="diploma"><?= htmlspecialchars(__('qual_diploma')) ?></button>
+                <button class="smart-filter-pill" type="button" data-group="qual" data-val="pg"><?= htmlspecialchars(__('qual_pg')) ?></button>
             </div>
         </div>
 
         <!-- 2. Employment Sector / Board -->
         <div class="filter-row">
-            <span class="filter-row-label">🏛️ Department:</span>
+            <span class="filter-row-label"><?= htmlspecialchars(__('department_label')) ?></span>
             <div class="filter-pills-track">
-                <button class="smart-filter-pill active" type="button" data-group="sector" data-val="all">All</button>
-                <button class="smart-filter-pill" type="button" data-group="sector" data-val="railway">🚆 Railway (RRB)</button>
-                <button class="smart-filter-pill" type="button" data-group="sector" data-val="ssc">🏛️ SSC & Central</button>
-                <button class="smart-filter-pill" type="button" data-group="sector" data-val="police">👮 Police & Defense</button>
-                <button class="smart-filter-pill" type="button" data-group="sector" data-val="banking">🏦 Banking & IBPS</button>
-                <button class="smart-filter-pill" type="button" data-group="sector" data-val="wbpsc">🌊 West Bengal</button>
-                <button class="smart-filter-pill" type="button" data-group="sector" data-val="upsc">⚖️ UPSC & Civil</button>
+                <button class="smart-filter-pill active" type="button" data-group="sector" data-val="all"><?= htmlspecialchars(__('qual_all')) ?></button>
+                <button class="smart-filter-pill" type="button" data-group="sector" data-val="railway"><?= htmlspecialchars(__('sec_railway')) ?></button>
+                <button class="smart-filter-pill" type="button" data-group="sector" data-val="ssc"><?= htmlspecialchars(__('sec_ssc')) ?></button>
+                <button class="smart-filter-pill" type="button" data-group="sector" data-val="police"><?= htmlspecialchars(__('sec_police')) ?></button>
+                <button class="smart-filter-pill" type="button" data-group="sector" data-val="banking"><?= htmlspecialchars(__('sec_banking')) ?></button>
+                <button class="smart-filter-pill" type="button" data-group="sector" data-val="wbpsc"><?= htmlspecialchars(__('sec_wbpsc')) ?></button>
+                <button class="smart-filter-pill" type="button" data-group="sector" data-val="upsc"><?= htmlspecialchars(__('sec_upsc')) ?></button>
             </div>
         </div>
 
         <!-- 3. Notice Category / Status -->
         <div class="filter-row">
-            <span class="filter-row-label">📋 Notice Type:</span>
+            <span class="filter-row-label"><?= htmlspecialchars(__('notice_type_label')) ?></span>
             <div class="filter-pills-track">
-                <button class="smart-filter-pill active" type="button" data-group="type" data-val="all">All</button>
-                <button class="smart-filter-pill" type="button" data-group="type" data-val="recruitment">💼 New Vacancies</button>
-                <button class="smart-filter-pill" type="button" data-group="type" data-val="admit_card">🎟️ Admit Cards</button>
-                <button class="smart-filter-pill" type="button" data-group="type" data-val="result">🏆 Results & Merit</button>
-                <button class="smart-filter-pill" type="button" data-group="type" data-val="answer_key">📝 Answer Keys</button>
+                <button class="smart-filter-pill active" type="button" data-group="type" data-val="all"><?= htmlspecialchars(__('qual_all')) ?></button>
+                <button class="smart-filter-pill" type="button" data-group="type" data-val="recruitment"><?= htmlspecialchars(__('type_vacancies')) ?></button>
+                <button class="smart-filter-pill" type="button" data-group="type" data-val="admit_card"><?= htmlspecialchars(__('type_admits')) ?></button>
+                <button class="smart-filter-pill" type="button" data-group="type" data-val="result"><?= htmlspecialchars(__('type_results')) ?></button>
+                <button class="smart-filter-pill" type="button" data-group="type" data-val="answer_key"><?= htmlspecialchars(__('type_answer_keys')) ?></button>
             </div>
         </div>
     </div>

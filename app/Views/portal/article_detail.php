@@ -94,30 +94,30 @@ $readingTime = max(1, (int)ceil($wordCount / 200));
         <div class="factsheet-header">
             <div class="factsheet-title">
                 <span class="factsheet-icon">⚡</span>
-                <strong>Key Highlights & Official Summary Factsheet</strong>
+                <strong><?= htmlspecialchars(__('key_highlights_title')) ?></strong>
             </div>
-            <span class="factsheet-badge">Verified Overview</span>
+            <span class="factsheet-badge">✓ <?= htmlspecialchars(__('verified_badge')) ?></span>
         </div>
         <div class="factsheet-grid">
             <div class="factsheet-card">
-                <span class="f-label">🏛️ Conducting Authority</span>
+                <span class="f-label">🏛️ <?= htmlspecialchars(__('conducting_authority')) ?></span>
                 <strong class="f-value" style="color: var(--color-primary);"><?= htmlspecialchars($article['official_source_name'] ?? 'Government Authority') ?></strong>
-                <span class="f-sub">Public Announcement</span>
+                <span class="f-sub">Official Source</span>
             </div>
             <div class="factsheet-card">
-                <span class="f-label">📂 Notification Type</span>
+                <span class="f-label">📂 <?= htmlspecialchars(__('notification_type')) ?></span>
                 <strong class="f-value"><?= htmlspecialchars($article['category_name']) ?></strong>
-                <span class="f-sub">Direct Official Release</span>
+                <span class="f-sub">Direct Release</span>
             </div>
             <div class="factsheet-card">
-                <span class="f-label">📅 Release Date</span>
+                <span class="f-label">📅 <?= htmlspecialchars(__('release_date')) ?></span>
                 <strong class="f-value" style="color: var(--color-danger);"><?= date('M j, Y', strtotime($article['published_at'])) ?></strong>
-                <span class="f-sub">Published Timestamps</span>
+                <span class="f-sub">Published Date</span>
             </div>
             <div class="factsheet-card">
-                <span class="f-label">🌐 Official Portal Link</span>
+                <span class="f-label">🌐 <?= htmlspecialchars(__('official_portal_link')) ?></span>
                 <strong class="f-value" style="color: var(--color-primary);"><?= htmlspecialchars($article['source_domain'] ?? 'Official Portal') ?></strong>
-                <span class="f-sub">Direct Verification</span>
+                <span class="f-sub">Live Authority Link</span>
             </div>
         </div>
     </div>
@@ -126,20 +126,20 @@ $readingTime = max(1, (int)ceil($wordCount / 200));
     <div class="source-verification-box" id="overview">
         <div class="source-icon">🏛️</div>
         <div class="source-info">
-            <strong class="source-info-heading">Official Government Source Verification</strong>
+            <strong class="source-info-heading"><?= htmlspecialchars(__('verified_source_heading')) ?></strong>
             <p class="source-info-text">
-                This announcement is automatically synchronized and verified from the public notification issued by <strong><?= htmlspecialchars($article['official_source_name'] ?? 'Government Authority') ?></strong>.
+                <?= htmlspecialchars(__('verified_source_desc', ['authority' => $article['official_source_name'] ?? 'Government Authority'])) ?>
             </p>
             <?php if (!empty($article['official_source_url'])): ?>
             <div class="source-link-row">
-                <span class="source-link-label">Direct Official Source:</span> 
+                <span class="source-link-label"><?= htmlspecialchars(__('direct_source')) ?></span> 
                 <a href="<?= htmlspecialchars($article['official_source_url']) ?>" target="_blank" rel="noopener noreferrer nofollow" class="source-verify-link"><?= htmlspecialchars($article['official_source_url']) ?> ↗</a>
             </div>
             <?php endif; ?>
             <?php if (!empty($article['official_pdf_url'])): ?>
             <div class="source-link-row">
-                <span class="source-link-label">Official PDF Document:</span> 
-                <a href="<?= htmlspecialchars($article['official_pdf_url']) ?>" target="_blank" rel="noopener noreferrer nofollow" class="source-verify-link">Download Notification PDF ↗</a>
+                <span class="source-link-label"><?= htmlspecialchars(__('official_pdf_doc')) ?></span> 
+                <a href="<?= htmlspecialchars($article['official_pdf_url']) ?>" target="_blank" rel="noopener noreferrer nofollow" class="source-verify-link"><?= htmlspecialchars(__('download_pdf')) ?> ↗</a>
             </div>
             <?php endif; ?>
         </div>
