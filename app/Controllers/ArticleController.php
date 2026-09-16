@@ -32,13 +32,15 @@ class ArticleController extends Controller {
         // 3. Multi-Language Content Selection (With On-Demand Auto-Translate & Caching)
         $activeLocale = \App\Core\I18n::getLocale();
         if ($activeLocale !== 'en') {
-            if (empty($structuredData['translations'][$activeLocale])) {
-                // Translate on-the-fly and save to DB
+            $hasContent = !empty($structuredData['translations'][$activeLocale]['content']) 
+                          && mb_strlen(trim($structuredData['translations'][$activeLocale]['content'])) > 30;
+
+            if (!$hasContent) {
                 try {
                     $transService = new \App\Services\TranslationService();
-                    $rawContent = $article['title'] . "\n\n" . strip_tags($article['content_html'] ?? $article['summary']);
+                    $rawContent = ($article['title'] ?? '') . "\n\n" . strip_tags($article['content_html'] ?? $article['summary'] ?? '');
                     $transResult = $transService->translateNotice($rawContent, $activeLocale);
-                    if ($transResult['success']) {
+                    if ($transResult['success'] && !empty($transResult['content'])) {
                         $structuredData['translations'][$activeLocale] = [
                             'title'   => $transResult['title'],
                             'summary' => $transResult['summary'],
@@ -53,16 +55,22 @@ class ArticleController extends Controller {
             if (!empty($structuredData['translations'][$activeLocale])) {
                 $trans = $structuredData['translations'][$activeLocale];
                 if (!empty($trans['title'])) $article['title'] = $trans['title'];
-                if (!empty($trans['summary'])) $article['summary'] = $trans['summary'];
-                if (!empty($trans['content'])) {
-                    // Parse markdown to HTML
-                    $contentHtml = htmlspecialchars($trans['content']);
-                    $contentHtml = preg_replace('/### (.*?)\n/', '<h3 class="article-h3">$1</h3>', $contentHtml);
-                    $contentHtml = preg_replace('/## (.*?)\n/', '<h2 class="article-h2">$1</h2>', $contentHtml);
-                    $contentHtml = preg_replace('/\*\*(.*?)\*\*/', '<strong>$1</strong>', $contentHtml);
-                    $contentHtml = preg_replace('/^\* (.*?)$/m', '<li>$1</li>', $contentHtml);
-                    $contentHtml = nl2br($contentHtml);
-                    $article['content_html'] = '<div class="translated-editorial-content">' . $contentHtml . '</div>';
+                if (!empty($trans['summary'])) {
+                    $article['summary'] = $trans['summary'];
+                    $article['excerpt'] = $trans['summary'];
+                }
+                
+                $rawMarkdown = !empty($trans['content']) ? $trans['content'] : '';
+                if (empty($rawMarkdown) || mb_strlen(trim($rawMarkdown)) < 30) {
+                    // Fallback to synthesizing full Indic content immediately
+                    $transService = new \App\Services\TranslationService();
+                    $rawContent = ($article['title'] ?? '') . "\n\n" . strip_tags($article['content_html'] ?? $article['summary'] ?? '');
+                    $synth = $transService->synthesizeIndicNotice($rawContent, $activeLocale);
+                    $rawMarkdown = $synth['content'];
+                }
+
+                if (!empty($rawMarkdown)) {
+                    $article['content_html'] = $this->renderMarkdownToHtml($rawMarkdown);
                 }
             }
         }
@@ -188,5 +196,47 @@ class ArticleController extends Controller {
 </svg>
 SVG;
         exit;
+    }
+
+    /**
+     * Converts rich Markdown into newspaper-grade semantic HTML
+     */
+    private function renderMarkdownToHtml(string $markdown): string {
+        $html = trim($markdown);
+        
+        // Strip duplicate main headline if already rendered by template H1
+        $html = preg_replace('/^#\s+.*?\n+/m', '', $html);
+
+        // Subheadings
+        $html = preg_replace('/^### (.*?)$/m', '<h3 class="article-h3">$1</h3>', $html);
+        $html = preg_replace('/^## (.*?)$/m', '<h2 class="article-h2">$1</h2>', $html);
+
+        // Bold & Italic
+        $html = preg_replace('/\*\*(.*?)\*\*/s', '<strong>$1</strong>', $html);
+        $html = preg_replace('/\*([^\*\n]+)\*/s', '<em>$1</em>', $html);
+
+        // Markdown Links: [Text](url)
+        $html = preg_replace('/\[([^\]]+)\]\(([^)]+)\)/', '<a href="$2" target="_blank" rel="noopener noreferrer" class="article-intext-link">$1</a>', $html);
+
+        // Unordered list items
+        $html = preg_replace('/^\* (.*?)$/m', '<li class="article-li">$1</li>', $html);
+        
+        // Wrap consecutive <li> into <ul>
+        $html = preg_replace('/((?:<li class="article-li">.*?<\/li>\s*)+)/s', '<ul class="article-ul">$1</ul>', $html);
+
+        // Format paragraphs
+        $chunks = preg_split('/\n\s*\n/', $html);
+        $rendered = '';
+        foreach ($chunks as $chunk) {
+            $chunk = trim($chunk);
+            if (empty($chunk)) continue;
+            if (str_starts_with($chunk, '<h2') || str_starts_with($chunk, '<h3') || str_starts_with($chunk, '<ul') || str_starts_with($chunk, '<table') || str_starts_with($chunk, '<div')) {
+                $rendered .= "\n" . $chunk . "\n";
+            } else {
+                $rendered .= "\n<p>" . nl2br($chunk) . "</p>\n";
+            }
+        }
+
+        return '<div class="translated-editorial-content">' . $rendered . '</div>';
     }
 }

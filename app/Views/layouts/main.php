@@ -211,10 +211,10 @@
             <!-- Header Right Actions -->
             <div class="header-right-actions">
                 <!-- Mobile / Tablet Language Selector -->
-                <div class="mobile-lang-switch-wrap" style="display: flex; align-items: center; gap: 3px;">
-                    <a href="/set-language/en" style="font-size: 0.7rem; font-weight: 800; padding: 2px 5px; border-radius: 4px; border: 1px solid #cbd5e1; text-decoration: none; color: <?= ($current_locale ?? 'en') === 'en' ? '#2563eb; background: #eff6ff; font-weight: 900;' : '#64748b; background: #fff;' ?>">EN</a>
-                    <a href="/set-language/bn" style="font-size: 0.7rem; font-weight: 800; padding: 2px 5px; border-radius: 4px; border: 1px solid #cbd5e1; text-decoration: none; color: <?= ($current_locale ?? 'en') === 'bn' ? '#2563eb; background: #eff6ff; font-weight: 900;' : '#64748b; background: #fff;' ?>">বাংলা</a>
-                    <a href="/set-language/hi" style="font-size: 0.7rem; font-weight: 800; padding: 2px 5px; border-radius: 4px; border: 1px solid #cbd5e1; text-decoration: none; color: <?= ($current_locale ?? 'en') === 'hi' ? '#2563eb; background: #eff6ff; font-weight: 900;' : '#64748b; background: #fff;' ?>">हिंदी</a>
+                <div class="mobile-lang-switch-wrap">
+                    <a href="/set-language/en" class="mobile-lang-btn <?= ($current_locale ?? 'en') === 'en' ? 'active' : '' ?>">EN</a>
+                    <a href="/set-language/bn" class="mobile-lang-btn <?= ($current_locale ?? 'en') === 'bn' ? 'active' : '' ?>">বাংলা</a>
+                    <a href="/set-language/hi" class="mobile-lang-btn <?= ($current_locale ?? 'en') === 'hi' ? 'active' : '' ?>">हिंदी</a>
                 </div>
 
                 <button class="mobile-icon-btn js-theme-toggle" aria-label="Toggle Theme">
@@ -229,7 +229,7 @@
                         <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
                     </svg>
                 </button>
-                <a href="/recruitment" class="btn-gov-jobs">🏛️ <?= htmlspecialchars(__('nav_recruitment')) ?></a>
+                <a href="/recruitment" class="btn-gov-jobs desktop-only-inline">🏛️ <?= htmlspecialchars(__('nav_recruitment')) ?></a>
             </div>
         </div>
 
@@ -443,6 +443,28 @@
                     </svg>
                 </button>
             </form>
+        <!-- In-Drawer Language Switcher Card -->
+        <div class="drawer-lang-card">
+            <div class="drawer-lang-card-header">
+                <span>🌐</span> <span><?= htmlspecialchars(__('language')) ?> / Select Language:</span>
+            </div>
+            <div class="drawer-lang-grid">
+                <a href="/set-language/en" class="drawer-lang-opt <?= ($current_locale ?? 'en') === 'en' ? 'active' : '' ?>">
+                    <span class="d-flag">🇬🇧</span>
+                    <span class="d-label">English</span>
+                    <?php if (($current_locale ?? 'en') === 'en'): ?><span class="d-check">✓</span><?php endif; ?>
+                </a>
+                <a href="/set-language/bn" class="drawer-lang-opt <?= ($current_locale ?? 'en') === 'bn' ? 'active' : '' ?>">
+                    <span class="d-flag">🇧🇩</span>
+                    <span class="d-label">বাংলা</span>
+                    <?php if (($current_locale ?? 'en') === 'bn'): ?><span class="d-check">✓</span><?php endif; ?>
+                </a>
+                <a href="/set-language/hi" class="drawer-lang-opt <?= ($current_locale ?? 'en') === 'hi' ? 'active' : '' ?>">
+                    <span class="d-flag">🇮🇳</span>
+                    <span class="d-label">हिंदी</span>
+                    <?php if (($current_locale ?? 'en') === 'hi'): ?><span class="d-check">✓</span><?php endif; ?>
+                </a>
+            </div>
         </div>
 
         <div class="drawer-body-content">
@@ -526,34 +548,35 @@
                     </div>
                 </div>
                 <p class="footer-desc">
-                    EduGov News is a high-speed education news dissemination platform providing direct access to verified public government announcements.
+                    <?= htmlspecialchars(__('footer_disclaimer')) ?>
                 </p>
                 <div class="footer-disclaimer-badge">
-                    ⚖️ <strong>Disclaimer:</strong> EduGov News is an independent news reporting portal and is NOT affiliated with any government authority. Always verify details on official government (.gov.in/.nic.in) portals.
+                    ⚖️ <strong><?= htmlspecialchars(__('official_authenticity')) ?>:</strong> <?= htmlspecialchars(__('official_auth_desc')) ?>
                 </div>
             </div>
 
             <div class="footer-col">
-                <div class="footer-heading">⚡ Primary Hubs</div>
+                <div class="footer-heading">⚡ <?= htmlspecialchars(__('quick_categories')) ?></div>
                 <ul class="footer-links">
-                    <li><a href="/results">Results & Merit Lists</a></li>
-                    <li><a href="/admit-card">Admit Cards & Slips</a></li>
-                    <li><a href="/recruitment">Government Recruitment</a></li>
-                    <li><a href="/exam">Examination Dates</a></li>
-                    <li><a href="/answer-key">Official Answer Keys</a></li>
+                    <li><a href="/results">📋 <?= htmlspecialchars(__('nav_results')) ?></a></li>
+                    <li><a href="/admit-card">🎫 <?= htmlspecialchars(__('nav_admit_card')) ?></a></li>
+                    <li><a href="/recruitment">💼 <?= htmlspecialchars(__('nav_recruitment')) ?></a></li>
+                    <li><a href="/exam">📝 <?= htmlspecialchars(__('nav_exam_dates')) ?></a></li>
+                    <li><a href="/answer-key">🔑 <?= htmlspecialchars(__('nav_answer_key')) ?></a></li>
+                    <li><a href="/category/scholarship">🏆 <?= htmlspecialchars(__('nav_scholarship')) ?></a></li>
                 </ul>
             </div>
 
             <div class="footer-col">
-                <div class="footer-heading">🗺️ State Portals</div>
+                <div class="footer-heading">🗺️ <?= htmlspecialchars(__('nav_states')) ?></div>
                 <ul class="footer-links">
-                    <li><a href="/state/central-govt">Central Govt Jobs</a></li>
-                    <li><a href="/state/west-bengal">West Bengal (WBPSC)</a></li>
-                    <li><a href="/state/uttar-pradesh">Uttar Pradesh (UPPSC)</a></li>
-                    <li><a href="/state/bihar">Bihar (BPSC)</a></li>
-                    <li><a href="/state/rajasthan">Rajasthan (RPSC)</a></li>
-                    <li><a href="/state/madhya-pradesh">Madhya Pradesh (MPPSC)</a></li>
-                    <li><a href="/state/maharashtra">Maharashtra (MPSC)</a></li>
+                    <li><a href="/state/central-govt">🏛️ Central Govt Jobs</a></li>
+                    <li><a href="/state/west-bengal">🌊 West Bengal (WBPSC)</a></li>
+                    <li><a href="/state/uttar-pradesh">🌾 Uttar Pradesh (UPPSC)</a></li>
+                    <li><a href="/state/bihar">🚩 Bihar (BPSC)</a></li>
+                    <li><a href="/state/rajasthan">🏰 Rajasthan (RPSC)</a></li>
+                    <li><a href="/state/madhya-pradesh">🌲 Madhya Pradesh (MPPSC)</a></li>
+                    <li><a href="/state/maharashtra">🏙️ Maharashtra (MPSC)</a></li>
                 </ul>
             </div>
 

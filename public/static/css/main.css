@@ -7178,6 +7178,196 @@ body.modal-locked, body.drawer-locked {
     color: #ffffff !important;
 }
 
+/* Mobile & Header Language Switcher Controls */
+.mobile-lang-switch-wrap {
+    display: flex;
+    align-items: center;
+    background: var(--color-bg, #f1f5f9);
+    border: 1px solid var(--color-border, #cbd5e1);
+    border-radius: 20px;
+    padding: 2px;
+    gap: 2px;
+}
+
+[data-theme="dark"] .mobile-lang-switch-wrap {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+.mobile-lang-btn {
+    font-size: 0.725rem;
+    font-weight: 700;
+    padding: 3px 7px;
+    border-radius: 14px;
+    text-decoration: none;
+    color: var(--color-text-muted, #64748b);
+    transition: all 0.15s ease;
+    white-space: nowrap;
+    display: inline-flex;
+    align-items: center;
+    line-height: 1;
+}
+
+.mobile-lang-btn:hover {
+    color: var(--color-text-main, #0f172a);
+}
+
+.mobile-lang-btn.active {
+    background: #2563eb;
+    color: #ffffff !important;
+    font-weight: 800;
+    box-shadow: 0 1px 4px rgba(37, 99, 235, 0.35);
+}
+
+[data-theme="dark"] .mobile-lang-btn.active {
+    background: #38bdf8;
+    color: #0f172a !important;
+}
+
+/* In-Drawer Language Switcher Card */
+.drawer-lang-card {
+    margin: 0.85rem 1rem;
+    padding: 0.85rem;
+    background: var(--color-bg, #f8fafc);
+    border: 1px solid var(--color-border, #e2e8f0);
+    border-radius: 12px;
+}
+
+[data-theme="dark"] .drawer-lang-card {
+    background: #1e293b;
+    border-color: #334155;
+}
+
+.drawer-lang-card-header {
+    font-size: 0.75rem;
+    font-weight: 800;
+    color: var(--color-text-muted, #64748b);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+}
+
+.drawer-lang-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.45rem;
+}
+
+.drawer-lang-opt {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.65rem 0.35rem;
+    border-radius: 10px;
+    text-decoration: none;
+    font-size: 0.8rem;
+    font-weight: 700;
+    background: var(--color-surface, #ffffff);
+    color: var(--color-text-main, #0f172a);
+    border: 1px solid var(--color-border, #e2e8f0);
+    transition: all 0.15s ease;
+    position: relative;
+}
+
+[data-theme="dark"] .drawer-lang-opt {
+    background: #0f172a;
+    border-color: #334155;
+    color: #f8fafc;
+}
+
+.drawer-lang-opt .d-flag {
+    font-size: 1.25rem;
+    margin-bottom: 3px;
+}
+
+.drawer-lang-opt .d-label {
+    font-size: 0.775rem;
+}
+
+.drawer-lang-opt .d-check {
+    position: absolute;
+    top: 4px;
+    right: 6px;
+    font-size: 0.7rem;
+    font-weight: 900;
+    color: #ffffff;
+}
+
+.drawer-lang-opt.active {
+    background: #2563eb;
+    color: #ffffff !important;
+    border-color: #2563eb;
+    box-shadow: 0 2px 8px rgba(37, 99, 235, 0.35);
+}
+
+[data-theme="dark"] .drawer-lang-opt.active {
+    background: #1d4ed8;
+    border-color: #38bdf8;
+    color: #ffffff !important;
+}
+
+/* Translated Article Content Typography */
+.translated-editorial-content {
+    font-size: 1.05rem;
+    line-height: 1.85;
+    color: var(--color-text-main, #1e293b);
+}
+
+[data-theme="dark"] .translated-editorial-content {
+    color: #e2e8f0;
+}
+
+.translated-editorial-content h2.article-h2 {
+    font-size: 1.4rem;
+    font-weight: 800;
+    color: var(--color-text-main, #0f172a);
+    margin: 2rem 0 1rem 0;
+    padding-left: 0.75rem;
+    border-left: 4px solid #2563eb;
+}
+
+[data-theme="dark"] .translated-editorial-content h2.article-h2 {
+    color: #f8fafc;
+    border-left-color: #38bdf8;
+}
+
+.translated-editorial-content h3.article-h3 {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text-main, #0f172a);
+    margin: 1.75rem 0 0.75rem 0;
+}
+
+[data-theme="dark"] .translated-editorial-content h3.article-h3 {
+    color: #f1f5f9;
+}
+
+.translated-editorial-content ul.article-ul {
+    margin: 1rem 0 1.25rem 1.5rem;
+    padding: 0;
+}
+
+.translated-editorial-content li.article-li {
+    margin-bottom: 0.5rem;
+}
+
+.translated-editorial-content p {
+    margin-bottom: 1.25rem;
+}
+
+.article-intext-link {
+    color: #2563eb;
+    font-weight: 700;
+    text-decoration: underline;
+}
+
+[data-theme="dark"] .article-intext-link {
+    color: #38bdf8;
+}
+
 /* Responsive Breakpoints */
 @media (max-width: 1024px) {
     .article-page-grid {
@@ -7204,7 +7394,11 @@ body.modal-locked, body.drawer-locked {
     .smart-action-dock {
         display: block;
     }
+    .desktop-only-inline {
+        display: none !important;
+    }
     body {
         padding-bottom: 60px;
     }
 }
+
