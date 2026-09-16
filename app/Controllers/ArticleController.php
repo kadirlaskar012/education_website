@@ -67,6 +67,19 @@ class ArticleController extends Controller {
             }
         }
 
+        // 4. Contextual SEO Internal Autolinker & "Also Read" Callout Inserter
+        $article['content_html'] = InternalLinker::linkify($article['content_html'] ?? '', (int)$article['id']);
+        $article['content_html'] = InternalLinker::injectAlsoReadCards(
+            $article['content_html'],
+            (int)$article['id'],
+            $article['official_source_name'] ?? '',
+            (int)$article['category_id']
+        );
+
+        // 5. Sidebar & Category Hub Articles for Complete Interlink Mesh
+        $sidebarLatest = $articleModel->getLatest(10);
+        $categoryTop = $articleModel->getByCategory((int)$article['category_id'], 6);
+
         $this->render('portal/article_detail', [
             'page_title'             => $article['title'] . ' — EduGov News',
             'meta_description'       => $article['meta_description'] ?? $article['excerpt'],
@@ -75,6 +88,8 @@ class ArticleController extends Controller {
             'structured_data'        => $structuredData,
             'related_articles'       => $relatedArticles,
             'related_source_articles'=> $relatedSourceArticles,
+            'sidebar_latest_notices' => $sidebarLatest,
+            'category_top_articles'  => $categoryTop,
             'prev_article'           => $adjacent['prev'],
             'next_article'           => $adjacent['next'],
         ]);

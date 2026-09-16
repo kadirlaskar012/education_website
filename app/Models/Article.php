@@ -127,6 +127,10 @@ class Article {
         $stmt->execute([':id' => $id]);
     }
 
+    public function getLatest(int $limit = 10): array {
+        return $this->getLatestPublished($limit);
+    }
+
     public function getLatestPublished(int $limit = 10, int $offset = 0): array {
         $stmt = $this->db->prepare("
             SELECT a.*, c.name as category_name, c.slug as category_slug, c.icon as category_icon
