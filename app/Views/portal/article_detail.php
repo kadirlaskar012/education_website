@@ -86,22 +86,6 @@ $locale = \App\Core\I18n::getLocale();
                         🖨️ Print
                     </button>
                 </div>
-
-                <!-- AI Audio Reader Bar -->
-                <div class="audio-article-player">
-                    <div class="audio-left">
-                        <button type="button" class="audio-play-btn js-audio-play" aria-label="Listen to Audio Summary">
-                            <span class="play-icon">▶</span>
-                        </button>
-                        <div class="audio-info">
-                            <strong class="audio-title">🎧 <?= htmlspecialchars(__('listen_audio_summary') ?? 'Listen to this Official Update') ?></strong>
-                            <span class="audio-meta"><?= $readingTime ?> min listen • Smart Audio Narration</span>
-                        </div>
-                    </div>
-                    <div class="audio-right">
-                        <span class="audio-badge">AI AUDIO</span>
-                    </div>
-                </div>
             </header>
 
             <!-- 1. Quick Highlights Factsheet Hero Widget -->
