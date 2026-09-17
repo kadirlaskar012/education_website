@@ -147,13 +147,13 @@ $locale = \App\Core\I18n::getLocale();
                     </p>
                     <?php if (!empty($article['official_source_url'])): ?>
                     <div class="source-link-row">
-                        <span class="source-link-label"><?= htmlspecialchars(__('direct_source')) ?>:</span> 
+                        <span class="source-link-label"><?= htmlspecialchars(__('direct_source')) ?></span> 
                         <a href="<?= htmlspecialchars($article['official_source_url']) ?>" target="_blank" rel="noopener noreferrer nofollow" class="source-verify-link"><?= htmlspecialchars($article['official_source_url']) ?> ↗</a>
                     </div>
                     <?php endif; ?>
                     <?php if (!empty($article['official_pdf_url'])): ?>
                     <div class="source-link-row">
-                        <span class="source-link-label"><?= htmlspecialchars(__('official_pdf_doc')) ?>:</span> 
+                        <span class="source-link-label"><?= htmlspecialchars(__('official_pdf_doc')) ?></span> 
                         <a href="<?= htmlspecialchars($article['official_pdf_url']) ?>" target="_blank" rel="noopener noreferrer nofollow" class="source-verify-link"><?= htmlspecialchars(__('download_pdf')) ?> ↗</a>
                     </div>
                     <?php endif; ?>
