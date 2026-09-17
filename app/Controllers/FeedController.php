@@ -19,28 +19,85 @@ class FeedController extends Controller {
         $categories = $categoryModel->getActiveCategories();
 
         $config = require __DIR__ . '/../../config/config.php';
-        $baseUrl = rtrim($config['app_url'], '/');
+        $baseUrl = rtrim($config['app_url'] ?? 'http://' . ($_SERVER['HTTP_HOST'] ?? 'localhost:8000'), '/');
 
-        echo '<?xml version="1.0" encoding="UTF-8"?>';
-        echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
+        echo '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
+        echo '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"' . "\n";
+        echo '        xmlns:xhtml="http://www.w3.org/1999/xhtml">' . "\n";
         
-        // Static URLs
-        echo "<url><loc>{$baseUrl}/</loc><changefreq>always</changefreq><priority>1.0</priority></url>";
-        echo "<url><loc>{$baseUrl}/results</loc><changefreq>hourly</changefreq><priority>0.9</priority></url>";
-        echo "<url><loc>{$baseUrl}/admit-card</loc><changefreq>hourly</changefreq><priority>0.9</priority></url>";
-        echo "<url><loc>{$baseUrl}/recruitment</loc><changefreq>hourly</changefreq><priority>0.9</priority></url>";
-        echo "<url><loc>{$baseUrl}/exam</loc><changefreq>hourly</changefreq><priority>0.9</priority></url>";
-        echo "<url><loc>{$baseUrl}/answer-key</loc><changefreq>hourly</changefreq><priority>0.9</priority></url>";
+        $staticPaths = [
+            '/' => ['freq' => 'always', 'pri' => '1.0'],
+            '/results' => ['freq' => 'hourly', 'pri' => '0.9'],
+            '/admit-card' => ['freq' => 'hourly', 'pri' => '0.9'],
+            '/recruitment' => ['freq' => 'hourly', 'pri' => '0.9'],
+            '/exam' => ['freq' => 'hourly', 'pri' => '0.9'],
+            '/answer-key' => ['freq' => 'hourly', 'pri' => '0.9'],
+            '/about' => ['freq' => 'monthly', 'pri' => '0.5'],
+            '/contact' => ['freq' => 'monthly', 'pri' => '0.5'],
+            '/privacy-policy' => ['freq' => 'yearly', 'pri' => '0.3'],
+            '/terms-and-conditions' => ['freq' => 'yearly', 'pri' => '0.3'],
+            '/disclaimer' => ['freq' => 'yearly', 'pri' => '0.3'],
+        ];
 
-        // Categories
-        foreach ($categories as $cat) {
-            echo "<url><loc>{$baseUrl}/category/" . htmlspecialchars($cat['slug']) . "</loc><changefreq>hourly</changefreq><priority>0.8</priority></url>";
+        // 1. Static URLs across languages
+        foreach ($staticPaths as $path => $meta) {
+            $enUrl = $baseUrl . ($path === '/' ? '/' : $path);
+            $bnUrl = $baseUrl . '/bn' . ($path === '/' ? '' : $path);
+            $hiUrl = $baseUrl . '/hi' . ($path === '/' ? '' : $path);
+
+            foreach (['en' => $enUrl, 'bn' => $bnUrl, 'hi' => $hiUrl] as $lang => $loc) {
+                echo "  <url>\n";
+                echo "    <loc>{$loc}</loc>\n";
+                echo "    <xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"{$enUrl}\" />\n";
+                echo "    <xhtml:link rel=\"alternate\" hreflang=\"bn\" href=\"{$bnUrl}\" />\n";
+                echo "    <xhtml:link rel=\"alternate\" hreflang=\"hi\" href=\"{$hiUrl}\" />\n";
+                echo "    <xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"{$enUrl}\" />\n";
+                echo "    <changefreq>{$meta['freq']}</changefreq>\n";
+                echo "    <priority>{$meta['pri']}</priority>\n";
+                echo "  </url>\n";
+            }
         }
 
-        // Articles
+        // 2. Categories across languages
+        foreach ($categories as $cat) {
+            $slug = htmlspecialchars($cat['slug']);
+            $enUrl = "{$baseUrl}/category/{$slug}";
+            $bnUrl = "{$baseUrl}/bn/category/{$slug}";
+            $hiUrl = "{$baseUrl}/hi/category/{$slug}";
+
+            foreach (['en' => $enUrl, 'bn' => $bnUrl, 'hi' => $hiUrl] as $lang => $loc) {
+                echo "  <url>\n";
+                echo "    <loc>{$loc}</loc>\n";
+                echo "    <xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"{$enUrl}\" />\n";
+                echo "    <xhtml:link rel=\"alternate\" hreflang=\"bn\" href=\"{$bnUrl}\" />\n";
+                echo "    <xhtml:link rel=\"alternate\" hreflang=\"hi\" href=\"{$hiUrl}\" />\n";
+                echo "    <xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"{$enUrl}\" />\n";
+                echo "    <changefreq>hourly</changefreq>\n";
+                echo "    <priority>0.8</priority>\n";
+                echo "  </url>\n";
+            }
+        }
+
+        // 3. Articles across languages
         foreach ($articles as $art) {
+            $slug = htmlspecialchars($art['slug']);
             $pub = date('c', strtotime($art['published_at']));
-            echo "<url><loc>{$baseUrl}/news/" . htmlspecialchars($art['slug']) . "</loc><lastmod>{$pub}</lastmod><changefreq>daily</changefreq><priority>0.7</priority></url>";
+            $enUrl = "{$baseUrl}/news/{$slug}";
+            $bnUrl = "{$baseUrl}/bn/news/{$slug}";
+            $hiUrl = "{$baseUrl}/hi/news/{$slug}";
+
+            foreach (['en' => $enUrl, 'bn' => $bnUrl, 'hi' => $hiUrl] as $lang => $loc) {
+                echo "  <url>\n";
+                echo "    <loc>{$loc}</loc>\n";
+                echo "    <xhtml:link rel=\"alternate\" hreflang=\"en\" href=\"{$enUrl}\" />\n";
+                echo "    <xhtml:link rel=\"alternate\" hreflang=\"bn\" href=\"{$bnUrl}\" />\n";
+                echo "    <xhtml:link rel=\"alternate\" hreflang=\"hi\" href=\"{$hiUrl}\" />\n";
+                echo "    <xhtml:link rel=\"alternate\" hreflang=\"x-default\" href=\"{$enUrl}\" />\n";
+                echo "    <lastmod>{$pub}</lastmod>\n";
+                echo "    <changefreq>daily</changefreq>\n";
+                echo "    <priority>0.85</priority>\n";
+                echo "  </url>\n";
+            }
         }
 
         echo '</urlset>';

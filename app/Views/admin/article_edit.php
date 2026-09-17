@@ -3,17 +3,26 @@ $structured = json_decode($article['structured_data'] ?? '{}', true) ?: [];
 $translations = $structured['translations'] ?? [];
 $score = (int)($article['quality_score'] ?? 100);
 $wordCount = str_word_count(strip_tags($article['content_html'] ?? ''));
+$bnTitle = $translations['bn']['title'] ?? '';
+$bnSummary = $translations['bn']['summary'] ?? '';
+$bnContent = $translations['bn']['content'] ?? '';
+
+$hiTitle = $translations['hi']['title'] ?? '';
+$hiSummary = $translations['hi']['summary'] ?? '';
+$hiContent = $translations['hi']['content'] ?? '';
 ?>
 <div class="admin-header-row">
     <div>
-        <h1 style="font-size: 1.5rem; color: #0a192f; margin-bottom: 0.25rem;">Edit Article & Multilingual Review</h1>
-        <p style="font-size: 0.8125rem; color: #64748b;">Review AI generated content, fact verification score, and translations</p>
+        <h1 style="font-size: 1.5rem; color: #0a192f; margin-bottom: 0.25rem;">Edit Article & Multilingual Studio</h1>
+        <p style="font-size: 0.8125rem; color: #64748b;">Review AI generated content, fact verification score, and all 3 language editions (EN, BN, HI)</p>
     </div>
     <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
         <button type="button" class="admin-btn admin-btn-primary" style="background: linear-gradient(135deg, #4f46e5, #7c3aed); border: none; font-weight: bold;" onclick="expandArticleWithAi(<?= $article['id'] ?>)" id="btnAiExpand">
             ⚡ AI 1500+ Word Deep Expansion
         </button>
-        <a href="/admin/translator" class="admin-btn admin-btn-secondary">🌐 Open Translation Studio</a>
+        <a href="/news/<?= htmlspecialchars($article['slug']) ?>" target="_blank" class="admin-btn admin-btn-secondary">👁️ View Live (EN)</a>
+        <a href="/bn/news/<?= htmlspecialchars($article['slug']) ?>" target="_blank" class="admin-btn admin-btn-secondary">🇧🇩 View (BN)</a>
+        <a href="/hi/news/<?= htmlspecialchars($article['slug']) ?>" target="_blank" class="admin-btn admin-btn-secondary">🇮🇳 View (HI)</a>
         <a href="/admin/articles" class="admin-btn admin-btn-secondary">← Back to Articles</a>
     </div>
 </div>
@@ -50,57 +59,145 @@ $wordCount = str_word_count(strip_tags($article['content_html'] ?? ''));
     <form action="/admin/articles/edit/<?= $article['id'] ?>" method="post">
         <input type="hidden" name="csrf_token" value="<?= \App\Core\Auth::csrfToken() ?>">
         
-        <div class="form-group" style="margin-bottom: 1rem;">
-            <label for="title" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">Article Title (English)</label>
-            <input type="text" id="title" name="title" value="<?= htmlspecialchars($article['title']) ?>" required style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.875rem;">
-        </div>
-
-        <div class="form-group" style="margin-bottom: 1rem;">
-            <label for="status" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">Publication Status</label>
-            <select id="status" name="status" style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.875rem;">
-                <option value="published" <?= $article['status'] === 'published' ? 'selected' : '' ?>>✅ Published (Live)</option>
-                <option value="review" <?= $article['status'] === 'review' ? 'selected' : '' ?>>⚠️ Review (Pending Verification)</option>
-                <option value="draft" <?= $article['status'] === 'draft' ? 'selected' : '' ?>>📝 Draft (Offline)</option>
-                <option value="updated" <?= $article['status'] === 'updated' ? 'selected' : '' ?>>⚡ Updated</option>
-            </select>
-        </div>
-
-        <div class="form-group" style="margin-bottom: 1rem;">
-            <label for="summary" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">English Summary</label>
-            <textarea id="summary" name="summary" rows="3" style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.875rem;"><?= htmlspecialchars($article['summary']) ?></textarea>
-        </div>
-
-        <div class="form-group" style="margin-bottom: 1.5rem;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
-                <label for="content_html" style="font-size: 0.8125rem; font-weight: 600;">English Content (HTML)</label>
-                <span style="font-size: 0.75rem; color: #64748b;">Aim for 1200+ words for AdSense & SEO</span>
+        <!-- Status Row -->
+        <div style="display: flex; gap: 1rem; margin-bottom: 1.5rem; flex-wrap: wrap;">
+            <div style="flex: 1; min-width: 250px;">
+                <label for="status" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">Publication Status</label>
+                <select id="status" name="status" style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.875rem;">
+                    <option value="published" <?= $article['status'] === 'published' ? 'selected' : '' ?>>✅ Published (Live in All 3 Languages)</option>
+                    <option value="review" <?= $article['status'] === 'review' ? 'selected' : '' ?>>⚠️ In Review (Pending Verification)</option>
+                    <option value="draft" <?= $article['status'] === 'draft' ? 'selected' : '' ?>>📝 Draft (Offline)</option>
+                    <option value="updated" <?= $article['status'] === 'updated' ? 'selected' : '' ?>>⚡ Updated Notification</option>
+                </select>
             </div>
-            <textarea id="content_html" name="content_html" rows="14" style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 4px; font-size: 0.8125rem; font-family: monospace;"><?= htmlspecialchars($article['content_html']) ?></textarea>
+            <div style="flex: 1; min-width: 250px;">
+                <label style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">Official Authority & Source</label>
+                <input type="text" disabled value="<?= htmlspecialchars($article['official_source_name'] ?? 'Government Authority') ?>" style="width: 100%; padding: 0.65rem; background: #f1f5f9; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.875rem; color: #64748b;">
+            </div>
         </div>
 
-        <!-- Bengali Translation Preview / Quick Tool -->
-        <div style="margin-bottom: 1.5rem; padding: 1rem; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 6px;">
-            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.5rem;">
-                <strong style="font-size: 0.875rem; color: #0284c7;">🇧🇩 Bengali Translation (বাংলা)</strong>
-                <button type="button" class="admin-btn admin-btn-secondary" style="padding: 0.2rem 0.6rem; font-size: 0.75rem;" onclick="generateBengaliFromArticle()">
-                    ⚡ Auto-Generate Bengali with AI
+        <!-- Language Edition Tabs Navigation -->
+        <div style="border-bottom: 2px solid #e2e8f0; margin-bottom: 1.25rem; display: flex; gap: 0.5rem; flex-wrap: wrap;">
+            <button type="button" class="lang-tab-btn active" id="tabBtnEn" onclick="switchLangTab('en')" style="padding: 0.6rem 1.25rem; font-weight: 700; font-size: 0.875rem; border: none; background: #0284c7; color: #fff; border-radius: 6px 6px 0 0; cursor: pointer;">
+                🇬🇧 English Edition (Default)
+            </button>
+            <button type="button" class="lang-tab-btn" id="tabBtnBn" onclick="switchLangTab('bn')" style="padding: 0.6rem 1.25rem; font-weight: 700; font-size: 0.875rem; border: none; background: #e2e8f0; color: #334155; border-radius: 6px 6px 0 0; cursor: pointer;">
+                🇧🇩 বাংলা Edition (Bengali)
+            </button>
+            <button type="button" class="lang-tab-btn" id="tabBtnHi" onclick="switchLangTab('hi')" style="padding: 0.6rem 1.25rem; font-weight: 700; font-size: 0.875rem; border: none; background: #e2e8f0; color: #334155; border-radius: 6px 6px 0 0; cursor: pointer;">
+                🇮🇳 हिंदी Edition (Hindi)
+            </button>
+        </div>
+
+        <!-- 1. English Tab Pane -->
+        <div id="tabPaneEn" class="lang-pane" style="display: block;">
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="title" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">Article Headline (English)</label>
+                <input type="text" id="title" name="title" value="<?= htmlspecialchars($article['title']) ?>" required style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.875rem;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="summary" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">English Summary & SEO Meta Description</label>
+                <textarea id="summary" name="summary" rows="3" style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.875rem;"><?= htmlspecialchars($article['summary']) ?></textarea>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+                    <label for="content_html" style="font-size: 0.8125rem; font-weight: 600;">English Content (HTML / 1500+ Words)</label>
+                    <span style="font-size: 0.75rem; color: #64748b;">Structured 10-section format with tables & FAQs</span>
+                </div>
+                <textarea id="content_html" name="content_html" rows="16" style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.8125rem; font-family: monospace; line-height: 1.5;"><?= htmlspecialchars($article['content_html']) ?></textarea>
+            </div>
+        </div>
+
+        <!-- 2. Bengali Tab Pane -->
+        <div id="tabPaneBn" class="lang-pane" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding: 0.75rem 1rem; background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 6px;">
+                <div>
+                    <strong style="color: #166534; font-size: 0.875rem;">🇧🇩 Bengali Edition Studio</strong>
+                    <p style="margin: 0.2rem 0 0; font-size: 0.75rem; color: #15803d;">Shown on <code>/bn/news/<?= htmlspecialchars($article['slug']) ?></code></p>
+                </div>
+                <button type="button" class="admin-btn admin-btn-primary" style="background: #0284c7; padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="generateIndicLanguage('bn')">
+                    ⚡ Auto-Generate / Refresh Bengali with AI
                 </button>
             </div>
-            <div id="bnTitlePreview" style="font-size: 0.875rem; font-weight: bold; color: #0f172a; margin-bottom: 0.3rem;">
-                <?= htmlspecialchars($translations['bn']['title'] ?? 'Not generated yet (will generate automatically on publish)') ?>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="bn_title" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">Bengali Title (বাংলা শিরোনাম)</label>
+                <input type="text" id="bn_title" name="bn_title" value="<?= htmlspecialchars($bnTitle) ?>" placeholder="বাংলায় শিরোনাম লিখুন..." style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.875rem;">
             </div>
-            <div id="bnSummaryPreview" style="font-size: 0.8125rem; color: #64748b;">
-                <?= htmlspecialchars($translations['bn']['summary'] ?? '') ?>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="bn_summary" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">Bengali Summary & Meta Description (বাংলা সারাংশ)</label>
+                <textarea id="bn_summary" name="bn_summary" rows="3" placeholder="বাংলায় সারাংশ লিখুন..." style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.875rem;"><?= htmlspecialchars($bnSummary) ?></textarea>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label for="bn_content" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">Bengali Content (Markdown / HTML)</label>
+                <textarea id="bn_content" name="bn_content" rows="14" placeholder="বাংলায় সম্পূর্ণ বিবরণ ও বিস্তারিত তথ্য..." style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.8125rem; font-family: monospace; line-height: 1.5;"><?= htmlspecialchars($bnContent) ?></textarea>
             </div>
         </div>
 
-        <button type="submit" class="admin-btn admin-btn-primary" style="font-size: 0.95rem; font-weight: bold; padding: 0.7rem 1.5rem;">
-            💾 Save & Apply Changes
-        </button>
+        <!-- 3. Hindi Tab Pane -->
+        <div id="tabPaneHi" class="lang-pane" style="display: none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; padding: 0.75rem 1rem; background: #fffbeb; border: 1px solid #fde68a; border-radius: 6px;">
+                <div>
+                    <strong style="color: #92400e; font-size: 0.875rem;">🇮🇳 Hindi Edition Studio</strong>
+                    <p style="margin: 0.2rem 0 0; font-size: 0.75rem; color: #b45309;">Shown on <code>/hi/news/<?= htmlspecialchars($article['slug']) ?></code></p>
+                </div>
+                <button type="button" class="admin-btn admin-btn-primary" style="background: #ea580c; padding: 0.4rem 0.8rem; font-size: 0.8rem;" onclick="generateIndicLanguage('hi')">
+                    ⚡ Auto-Generate / Refresh Hindi with AI
+                </button>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="hi_title" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">Hindi Title (हिंदी शीर्षक)</label>
+                <input type="text" id="hi_title" name="hi_title" value="<?= htmlspecialchars($hiTitle) ?>" placeholder="हिंदी में शीर्षक लिखें..." style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.875rem;">
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1rem;">
+                <label for="hi_summary" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">Hindi Summary & Meta Description (हिंदी सारांश)</label>
+                <textarea id="hi_summary" name="hi_summary" rows="3" placeholder="हिंदी में सारांश लिखें..." style="width: 100%; padding: 0.65rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.875rem;"><?= htmlspecialchars($hiSummary) ?></textarea>
+            </div>
+
+            <div class="form-group" style="margin-bottom: 1.5rem;">
+                <label for="hi_content" style="display: block; font-size: 0.8125rem; font-weight: 600; margin-bottom: 0.35rem;">Hindi Content (Markdown / HTML)</label>
+                <textarea id="hi_content" name="hi_content" rows="14" placeholder="हिंदी में संपूर्ण विवरण और विस्तृत जानकारी..." style="width: 100%; padding: 0.75rem; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.8125rem; font-family: monospace; line-height: 1.5;"><?= htmlspecialchars($hiContent) ?></textarea>
+            </div>
+        </div>
+
+        <div style="display: flex; gap: 1rem; align-items: center; border-top: 1px solid #e2e8f0; padding-top: 1.25rem;">
+            <button type="submit" class="admin-btn admin-btn-primary" style="font-size: 1rem; font-weight: bold; padding: 0.75rem 2rem;">
+                💾 Save All Changes (All 3 Languages)
+            </button>
+            <span style="font-size: 0.8125rem; color: #64748b;">All updates sync immediately across Google Sitemaps, Hreflang tags & Live URLs.</span>
+        </div>
     </form>
 </div>
 
 <script>
+function switchLangTab(lang) {
+    document.querySelectorAll('.lang-pane').forEach(el => el.style.display = 'none');
+    document.querySelectorAll('.lang-tab-btn').forEach(btn => {
+        btn.style.background = '#e2e8f0';
+        btn.style.color = '#334155';
+    });
+
+    if (lang === 'en') {
+        document.getElementById('tabPaneEn').style.display = 'block';
+        document.getElementById('tabBtnEn').style.background = '#0284c7';
+        document.getElementById('tabBtnEn').style.color = '#fff';
+    } else if (lang === 'bn') {
+        document.getElementById('tabPaneBn').style.display = 'block';
+        document.getElementById('tabBtnBn').style.background = '#10b981';
+        document.getElementById('tabBtnBn').style.color = '#fff';
+    } else if (lang === 'hi') {
+        document.getElementById('tabPaneHi').style.display = 'block';
+        document.getElementById('tabBtnHi').style.background = '#ea580c';
+        document.getElementById('tabBtnHi').style.color = '#fff';
+    }
+}
+
 function updateWordCount() {
     const text = document.getElementById('content_html').value.replace(/<[^>]*>/g, ' ');
     const words = text.trim().split(/\s+/).filter(w => w.length > 0).length;
@@ -114,7 +211,7 @@ async function expandArticleWithAi(id) {
     const btn = document.getElementById('btnAiExpand');
     btn.disabled = true;
     const origHtml = btn.innerHTML;
-    btn.innerHTML = '⏳ Synthesizing 1500+ Words...';
+    btn.innerHTML = '⏳ Synthesizing 1500+ Words with Gemini AI...';
 
     try {
         const formData = new FormData();
@@ -132,8 +229,10 @@ async function expandArticleWithAi(id) {
             document.getElementById('title').value = json.title;
             document.getElementById('summary').value = json.summary;
             document.getElementById('content_html').value = json.content_html;
-            if (json.bn_title) document.getElementById('bnTitlePreview').innerText = json.bn_title;
-            if (json.bn_summary) document.getElementById('bnSummaryPreview').innerText = json.bn_summary;
+            if (json.bn_title) document.getElementById('bn_title').value = json.bn_title;
+            if (json.bn_summary) document.getElementById('bn_summary').value = json.bn_summary;
+            if (json.hi_title) document.getElementById('hi_title').value = json.hi_title;
+            if (json.hi_summary) document.getElementById('hi_summary').value = json.hi_summary;
             updateWordCount();
             alert(json.message);
         } else {
@@ -146,17 +245,20 @@ async function expandArticleWithAi(id) {
     }
 }
 
-async function generateBengaliFromArticle() {
-    const text = document.getElementById('title').value + "\n\n" + document.getElementById('content_html').value;
+async function generateIndicLanguage(lang) {
+    const englishTitle = document.getElementById('title').value;
+    const englishContent = document.getElementById('content_html').value;
+    const text = englishTitle + "\n\n" + englishContent;
     const btn = event.target;
     btn.disabled = true;
-    btn.innerText = 'Translating & Auditing...';
+    const origText = btn.innerText;
+    btn.innerText = 'Translating & Fact-Auditing...';
 
     try {
         const formData = new FormData();
         formData.append('csrf_token', '<?= \App\Core\Auth::csrfToken() ?>');
         formData.append('notice_text', text);
-        formData.append('target_lang', 'bn');
+        formData.append('target_lang', lang);
 
         const res = await fetch('/admin/translator/test', {
             method: 'POST',
@@ -164,18 +266,26 @@ async function generateBengaliFromArticle() {
         });
         const json = await res.json();
         btn.disabled = false;
-        btn.innerText = '⚡ Auto-Generate Bengali with AI';
+        btn.innerText = origText;
 
         if (json.success && json.data) {
-            document.getElementById('bnTitlePreview').innerText = json.data.title;
-            document.getElementById('bnSummaryPreview').innerText = json.data.summary;
-            alert('✓ Bengali translation generated and verified with Quality Score: ' + json.data.quality_score + '%');
+            if (lang === 'bn') {
+                document.getElementById('bn_title').value = json.data.title;
+                document.getElementById('bn_summary').value = json.data.summary;
+                document.getElementById('bn_content').value = json.data.content;
+                alert('✓ Bengali edition generated! Quality Score: ' + json.data.quality_score + '%');
+            } else if (lang === 'hi') {
+                document.getElementById('hi_title').value = json.data.title;
+                document.getElementById('hi_summary').value = json.data.summary;
+                document.getElementById('hi_content').value = json.data.content;
+                alert('✓ Hindi edition generated! Quality Score: ' + json.data.quality_score + '%');
+            }
         } else {
             alert('Failed: ' + (json.message || 'Error'));
         }
     } catch (e) {
         btn.disabled = false;
-        btn.innerText = '⚡ Auto-Generate Bengali with AI';
+        btn.innerText = origText;
         alert('Server connection error.');
     }
 }

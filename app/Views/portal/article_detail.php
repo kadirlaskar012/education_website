@@ -64,9 +64,9 @@ $locale = \App\Core\I18n::getLocale();
                         <span><?= htmlspecialchars(__('read_in_language')) ?></span>
                     </div>
                     <div class="lang-pills-row" style="display: flex; gap: 0.4rem; flex-wrap: wrap;">
-                        <a href="/set-language/en" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px; text-decoration: none; <?= ($current_locale ?? 'en') === 'en' ? 'background: #0284c7; color: #fff;' : 'background: var(--color-bg); color: var(--color-text-main); border: 1px solid var(--color-border);' ?>">🇬🇧 English</a>
-                        <a href="/set-language/bn" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px; text-decoration: none; <?= ($current_locale ?? 'en') === 'bn' ? 'background: #0284c7; color: #fff;' : 'background: var(--color-bg); color: var(--color-text-main); border: 1px solid var(--color-border);' ?>">🇧🇩 বাংলা</a>
-                        <a href="/set-language/hi" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px; text-decoration: none; <?= ($current_locale ?? 'en') === 'hi' ? 'background: #0284c7; color: #fff;' : 'background: var(--color-bg); color: var(--color-text-main); border: 1px solid var(--color-border);' ?>">🇮🇳 हिंदी</a>
+                        <a href="/news/<?= htmlspecialchars($article['slug']) ?>" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px; text-decoration: none; <?= ($current_locale ?? 'en') === 'en' ? 'background: #0284c7; color: #fff;' : 'background: var(--color-bg); color: var(--color-text-main); border: 1px solid var(--color-border);' ?>">🇬🇧 English</a>
+                        <a href="/bn/news/<?= htmlspecialchars($article['slug']) ?>" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px; text-decoration: none; <?= ($current_locale ?? 'en') === 'bn' ? 'background: #0284c7; color: #fff;' : 'background: var(--color-bg); color: var(--color-text-main); border: 1px solid var(--color-border);' ?>">🇧🇩 বাংলা</a>
+                        <a href="/hi/news/<?= htmlspecialchars($article['slug']) ?>" style="padding: 0.3rem 0.75rem; font-size: 0.8rem; font-weight: 700; border-radius: 6px; text-decoration: none; <?= ($current_locale ?? 'en') === 'hi' ? 'background: #0284c7; color: #fff;' : 'background: var(--color-bg); color: var(--color-text-main); border: 1px solid var(--color-border);' ?>">🇮🇳 हिंदी</a>
                     </div>
                 </div>
 
@@ -379,8 +379,13 @@ $locale = \App\Core\I18n::getLocale();
 <?php
 $schemaGraph = [];
 $currentHost = $_SERVER['HTTP_HOST'] ?? 'localhost:8000';
-$articleUrl = "http://{$currentHost}/news/{$article['slug']}";
-$ogImageUrl = "http://{$currentHost}/og-image/{$article['slug']}";
+$activeLocale = $current_locale ?? \App\Core\I18n::getLocale();
+$scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+$baseDomain = "{$scheme}://{$currentHost}";
+$articleUrl = $canonical_url ?? ($activeLocale === 'en' ? "{$baseDomain}/news/{$article['slug']}" : "{$baseDomain}/{$activeLocale}/news/{$article['slug']}");
+$ogImageUrl = "{$baseDomain}/og-image/{$article['slug']}";
+$homeUrl = $activeLocale === 'en' ? "{$baseDomain}/" : "{$baseDomain}/{$activeLocale}";
+$catUrl = $activeLocale === 'en' ? "{$baseDomain}/category/{$article['category_slug']}" : "{$baseDomain}/{$activeLocale}/category/{$article['category_slug']}";
 
 // 1. Breadcrumbs Schema
 $schemaGraph[] = [
@@ -389,14 +394,14 @@ $schemaGraph[] = [
         [
             "@type" => "ListItem",
             "position" => 1,
-            "name" => "Home",
-            "item" => "http://{$currentHost}/",
+            "name" => __('nav_home'),
+            "item" => $homeUrl,
         ],
         [
             "@type" => "ListItem",
             "position" => 2,
             "name" => $article['category_name'],
-            "item" => "http://{$currentHost}/category/" . $article['category_slug'],
+            "item" => $catUrl,
         ],
         [
             "@type" => "ListItem",
@@ -410,12 +415,13 @@ $schemaGraph[] = [
 // 2. NewsArticle Schema
 $schemaGraph[] = [
     "@type" => "NewsArticle",
+    "inLanguage" => $activeLocale,
     "mainEntityOfPage" => [
         "@type" => "WebPage",
         "@id" => $articleUrl,
     ],
     "headline" => $article['title'],
-    "description" => $article['meta_description'] ?? ($article['excerpt'] ?? mb_substr(strip_tags($article['content_html']), 0, 160)),
+    "description" => $article['summary'] ?? ($article['excerpt'] ?? mb_substr(strip_tags($article['content_html']), 0, 160)),
     "image" => [
         "@type" => "ImageObject",
         "url"   => $ogImageUrl,
@@ -427,12 +433,12 @@ $schemaGraph[] = [
     "author" => [
         "@type" => "Organization",
         "name" => $article['official_source_name'] ?? 'Government Authority',
-        "url" => $article['official_source_url'] ?? ("http://{$currentHost}/"),
+        "url" => $article['official_source_url'] ?? $homeUrl,
     ],
     "publisher" => [
         "@type" => "Organization",
         "name" => $site_settings['site_name'] ?? 'EduGov News',
-        "url" => "http://{$currentHost}/",
+        "url" => $homeUrl,
     ],
 ];
 
@@ -444,14 +450,14 @@ if ($isJobAlert) {
     $schemaGraph[] = [
         "@type" => "JobPosting",
         "title" => $article['title'],
-        "description" => $article['meta_description'] ?? ($article['excerpt'] ?? mb_substr(strip_tags($article['content_html']), 0, 200)),
+        "description" => $article['summary'] ?? ($article['excerpt'] ?? mb_substr(strip_tags($article['content_html']), 0, 200)),
         "datePosted" => date('c', strtotime($article['published_at'])),
         "validThrough" => date('c', strtotime($article['published_at'] . ' +45 days')),
         "employmentType" => "FULL_TIME",
         "hiringOrganization" => [
             "@type" => "Organization",
             "name" => $article['official_source_name'] ?? 'Government Recruitment Board',
-            "sameAs" => $article['official_source_url'] ?? ("http://{$currentHost}/"),
+            "sameAs" => $article['official_source_url'] ?? $homeUrl,
         ],
         "jobLocation" => [
             "@type" => "Place",

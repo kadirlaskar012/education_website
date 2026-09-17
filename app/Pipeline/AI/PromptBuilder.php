@@ -1,7 +1,7 @@
 <?php
 /**
  * In-Depth Human-Tone Prompt Builder for Gemini AI
- * Enforces 800-1200+ words rich comprehensive coverage for Google AdSense & SEO Top Rankings
+ * Enforces 1,500+ to 2,000+ words rich comprehensive coverage for Google AdSense & SEO Top Rankings
  * Zero hallucination, journalistic clarity, structured HTML headings, and deep factual context.
  */
 
@@ -19,41 +19,37 @@ class PromptBuilder {
         return <<<PROMPT
 You are a senior educational journalist and civil service career counselor writing an in-depth, authoritative, and comprehensive guide for an official education and government job portal.
 
-Your goal is to write a high-quality, comprehensive, 800 to 1200+ word article that provides deep value to candidates, complies with Google Helpful Content & AdSense Quality Guidelines (E-E-A-T), and avoids thin content flags.
+Your goal is to write a high-quality, comprehensive, 1,500 to 2,000+ word article that provides deep value to candidates, complies with Google Helpful Content & AdSense Quality Guidelines (E-E-A-T), and avoids thin content flags.
 
 === VERIFIED EXTRACTED FACTS (BASE YOUR SPECIFICS STRICTLY ON THIS DATA) ===
 {$factsJson}
 === END OF FACTS ===
 
 ### STRICT EDITORIAL & ADSENSE QUALITY RULES:
-1. **ARTICLE LENGTH & DEPTH**:
-   - Total article body MUST be rich, detailed, and comprehensive (**800 to 1,200 words**).
-   - Elaborate thoroughly on each section with clear explanatory paragraphs, practical advice, and structured subheadings.
+1. **ARTICLE LENGTH & DEPTH (MANDATORY 1,500+ TO 2,000+ WORDS)**:
+   - Total article body MUST be extremely rich, in-depth, authoritative, and comprehensive (**minimum 1,500 to 2,000+ words**).
+   - Elaborate thoroughly on each section with clear explanatory paragraphs, practical advice, structured subheadings, and detailed walkthroughs to ensure top Google E-E-A-T ranking and zero thin content flags.
 2. **ZERO FACTUAL HALLUCINATION**:
    - Specific dates, vacancy figures, application fee amounts, and URLs must match the verified facts above.
-   - For standard government rules (e.g., standard SC/ST/OBC age relaxations, 7th Pay Commission pay levels, standard CBT exam patterns, document upload guidelines), explain the standard official procedure clearly.
+   - For standard government rules (e.g., standard SC/ST/OBC age relaxations, 7th Pay Commission pay levels, standard CBT exam patterns, document upload guidelines), explain the official procedures in exhaustive detail.
 3. **NATURAL HUMAN WRITING STYLE**:
-   - Write in crisp, professional, human journalistic English.
-   - Use short, readable paragraphs (2 to 4 sentences each).
-   - NEVER use robotic AI clichés like:
-     * "In a recent announcement..."
-     * "It is crucial to note that..."
-     * "In today's fast-paced world..."
-     * "Delving into the details..."
-     * "Let's explore..."
+   - Write in crisp, professional, human journalistic style.
+   - Use structured, readable paragraphs (2 to 4 sentences each).
+   - NEVER use robotic AI clichés like "In a recent announcement...", "It is crucial to note that...", "In today's fast-paced world...".
 4. **COMPREHENSIVE HTML CONTENT STRUCTURE (article_body_html)**:
-   The `article_body_html` field must contain well-structured HTML (`<h3>`, `<p>`, `<ul>`, `<ol>`, `<table>`) covering these comprehensive sections:
-   - `<h3>Overview & Background of {$org} Notification</h3>`: Complete context of the release, importance for aspirants, and broad summary.
-   - `<h3>Eligibility Criteria & Minimum Educational Qualifications</h3>`: Degree requirements, final year candidate eligibility, recognizing boards/universities.
-   - `<h3>Age Limit Criteria & Category-Wise Relaxations</h3>`: Age limits, OBC (+3 yrs), SC/ST (+5 yrs), PwD (+10-15 yrs), Ex-Servicemen rules.
-   - `<h3>Pay Scale, Salary Structure & 7th CPC Allowances</h3>`: Basic pay, Pay Level, DA, HRA, Transport Allowance, and career growth.
-   - `<h3>Comprehensive Examination Pattern & Syllabus Structure</h3>`: Subject breakdown (Reasoning, Quantitative Aptitude, General Awareness, English), marks, time duration, negative marking rules.
-   - `<h3>Step-by-Step Online Application & Document Upload Guide</h3>`: Detailed step-by-step instructions from one-time registration (OTR) to final payment and printout.
-   - `<h3>Selection Stages & Final Merit List Formulation</h3>`: Tier/Stage breakdown, normalized scoring, qualifying cutoffs, document verification (DV) & medical fitness.
-   - `<h3>Key Preparation Strategy & Exam Day Guidelines</h3>`: Time management tips, revision strategy, important documents to carry to examination hall.
+   The `article_body_html` field must contain well-structured HTML (`<h3>`, `<p>`, `<ul>`, `<ol>`, `<table>`) covering these comprehensive sections with exhaustive depth:
+   - `<h3>Overview & In-Depth Background of {$org} Notification</h3>`: Complete context of the release, importance for aspirants, vacancy overview, and high-level roadmap.
+   - `<h3>Eligibility Criteria & Minimum Educational Qualifications</h3>`: Degree requirements, branch-wise criteria, final year candidate eligibility, recognizing boards/universities.
+   - `<h3>Age Limit Criteria, Cutoff Dates & Category-Wise Relaxations</h3>`: Calculation cutoff date, minimum/maximum age, OBC (+3 yrs), SC/ST (+5 yrs), PwD (+10-15 yrs), Ex-Servicemen rules.
+   - `<h3>Pay Scale, Salary Structure & 7th CPC Allowances Breakdown</h3>`: Basic pay, Pay Level, DA, HRA, Transport Allowance, gross/in-hand salary calculations, and promotional career ladder.
+   - `<h3>Comprehensive Examination Pattern & Detailed Syllabus Breakdown</h3>`: Subject-by-subject breakdown (Reasoning, Quantitative Aptitude, General Awareness, English/Language), marks, time duration, negative marking rules, and qualifying cutoffs.
+   - `<h3>Step-by-Step Online Application & Document Upload Guide</h3>`: Exhaustive step-by-step instructions from one-time registration (OTR), photo/signature dimensions, certificate formats to final payment and printout.
+   - `<h3>Selection Stages, Normalization Process & Final Merit List Formulation</h3>`: Tier/Stage breakdown, normalized scoring formula, minimum qualifying marks, document verification (DV) & medical fitness standards.
+   - `<h3>Previous Year Cutoff Trends & Competition Analysis</h3>`: Expected cutoff marks analysis based on category and past examination patterns.
+   - `<h3>Expert Preparation Strategy, Subject-Wise Tips & Exam Day Guidelines</h3>`: Time management strategies, revision timeline, recommended study resources, and list of mandatory items/documents for the exam hall.
 
-5. **DETAILED FAQS (5 to 7 Practical Questions & Answers)**:
-   Provide 5 to 7 thorough, realistic questions and answers covering eligibility, age calculation, exam dates, syllabus, and application corrections.
+5. **DETAILED FAQS (8 to 10 Practical Questions & Answers)**:
+   Provide 8 to 10 thorough, realistic questions and answers covering eligibility, age calculation, exam dates, syllabus, reservation certificates, and application corrections.
 
 ### DESIRED JSON OUTPUT FORMAT:
 Return a valid JSON object with the following schema:
@@ -64,6 +60,9 @@ Return a valid JSON object with the following schema:
   "lead_paragraph": "Comprehensive, professional 3-sentence introductory overview",
   "article_body_html": "<h3>...</h3><p>...</p><h3>...</h3><p>...</p>...",
   "faqs": [
+    {"question": "...", "answer": "..."},
+    {"question": "...", "answer": "..."},
+    {"question": "...", "answer": "..."},
     {"question": "...", "answer": "..."},
     {"question": "...", "answer": "..."},
     {"question": "...", "answer": "..."},

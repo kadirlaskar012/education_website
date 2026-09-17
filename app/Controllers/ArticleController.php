@@ -12,7 +12,11 @@ use App\Models\Article;
 use App\Services\InternalLinker;
 
 class ArticleController extends Controller {
-    public function show(string $slug): void {
+    public function show(string $slug, ?string $forcedLocale = null): void {
+        if (!empty($forcedLocale) && in_array($forcedLocale, ['en', 'bn', 'hi'])) {
+            \App\Core\I18n::setLocale($forcedLocale);
+        }
+
         $articleModel = new Article();
         $article = $articleModel->findBySlug($slug);
 
@@ -88,10 +92,13 @@ class ArticleController extends Controller {
         $sidebarLatest = $articleModel->getLatest(10);
         $categoryTop = $articleModel->getByCategory((int)$article['category_id'], 6);
 
+        $host = $_SERVER['HTTP_HOST'] ?? 'localhost:8000';
+        $canonicalPath = ($activeLocale === 'en') ? "/news/{$article['slug']}" : "/{$activeLocale}/news/{$article['slug']}";
+
         $this->render('portal/article_detail', [
-            'page_title'             => $article['title'] . ' — EduGov News',
-            'meta_description'       => $article['meta_description'] ?? $article['excerpt'],
-            'canonical_url'          => 'http://' . ($_SERVER['HTTP_HOST'] ?? 'localhost:8000') . '/news/' . $article['slug'],
+            'page_title'             => $article['title'] . ' — ' . __('site_name'),
+            'meta_description'       => $article['summary'] ?? $article['excerpt'] ?? $article['meta_description'],
+            'canonical_url'          => 'http://' . $host . $canonicalPath,
             'article'                => $article,
             'structured_data'        => $structuredData,
             'related_articles'       => $relatedArticles,
@@ -100,6 +107,7 @@ class ArticleController extends Controller {
             'category_top_articles'  => $categoryTop,
             'prev_article'           => $adjacent['prev'],
             'next_article'           => $adjacent['next'],
+            'current_locale'         => $activeLocale,
         ]);
     }
 

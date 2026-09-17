@@ -10,9 +10,56 @@
     <?php if (!empty($site_settings['google_site_verification'])): ?>
     <meta name="google-site-verification" content="<?= htmlspecialchars($site_settings['google_site_verification']) ?>">
     <?php endif; ?>
-    <link rel="canonical" href="<?= htmlspecialchars($canonical_url ?? 'http://' . $_SERVER['HTTP_HOST'] . $_SERVER['REQUEST_URI']) ?>">
+    <?php
+    $currentHost = $_SERVER['HTTP_HOST'] ?? 'localhost:8000';
+    $host = $currentHost;
+    $scheme = (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off') ? 'https' : 'http';
+    $baseDomain = "{$scheme}://{$host}";
+    $reqUri = $_SERVER['REQUEST_URI'] ?? '/';
+    $pathOnly = parse_url($reqUri, PHP_URL_PATH) ?? '/';
+
+    // Strip language prefix to compute base path
+    $cleanPath = preg_replace('#^/(?:bn|hi)(/|$)#', '$1', $pathOnly);
+    if (empty($cleanPath) || $cleanPath === '') {
+        $cleanPath = '/';
+    }
+    if ($cleanPath !== '/' && !str_starts_with($cleanPath, '/')) {
+        $cleanPath = '/' . $cleanPath;
+    }
+
+    $urlEn = $baseDomain . ($cleanPath === '/' ? '/' : $cleanPath);
+    $urlBn = $baseDomain . '/bn' . ($cleanPath === '/' ? '' : $cleanPath);
+    $urlHi = $baseDomain . '/hi' . ($cleanPath === '/' ? '' : $cleanPath);
+
+    $activeLocale = $current_locale ?? \App\Core\I18n::getLocale();
+    $ogLocale = match($activeLocale) {
+        'bn' => 'bn_IN',
+        'hi' => 'hi_IN',
+        default => 'en_US',
+    };
+    $altLocales = array_diff(['en_US', 'bn_IN', 'hi_IN'], [$ogLocale]);
+
+    $calculatedCanonical = match($activeLocale) {
+        'bn' => $urlBn,
+        'hi' => $urlHi,
+        default => $urlEn,
+    };
+    $finalCanonical = $canonical_url ?? $calculatedCanonical;
+    ?>
+
+    <link rel="canonical" href="<?= htmlspecialchars($finalCanonical) ?>">
+    <!-- Multilingual Hreflang Canonical Annotations for Googlebot -->
+    <link rel="alternate" hreflang="en" href="<?= htmlspecialchars($urlEn) ?>">
+    <link rel="alternate" hreflang="bn" href="<?= htmlspecialchars($urlBn) ?>">
+    <link rel="alternate" hreflang="hi" href="<?= htmlspecialchars($urlHi) ?>">
+    <link rel="alternate" hreflang="x-default" href="<?= htmlspecialchars($urlEn) ?>">
+
     <link rel="alternate" type="application/rss+xml" title="EduGov News RSS Feed" href="/rss.xml">
     <link rel="sitemap" type="application/xml" title="Google News Sitemap" href="/news-sitemap.xml">
+
+    <?php if (!empty($site_settings['google_site_verification'])): ?>
+    <meta name="google-site-verification" content="<?= htmlspecialchars($site_settings['google_site_verification']) ?>">
+    <?php endif; ?>
 
     <?php if (!empty($site_settings['ga4_measurement_id'])): ?>
     <!-- Google Analytics (GA4) -->
@@ -42,19 +89,23 @@
 
     <!-- OpenGraph & Twitter Meta Tags with Dynamic Social OG Banner -->
     <?php 
-    $currentHost = $_SERVER['HTTP_HOST'] ?? 'localhost:8000';
     $ogImg = !empty($article['slug']) 
-             ? "http://{$currentHost}/og-image/{$article['slug']}" 
-             : "http://{$currentHost}/static/img/og-default.png";
+             ? "{$baseDomain}/og-image/{$article['slug']}" 
+             : "{$baseDomain}/static/img/og-default.png";
     ?>
     <meta property="og:title" content="<?= htmlspecialchars($page_title ?? 'EduGov News') ?>">
     <meta property="og:description" content="<?= htmlspecialchars($meta_description ?? 'Official education news, exam updates, results, and verified government recruitment alerts.') ?>">
     <meta property="og:type" content="<?= !empty($article) ? 'article' : 'website' ?>">
-    <meta property="og:url" content="<?= htmlspecialchars($canonical_url ?? 'http://' . $currentHost . $_SERVER['REQUEST_URI']) ?>">
+    <meta property="og:url" content="<?= htmlspecialchars($finalCanonical) ?>">
     <meta property="og:image" content="<?= htmlspecialchars($ogImg) ?>">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
     <meta property="og:site_name" content="<?= htmlspecialchars($site_settings['site_name'] ?? 'EduGov News') ?>">
+    <meta property="og:locale" content="<?= $ogLocale ?>">
+    <?php foreach ($altLocales as $altLoc): ?>
+    <meta property="og:locale:alternate" content="<?= $altLoc ?>">
+    <?php endforeach; ?>
+
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="<?= htmlspecialchars($page_title ?? 'EduGov News') ?>">
     <meta name="twitter:description" content="<?= htmlspecialchars($meta_description ?? 'Instant official educational notifications and recruitment alerts.') ?>">

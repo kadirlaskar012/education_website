@@ -175,33 +175,66 @@ class AdminController extends Controller {
                 $summary = trim($_POST['summary'] ?? '');
                 $contentHtml = $_POST['content_html'] ?? '';
 
+                $structured = json_decode($article['structured_data'] ?? '{}', true) ?: [];
+                if (!isset($structured['translations'])) {
+                    $structured['translations'] = [];
+                }
+
+                // Bengali Translations
+                $bnTitle = trim($_POST['bn_title'] ?? '');
+                $bnSummary = trim($_POST['bn_summary'] ?? '');
+                $bnContent = trim($_POST['bn_content'] ?? '');
+                if (!empty($bnTitle) || !empty($bnSummary) || !empty($bnContent)) {
+                    $structured['translations']['bn'] = [
+                        'title'   => $bnTitle ?: ($structured['translations']['bn']['title'] ?? $title),
+                        'summary' => $bnSummary ?: ($structured['translations']['bn']['summary'] ?? $summary),
+                        'content' => $bnContent ?: ($structured['translations']['bn']['content'] ?? ''),
+                        'score'   => $structured['translations']['bn']['score'] ?? 100,
+                    ];
+                }
+
+                // Hindi Translations
+                $hiTitle = trim($_POST['hi_title'] ?? '');
+                $hiSummary = trim($_POST['hi_summary'] ?? '');
+                $hiContent = trim($_POST['hi_content'] ?? '');
+                if (!empty($hiTitle) || !empty($hiSummary) || !empty($hiContent)) {
+                    $structured['translations']['hi'] = [
+                        'title'   => $hiTitle ?: ($structured['translations']['hi']['title'] ?? $title),
+                        'summary' => $hiSummary ?: ($structured['translations']['hi']['summary'] ?? $summary),
+                        'content' => $hiContent ?: ($structured['translations']['hi']['content'] ?? ''),
+                        'score'   => $structured['translations']['hi']['score'] ?? 100,
+                    ];
+                }
+
                 $update = $db->prepare("
                     UPDATE articles SET
                         title = :title,
                         status = :status,
                         summary = :summary,
                         content_html = :content_html,
+                        structured_data = :structured_data,
                         updated_at = CURRENT_TIMESTAMP
                     WHERE id = :id
                 ");
                 $update->execute([
-                    ':title'        => $title,
-                    ':status'       => $status,
-                    ':summary'      => $summary,
-                    ':content_html' => $contentHtml,
-                    ':id'           => (int)$id,
+                    ':title'           => $title,
+                    ':status'          => $status,
+                    ':summary'         => $summary,
+                    ':content_html'    => $contentHtml,
+                    ':structured_data' => json_encode($structured, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES),
+                    ':id'              => (int)$id,
                 ]);
 
-                Auth::logAudit('ARTICLE_EDITED', "Updated article ID #{$id}: '{$title}' (Status: {$status})");
+                Auth::logAudit('ARTICLE_EDITED', "Updated article ID #{$id}: '{$title}' with multilingual editions (Status: {$status})");
 
-                $message = 'Article updated successfully!';
+                $message = '✓ Article & Multilingual translations updated successfully!';
                 $stmt->execute([':id' => (int)$id]);
                 $article = $stmt->fetch();
             }
         }
 
         $this->render('admin/article_edit', [
-            'page_title' => 'Edit Article — ' . htmlspecialchars($article['title']),
+            'page_title' => 'Edit Article & Multilingual Studio — ' . htmlspecialchars($article['title']),
             'article'    => $article,
             'message'    => $message,
         ], 'admin');

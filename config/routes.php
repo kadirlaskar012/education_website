@@ -16,13 +16,49 @@ use App\Controllers\CronController;
 
 $router = new Router();
 
-// Portal Routes
+// Portal Routes (English Default)
 $router->get('/', [HomeController::class, 'index']);
 $router->get('/news/{slug}', [ArticleController::class, 'show']);
 $router->get('/og-image/{slug}', [ArticleController::class, 'ogImage']);
 $router->get('/category/{slug}', [CategoryController::class, 'show']);
 $router->get('/state/{slug}', [StateController::class, 'show']);
 $router->get('/search', [SearchController::class, 'index']);
+
+// Dedicated Multilingual SEO Routes for Bengali (bn)
+$router->get('/bn', function() {
+    \App\Core\I18n::setLocale('bn');
+    (new HomeController())->index();
+});
+$router->get('/bn/news/{slug}', function($slug) {
+    \App\Core\I18n::setLocale('bn');
+    (new ArticleController())->show($slug, 'bn');
+});
+$router->get('/bn/category/{slug}', function($slug) {
+    \App\Core\I18n::setLocale('bn');
+    (new CategoryController())->show($slug);
+});
+$router->get('/bn/state/{slug}', function($slug) {
+    \App\Core\I18n::setLocale('bn');
+    (new StateController())->show($slug);
+});
+
+// Dedicated Multilingual SEO Routes for Hindi (hi)
+$router->get('/hi', function() {
+    \App\Core\I18n::setLocale('hi');
+    (new HomeController())->index();
+});
+$router->get('/hi/news/{slug}', function($slug) {
+    \App\Core\I18n::setLocale('hi');
+    (new ArticleController())->show($slug, 'hi');
+});
+$router->get('/hi/category/{slug}', function($slug) {
+    \App\Core\I18n::setLocale('hi');
+    (new CategoryController())->show($slug);
+});
+$router->get('/hi/state/{slug}', function($slug) {
+    \App\Core\I18n::setLocale('hi');
+    (new StateController())->show($slug);
+});
 
 // Dedicated Category Hubs (Direct Aliases)
 $router->get('/results', function() {

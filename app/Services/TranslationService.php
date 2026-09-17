@@ -23,22 +23,23 @@ class TranslationService {
         
         $cleanText = preg_replace('/<[^>]*>/', ' ', $text);
         $cleanText = preg_replace('/\s+/', ' ', $cleanText);
-        $cleanText = trim(mb_substr($cleanText, 0, 3500));
+        $cleanText = trim(mb_substr($cleanText, 0, 25000));
 
         $prompt = <<<PROMPT
 You are a senior education news editor and fact-checker for an official Indian educational news portal.
-Rewrite and translate the following official government examination/recruitment notice into fluent, engaging, and newspaper-grade {$langName}.
+Rewrite and translate the following official government examination/recruitment notice into fluent, engaging, authoritative, and newspaper-grade {$langName}.
 
-CRITICAL INTEGRITY RULES:
-1. Retain ALL exact dates, years, deadlines, and timeframes (e.g., 20 March 2026 -> ২০ মার্চ ২০২৬ / 20 मार्च 2026).
-2. Retain ALL exact vacancy numbers, salary/pay scales, eligibility criteria, and application fees.
-3. Retain ALL official website links, portal URLs, and PDF reference numbers without modification.
-4. Format with clear Markdown headings (##, ###), bullet points, and an engaging journalistic headline.
-5. Output format must be pure JSON:
+CRITICAL INTEGRITY & DEPTH RULES:
+1. FULL DEPTH & LENGTH (1,500+ WORDS): Translate and cover ALL sections with exhaustive depth in {$langName} (Overview, Eligibility, Age Limits, 7th CPC Salary Details, Exam Pattern & Syllabus, Step-by-Step How to Apply, Selection Stages, Previous Cutoffs, and FAQs). Do NOT truncate or skip any details.
+2. Retain ALL exact dates, years, deadlines, and timeframes (e.g., 20 March 2026 -> ২০ মার্চ ২০২৬ / 20 मार्च 2026).
+3. Retain ALL exact vacancy numbers, salary/pay scales, eligibility criteria, and application fees.
+4. Retain ALL official website links, portal URLs, and PDF reference numbers without modification.
+5. Format with clear Markdown headings (##, ###), bullet points, tables, and an engaging journalistic headline.
+6. Output format must be pure JSON:
 {
-    "title": "Clear Engaging {$langName} Headline",
-    "summary": "Brief 2-3 sentence summary in {$langName}",
-    "content": "Full detailed article formatted in Markdown with clear sections in {$langName}"
+    "title": "Clear Engaging {$langName} Headline (under 90 chars)",
+    "summary": "Clear 2-3 sentence editorial summary in {$langName}",
+    "content": "Full detailed 1,500+ word article formatted in Markdown with clear sections in {$langName}"
 }
 
 Return ONLY valid JSON without extra chat.
