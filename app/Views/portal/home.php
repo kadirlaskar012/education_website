@@ -4,53 +4,87 @@
      State Quick Matrix, Categorized News Feed & Interactive Community Banners
      ========================================================================== -->
 
-<!-- Top Hero Section: Featured Breaking Notice + Live Top 10 Ticker Stream -->
+<!-- Top Hero Section: Multi-Story Editorial Spotlight + Live Top Stream -->
 <section class="premium-hero-section">
     <div class="hero-grid-container">
-        <!-- 1. Featured Top Story (65% width) -->
-        <?php 
-        $featuredStory = $top10_notices[0] ?? null;
-        if ($featuredStory): 
-            $featWordCount = str_word_count(strip_tags($featuredStory['excerpt'] ?? ''));
-            $featReadTime = max(1, (int)ceil($featWordCount / 200));
-        ?>
-        <div class="hero-featured-card">
-            <div class="featured-card-top">
-                <div class="badge-cluster">
-                    <span class="pulse-live-badge"><span class="pulsing-dot"></span> <?= htmlspecialchars(__('top_announcement')) ?></span>
-                    <span class="cat-pill"><?= htmlspecialchars($featuredStory['category_name']) ?></span>
-                    <?php if (!empty($featuredStory['official_source_name'])): ?>
-                    <span class="source-pill">🏛️ <?= htmlspecialchars($featuredStory['official_source_name']) ?></span>
-                    <?php endif; ?>
+        <!-- 1. Left Column: Featured Spotlight Hub (Primary Story + 2 Sub-Featured Mini Cards) -->
+        <div class="hero-left-hub">
+            <?php 
+            $leadStory = $top10_notices[0] ?? null;
+            if ($leadStory): 
+            ?>
+            <!-- Primary Spotlight Lead Card -->
+            <article class="hero-lead-card">
+                <div class="lead-card-header">
+                    <div class="badge-cluster">
+                        <span class="spotlight-badge"><span class="pulsing-dot"></span> <?= htmlspecialchars(__('top_announcement')) ?></span>
+                        <span class="cat-pill"><?= htmlspecialchars($leadStory['category_name']) ?></span>
+                        <?php if (!empty($leadStory['official_source_name'])): ?>
+                        <span class="source-pill">🏛️ <?= htmlspecialchars($leadStory['official_source_name']) ?></span>
+                        <?php endif; ?>
+                    </div>
+                    <time class="lead-time" datetime="<?= $leadStory['published_at'] ?>">
+                        📅 <?= date('M j, Y • g:i A', strtotime($leadStory['published_at'])) ?>
+                    </time>
                 </div>
-                <time class="featured-time" datetime="<?= $featuredStory['published_at'] ?>">
-                    📅 <?= date('M j, Y • g:i A', strtotime($featuredStory['published_at'])) ?>
-                </time>
-            </div>
 
-            <h1 class="featured-headline">
-                <a href="/news/<?= htmlspecialchars($featuredStory['slug']) ?>">
-                    <?= htmlspecialchars($featuredStory['title']) ?>
-                </a>
-            </h1>
+                <h1 class="lead-headline">
+                    <a href="/news/<?= htmlspecialchars($leadStory['slug']) ?>">
+                        <?= htmlspecialchars($leadStory['title']) ?>
+                    </a>
+                </h1>
 
-            <p class="featured-excerpt">
-                <?= htmlspecialchars(mb_substr($featuredStory['excerpt'] ?? strip_tags($featuredStory['content_html'] ?? ''), 0, 195)) ?>...
-            </p>
+                <p class="lead-excerpt">
+                    <?= htmlspecialchars(mb_substr($leadStory['excerpt'] ?? strip_tags($leadStory['content_html'] ?? ''), 0, 160)) ?>...
+                </p>
 
-            <div class="featured-footer">
-                <div class="featured-tags-row">
-                    <span class="ft-tag"><?= htmlspecialchars(__('all_eligible')) ?></span>
-                    <span class="ft-tag"><?= htmlspecialchars(__('direct_apply_active')) ?></span>
+                <div class="lead-footer">
+                    <div class="lead-tags-cluster">
+                        <span class="status-chip chip-active">⚡ <?= htmlspecialchars(__('direct_apply_active')) ?></span>
+                        <span class="status-chip chip-eligible">🎓 <?= htmlspecialchars(__('all_eligible')) ?></span>
+                    </div>
+                    <a href="/news/<?= htmlspecialchars($leadStory['slug']) ?>" class="btn-lead-read">
+                        <?= htmlspecialchars(__('read_full_notification')) ?> <span class="arrow-icon">→</span>
+                    </a>
                 </div>
-                <a href="/news/<?= htmlspecialchars($featuredStory['slug']) ?>" class="btn-hero-action">
-                    <?= htmlspecialchars(__('read_full_notification')) ?> <span class="arrow-icon">→</span>
-                </a>
+            </article>
+            <?php endif; ?>
+
+            <!-- Secondary 2-Card Spotlight Row (Sub-Features) -->
+            <?php 
+            $subStory1 = $top10_notices[1] ?? null;
+            $subStory2 = $top10_notices[2] ?? null;
+            if ($subStory1 || $subStory2):
+            ?>
+            <div class="hero-sub-grid">
+                <?php foreach ([$subStory1, $subStory2] as $sub): if (!$sub) continue; ?>
+                <article class="hero-sub-card">
+                    <div class="sub-card-top">
+                        <span class="sub-cat-pill"><?= htmlspecialchars($sub['category_name']) ?></span>
+                        <time class="sub-time">📅 <?= date('M j, Y', strtotime($sub['published_at'])) ?></time>
+                    </div>
+                    <h2 class="sub-headline">
+                        <a href="/news/<?= htmlspecialchars($sub['slug']) ?>">
+                            <?= htmlspecialchars(mb_substr($sub['title'], 0, 75)) ?><?= mb_strlen($sub['title']) > 75 ? '...' : '' ?>
+                        </a>
+                    </h2>
+                    <div class="sub-card-footer">
+                        <?php if (!empty($sub['official_source_name'])): ?>
+                        <span class="sub-source">🏛️ <?= htmlspecialchars(mb_substr($sub['official_source_name'], 0, 22)) ?></span>
+                        <?php else: ?>
+                        <span class="sub-source">🏛️ Official Notice</span>
+                        <?php endif; ?>
+                        <a href="/news/<?= htmlspecialchars($sub['slug']) ?>" class="sub-read-link">
+                            <?= htmlspecialchars(__('read_more')) ?> →
+                        </a>
+                    </div>
+                </article>
+                <?php endforeach; ?>
             </div>
+            <?php endif; ?>
         </div>
-        <?php endif; ?>
 
-        <!-- 2. Live Top 10 Updates Stream (35% width) -->
+        <!-- 2. Right Column: Live Trending Stream (Items 4 to 9) -->
         <div class="hero-stream-card">
             <div class="stream-card-header">
                 <div class="stream-title-wrap">
@@ -63,7 +97,8 @@
             <div class="stream-items-scroll">
                 <?php 
                 $rank = 1;
-                foreach (array_slice($top10_notices, 1, 6) as $notice): 
+                $trendingList = count($top10_notices) > 3 ? array_slice($top10_notices, 3, 6) : array_slice($top10_notices, 1, 6);
+                foreach ($trendingList as $notice): 
                     $rankPadded = str_pad((string)$rank, 2, '0', STR_PAD_LEFT);
                     $rankClass = ($rank <= 3) ? 'top-rank' : '';
                     $rank++;
