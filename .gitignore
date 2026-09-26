@@ -1,5 +1,14 @@
+# Node & Next.js
+node_modules/
+/.next/
+/out/
+build/
+dist/
+
 # Environment variables
 .env
+.env*.local
+.env.local
 
 # Database (optional for local SQLite)
 database/database.sqlite
@@ -20,3 +29,4 @@ Thumbs.db
 .idea/
 .vscode/
 *.zip
+
